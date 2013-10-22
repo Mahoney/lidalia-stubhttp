@@ -13,6 +13,13 @@
   <artifactId>lidalia-net-2</artifactId>
   <version>1.0.0-SNAPSHOT</version>
 
+  <dependencies>
+    <dependency>
+      <groupId>uk.org.lidalia</groupId>
+      <artifactId>lidalia-lang</artifactId>
+      <version>1.1.0-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
 
     
 </project>

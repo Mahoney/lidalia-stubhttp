@@ -1,50 +1,42 @@
 package uk.org.lidalia.net2
 
-import scala.collection.concurrent
 import scala.collection.concurrent.TrieMap
+import uk.org.lidalia.lang.WrappedValue
 
 object Scheme {
 
+  private val VALID_SCHEME_REGEX = "[a-zA-Z][a-zA-Z0-9+\\-\\.]*".r
+
+  private val knownSchemes = TrieMap[String, SchemeWithDefaultPort]()
+
   val HTTP = Scheme("http", Port(80))
+  val HTTPS = Scheme("https", Port(443))
+  val FTP = Scheme("ftp", Port(21))
+  val SSH = Scheme("ssh", Port(22))
+  val MAILTO = new SimpleScheme("mailto")
+  val FILE = new SimpleScheme("file")
 
-  val knownSchemes = TrieMap(
-    "http" -> new SchemeWithDefaultPort("http", Port(80)),
-    "https" -> new SchemeWithDefaultPort("https", Port(443)),
-    "ftp" -> new SchemeWithDefaultPort("ftp", Port(21)),
-    "ssh" -> new SchemeWithDefaultPort("ssh", Port(22)),
+  def apply(name: String) =
+    knownSchemes.getOrElse(name.toLowerCase, new SimpleScheme(name))
 
-  )
-
-  def apply(name: String, defaultPort: ?[Port]) = defaultPort.map(SchemeWithDefaultPort(name, _)).getOrElse(SimpleScheme(name))
-
-}
-
-sealed abstract class Scheme {
-
-  def name: String
-  def defaultPort: ?[Port]
-
-  override def equals(other: Any) = {
-    other match {
-      case scheme: Scheme => scheme.name == name
-      case _ => false
-    }
+  def apply(name: String, defaultPort: Port) = {
+    val scheme = new SchemeWithDefaultPort(name, defaultPort)
+    knownSchemes.putIfAbsent(name.toLowerCase, scheme).getOrElse(scheme)
   }
-
-  override def hashCode = name.hashCode
 }
 
-object SchemeWithDefaultPort {
-  def apply(name: String, port: Port) = new SchemeWithDefaultPort(name, port)
+sealed abstract class Scheme(val name: String)
+    extends WrappedValue(name) with Immutable {
 
+  require(Scheme.VALID_SCHEME_REGEX.findFirstIn(name).isDefined,
+    "scheme must match "+Scheme.VALID_SCHEME_REGEX)
+
+  val defaultPort: ?[Port]
 }
 
-final class SchemeWithDefaultPort private(val name: String, val port: Some[Port])
+final class SchemeWithDefaultPort private[net2](name: String, val defaultPort: Some[Port])
+    extends Scheme(name)
 
-object SimpleScheme {
-  def apply(name: String) = new SimpleScheme(name)
-}
-
-final class SimpleScheme private(val name: String) {
-  def defaultPort = None
+final class SimpleScheme private[net2](name: String) extends Scheme(name) {
+  val defaultPort = None
 }

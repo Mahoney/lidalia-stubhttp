@@ -2,22 +2,38 @@ package uk.org.lidalia.net2
 
 import org.scalatest
 import scalatest.PropSpec
-import scalatest.prop.TableDrivenPropertyChecks
+import org.scalatest.prop.TableDrivenPropertyChecks
 import scalatest.junit.JUnitRunner
 import org.junit.runner.RunWith
+import EqualsChecks.{possibleArgsFor, reflexiveTest, equalsTest }
 
 @RunWith(classOf[JUnitRunner])
 class HostAndPortTests extends PropSpec with TableDrivenPropertyChecks {
 
-  property("HostAndPort with Some port equal to ResolvedHostAndPort") {
-    val hostAndPort = HostAndPort(Host("name.me"), Some(Port(80)))
-    val resolvedHostAndPort = ResolvedHostAndPort(Host("name.me"), Port(80))
-    assert(hostAndPort === resolvedHostAndPort)
+  property("ResolvedHostAndPort equals") {
+    val argsForResolvedHostAndPort = possibleArgsFor(
+      List(Host("host1"), Host("host2")),
+      List(Port(1), Port(2))
+    )
+
+    reflexiveTest(argsForResolvedHostAndPort) { (args) =>
+      ResolvedHostAndPort(args._1, args._2)
+    }
+
+    equalsTest(argsForResolvedHostAndPort) { (args) =>
+      ResolvedHostAndPort(args._1, args._2)
+    }
   }
 
-  property("HostAndPort with None port equal to HostWithoutPort") {
-    val hostAndPort = HostAndPort(Host("name.me"), None)
-    val hostWithoutPort = HostWithoutPort(Host("name.me"))
-    assert(hostAndPort === hostWithoutPort)
+  property("HostWithoutPort equals") {
+    val argsForHostWithoutPort = possibleArgsFor(List(Host("host1"), Host("host2")))
+
+    reflexiveTest(argsForHostWithoutPort) { arg =>
+      HostWithoutPort(arg)
+    }
+
+    equalsTest(argsForHostWithoutPort) { arg =>
+      HostWithoutPort(arg)
+    }
   }
 }
