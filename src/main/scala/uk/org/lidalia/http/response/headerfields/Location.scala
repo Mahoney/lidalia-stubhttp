@@ -3,13 +3,13 @@ package uk.org.lidalia.http.response.headerfields
 import uk.org.lidalia.http.headerfields.{HeaderFieldName, HeaderField}
 import uk.org.lidalia.net2.Uri
 
-object Location extends HeaderFieldName[Uri] {
+object Location extends HeaderFieldName[?[Uri]] {
 
   def apply(uri: Uri) = new Location(uri)
 
   def name: String = "Location"
 
-  def parse(headerFieldValues: List[String]) = Uri(headerFieldValues(0))
+  def parse(headerFieldValues: List[String]) = headerFieldValues.headOption.map(Uri(_))
 
 }
 

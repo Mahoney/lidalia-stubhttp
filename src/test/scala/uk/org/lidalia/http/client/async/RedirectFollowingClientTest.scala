@@ -61,4 +61,24 @@ class RedirectFollowingClientTest extends PropSpec with TableDrivenPropertyCheck
 
     assert(valueOf(actualResponse) === valueOf(expectedResponse))
   }
+
+  property("Follows two 302 redirects") {
+    val request1 = get()
+    val redirectLocation1 = Uri("http://www.example.com/redirectlocation")
+    val redirectResponse1 = successful(response(Found, List(Location(redirectLocation1))))
+    given(decorated.execute(request1)).willReturn(redirectResponse1)
+
+    val request2 = get(redirectLocation1)
+    val redirectLocation2 = Uri("http://www.example.com/redirectlocation2")
+    val redirectResponse2 = successful(response(Found, List(Location(redirectLocation2))))
+    given(decorated.execute(request2)).willReturn(redirectResponse2)
+
+    val request3 = get(redirectLocation2)
+    val expectedResponse = successful(response())
+    given(decorated.execute(request3)).willReturn(expectedResponse)
+
+    val actualResponse = redirectFollowingHttpClient.execute(request1)
+
+    assert(valueOf(actualResponse) === valueOf(expectedResponse))
+  }
 }

@@ -12,10 +12,10 @@ class RedirectFollowingClient(decorated: HttpClient) extends HttpClient {
 
   override def execute(request: Request): Future[Response] = {
     val initialResponse = decorated.execute(request)
-    initialResponse.flatMap { response =>
+     initialResponse.flatMap { response =>
       if (response.requiresRedirect) {
         val redirectRequest = request.withUri(response.headerField(Location).get)
-        decorated.execute(redirectRequest)
+        execute(redirectRequest)
       } else {
         initialResponse
       }
