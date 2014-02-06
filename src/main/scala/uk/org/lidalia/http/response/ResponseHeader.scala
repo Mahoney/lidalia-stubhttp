@@ -9,7 +9,7 @@ object ResponseHeader {
 }
 
 class ResponseHeader private(@Identity val code: Code,
-                             private val headerFieldsList: List[HeaderField]) extends MessageHeader(headerFieldsList) {
+                             private val respHeaderFieldsList: List[HeaderField]) extends MessageHeader(respHeaderFieldsList) {
 
   def requiresRedirect: Boolean = code.requiresRedirect
 

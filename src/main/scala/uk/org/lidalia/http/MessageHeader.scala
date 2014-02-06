@@ -4,7 +4,7 @@ import uk.org.lidalia
 import lidalia.http.headerfields.{HeaderFieldName, HeaderField}
 import lidalia.lang.RichObject
 
-abstract class MessageHeader private[http](@Identity private val headerFieldsList: List[HeaderField]) extends RichObject {
+abstract class MessageHeader private[http](@Identity val headerFieldsList: List[HeaderField]) extends RichObject {
 
   private val headerFields: Map[String, HeaderField] = Map(headerFieldsList.map(headerField => headerField.name -> headerField):_*)
 
