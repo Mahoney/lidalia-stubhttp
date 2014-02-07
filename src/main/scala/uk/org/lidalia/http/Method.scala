@@ -1,5 +1,6 @@
-package uk.org.lidalia.http.request
+package uk.org.lidalia.http
 
+// TODO should be extensible...
 object Method {
   case object GET extends Method
   case object HEAD extends Method

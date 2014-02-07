@@ -4,7 +4,7 @@ import scala.language.implicitConversions
 import scala.Some
 import scala.annotation.meta.field
 
-package object request {
+package object headerfields {
   type ?[T] = Option[T]
   type Identity = uk.org.lidalia.lang.Identity @field
 

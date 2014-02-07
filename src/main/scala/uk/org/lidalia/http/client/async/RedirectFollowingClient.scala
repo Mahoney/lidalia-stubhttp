@@ -1,12 +1,8 @@
 package uk.org.lidalia.http.client.async
 
-import uk.org.lidalia.http
-
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
-import http.response.Response
-import http.response.headerfields.Location
-import uk.org.lidalia.http.request.Request
+import uk.org.lidalia.http.{Response, Request}
 
 class RedirectFollowingClient(decorated: HttpClient) extends HttpClient {
 
@@ -14,7 +10,7 @@ class RedirectFollowingClient(decorated: HttpClient) extends HttpClient {
     val initialResponse = decorated.execute(request)
      initialResponse.flatMap { response =>
       if (response.requiresRedirect) {
-        val redirectRequest = request.withUri(response.headerField(Location).get)
+        val redirectRequest = request.withUri(response.location.get)
         execute(redirectRequest)
       } else {
         initialResponse

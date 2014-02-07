@@ -20,9 +20,8 @@ import junit.runner.RunWith
 import mockito.Mockito.mock
 import mockito.BDDMockito.given
 
-import http.{ResponseBuilder, RequestBuilder}
-import http.response.{Response, Code}
-import http.response.headerfields.Location
+import uk.org.lidalia.http.{Response, Code, ResponseBuilder, RequestBuilder}
+import http.headerfields.Location
 import ResponseBuilder.response
 import RequestBuilder.get
 import Code.Found
@@ -37,7 +36,7 @@ class RedirectFollowingClientTest extends PropSpec with TableDrivenPropertyCheck
 
   def valueOf(future: Future[Response]) = Await.result(future, Duration(10, SECONDS))
 
-    property("Returns response from wrapped client when not a redirect") {
+  property("Returns response from wrapped client when not a redirect") {
     val request = get()
     val expectedResponse = successful(response())
     given(decorated.execute(request)).willReturn(expectedResponse)

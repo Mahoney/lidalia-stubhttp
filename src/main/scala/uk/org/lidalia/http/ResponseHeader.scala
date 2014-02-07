@@ -1,7 +1,7 @@
-package uk.org.lidalia.http.response
+package uk.org.lidalia.http
 
-import uk.org.lidalia.http._
-import uk.org.lidalia.http.headerfields.HeaderField
+import uk.org.lidalia.http.headerfields.Location
+import uk.org.lidalia.net2.Uri
 
 object ResponseHeader {
     def apply(status: Code, headerFields: List[HeaderField]): ResponseHeader = new ResponseHeader(status, headerFields)
@@ -13,4 +13,5 @@ class ResponseHeader private(@Identity val code: Code,
 
   def requiresRedirect: Boolean = code.requiresRedirect
 
+  lazy val location: ?[Uri] = headerField(Location)
 }

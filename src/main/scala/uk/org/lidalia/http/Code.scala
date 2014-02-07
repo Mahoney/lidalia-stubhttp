@@ -1,9 +1,9 @@
-package uk.org.lidalia.http.response
+package uk.org.lidalia.http
 
-import scala.collection.convert.Wrappers.JConcurrentMapWrapper
 import java.util.concurrent.ConcurrentHashMap
 import uk.org.lidalia.lang.WrappedValue
 import scala.collection.immutable.SortedSet
+import scala.collection.convert.Wrappers.JConcurrentMapWrapper
 
 object Code {
 
@@ -21,7 +21,8 @@ object Code {
 
 }
 
-class Code private(val code: Int, val defaultReason: ?[Reason]) extends WrappedValue(code) with Ordered[Code]{
+class Code private(val code: Int, val defaultReason: ?[Reason]) extends WrappedValue(code) with Ordered[Code] {
+  require(code >= 0 && code < 1000, s"$code should be between 0 and 999")
   def compare(that: Code) = code.compare(that.code)
 
   def requiresRedirect: Boolean = (code == 302)

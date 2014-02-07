@@ -1,6 +1,5 @@
 package uk.org.lidalia.http
 
-import uk.org.lidalia.http.request.{Request, Method}
 import Method.GET
 import uk.org.lidalia.net2.Uri
 

@@ -1,0 +1,29 @@
+package uk.org.lidalia.http
+
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
+import org.scalatest.PropSpec
+import org.scalatest.prop.TableDrivenPropertyChecks
+
+@RunWith(classOf[JUnitRunner])
+class MessageHeaderTest extends PropSpec with TableDrivenPropertyChecks {
+
+  property("correctly parses multiple headerfields with the same name") {
+    val headerField1 = HeaderField("Name1", "value1")
+    val headerField2 = HeaderField("Name2", "value4")
+    val headerField3 = HeaderField("Name1", "value2", "value3")
+    val message = new MessageHeader(List(headerField1, headerField2, headerField3)) {}
+
+    assert(message.headerField("Name1") === Some(HeaderField("Name1", "value1", "value2", "value3")))
+    assert(message.headerFieldValues("Name1") === List("value1", "value2", "value3"))
+  }
+
+  property("maintains list of headerfields") {
+    val headerField1 = HeaderField("Name1", "value1")
+    val headerField2 = HeaderField("Name2", "value4")
+    val headerField3 = HeaderField("Name1", "value2", "value3")
+    val message = new MessageHeader(List(headerField1, headerField2, headerField3)) {}
+
+    assert(message.headerFields === List(headerField1, headerField2, headerField3))
+  }
+}

@@ -9,7 +9,7 @@ import uk.org.lidalia.net2.EqualsChecks.{possibleArgsFor, reflexiveTest, equalsT
 @RunWith(classOf[JUnitRunner])
 class UriTests extends PropSpec with TableDrivenPropertyChecks {
 
-  property("Uri equals") {
+  property("Uri equals contract") {
 
     val argsForUri = possibleArgsFor(
       List(Scheme("scheme1"), Scheme("scheme2")),

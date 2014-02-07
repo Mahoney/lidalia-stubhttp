@@ -1,4 +1,4 @@
-package uk.org.lidalia.http.headerfields
+package uk.org.lidalia.http
 
 trait HeaderFieldName[+T] {
   def parse(headerFieldValues: List[String]): T

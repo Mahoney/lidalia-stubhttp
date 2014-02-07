@@ -1,7 +1,7 @@
-package uk.org.lidalia.http.response.headerfields
+package uk.org.lidalia.http.headerfields
 
-import uk.org.lidalia.http.headerfields.{HeaderFieldName, HeaderField}
 import uk.org.lidalia.net2.Uri
+import uk.org.lidalia.http.{HeaderFieldName, HeaderField}
 
 object Location extends HeaderFieldName[?[Uri]] {
 
