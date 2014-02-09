@@ -1,7 +1,6 @@
-package uk.org.lidalia.http
+package uk.org.lidalia.http.core
 
-import uk.org.lidalia
-import lidalia.lang.RichObject
+import uk.org.lidalia.lang.RichObject
 
 abstract class MessageHeader private[http](@Identity val headerFields: List[HeaderField]) extends RichObject {
 

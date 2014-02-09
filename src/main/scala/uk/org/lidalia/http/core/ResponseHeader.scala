@@ -1,7 +1,8 @@
-package uk.org.lidalia.http
+package uk.org.lidalia.http.core
 
-import uk.org.lidalia.http.headerfields.Location
-import uk.org.lidalia.net2.Uri
+import uk.org.lidalia
+import lidalia.net2.Uri
+import lidalia.http.core.headerfields.Location
 
 object ResponseHeader {
     def apply(status: Code, headerFields: List[HeaderField]): ResponseHeader = new ResponseHeader(status, headerFields)

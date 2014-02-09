@@ -1,11 +1,12 @@
-package uk.org.lidalia.http.headerfields
+package uk.org.lidalia.http.core.headerfields
 
-import uk.org.lidalia.http.{HeaderField, HeaderFieldName}
-import uk.org.lidalia.net2.Uri
+import uk.org.lidalia
+import lidalia.net2.Uri
+import lidalia.http.core.{HeaderFieldName, HeaderField}
 
 object Referer extends HeaderFieldName[?[Uri]] {
 
-  def apply(uri: Uri) = new Location(uri)
+  def apply(uri: Uri) = new Referer(uri)
 
   def name: String = "Referer"
 

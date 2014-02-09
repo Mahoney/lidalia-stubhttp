@@ -20,9 +20,9 @@ import junit.runner.RunWith
 import mockito.Mockito.mock
 import mockito.BDDMockito.given
 
-import uk.org.lidalia.http.{Response, Code, ResponseBuilder, RequestBuilder}
-import http.headerfields.Location
-import ResponseBuilder.response
+import http.core.headerfields.Location
+import http.core.ResponseBuilder.response
+import http.core.{RequestBuilder, Response, Code}
 import RequestBuilder.get
 import Code.Found
 

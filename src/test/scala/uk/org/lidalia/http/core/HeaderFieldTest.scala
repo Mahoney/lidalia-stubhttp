@@ -1,9 +1,10 @@
-package uk.org.lidalia.http
+package uk.org.lidalia.http.core
 
-import org.scalatest.PropSpec
-import org.scalatest.prop.TableDrivenPropertyChecks
+import org.scalatest
+import scalatest.PropSpec
+import scalatest.prop.TableDrivenPropertyChecks
+import scalatest.junit.JUnitRunner
 import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
 import uk.org.lidalia.net2.EqualsChecks.{possibleArgsFor, reflexiveTest, equalsTest}
 
 @RunWith(classOf[JUnitRunner])

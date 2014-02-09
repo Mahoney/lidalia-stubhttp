@@ -2,12 +2,12 @@ package uk.org.lidalia.http.client.sync
 
 import uk.org.lidalia.http
 
-import scala.concurrent.{duration => scala, Future, Await}
+import scala.concurrent.{duration => scala, Await}
 import org.joda.time.Duration
 import java.util.concurrent.TimeUnit
 
 import http.client.async.HttpClient
-import uk.org.lidalia.http.{Response, Request}
+import http.core.{Response, Request}
 
 class SyncHttpClient(asyncHttpClient: HttpClient) {
 

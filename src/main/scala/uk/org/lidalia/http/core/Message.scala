@@ -1,4 +1,4 @@
-package uk.org.lidalia.http
+package uk.org.lidalia.http.core
 
 import uk.org.lidalia.lang.RichObject
 
@@ -9,5 +9,9 @@ abstract class Message private[http](@Identity val header: MessageHeader) extend
   def headerField(headerFieldName: String) = header.headerField(headerFieldName)
 
   def headerField[T](headerFieldName: HeaderFieldName[T]) = header.headerField(headerFieldName)
+
+  val headerFields = header.headerFields
+
+  val headerFieldMap = header.headerFieldMap
 
 }

@@ -1,7 +1,8 @@
-package uk.org.lidalia.http
+package uk.org.lidalia.http.core
 
-import uk.org.lidalia.net2.Uri
-import uk.org.lidalia.http.headerfields.Referer
+import uk.org.lidalia
+import lidalia.net2.Uri
+import lidalia.http.core.headerfields.Referer
 
 object RequestHeader {
     def apply(method: Method, uri: Uri, headerFields: List[HeaderField]): RequestHeader = new RequestHeader(method, uri, headerFields)

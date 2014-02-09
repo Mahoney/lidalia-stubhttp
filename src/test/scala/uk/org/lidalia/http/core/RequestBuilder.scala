@@ -1,4 +1,4 @@
-package uk.org.lidalia.http
+package uk.org.lidalia.http.core
 
 import Method.GET
 import uk.org.lidalia.net2.Uri

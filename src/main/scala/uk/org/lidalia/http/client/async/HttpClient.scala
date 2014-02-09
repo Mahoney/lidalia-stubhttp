@@ -1,8 +1,8 @@
 package uk.org.lidalia.http.client.async
 
-import uk.org.lidalia.http
+import uk.org.lidalia.http.core
 import scala.concurrent.Future
-import uk.org.lidalia.http.{Response, Request}
+import core.{Response, Request}
 
 trait HttpClient {
   def execute(request: Request): Future[Response] = ???

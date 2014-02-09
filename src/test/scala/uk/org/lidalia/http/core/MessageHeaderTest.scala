@@ -1,9 +1,10 @@
-package uk.org.lidalia.http
+package uk.org.lidalia.http.core
 
 import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
-import org.scalatest.PropSpec
-import org.scalatest.prop.TableDrivenPropertyChecks
+import org.scalatest
+import scalatest.junit.JUnitRunner
+import scalatest.PropSpec
+import scalatest.prop.TableDrivenPropertyChecks
 
 @RunWith(classOf[JUnitRunner])
 class MessageHeaderTest extends PropSpec with TableDrivenPropertyChecks {

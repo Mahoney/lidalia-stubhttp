@@ -41,7 +41,7 @@ class Uri private(@Identity val scheme: Scheme,
                   @Identity val hierarchicalPart: HierarchicalPart,
                   @Identity val query: ?[Query],
                   @Identity val fragment: ?[Fragment])
-    extends RichObject with MaybePartialUri with Immutable {
+    extends RichObject with Immutable {
 
   override final def toString = {
     val baseUri = s"$scheme:$hierarchicalPart"

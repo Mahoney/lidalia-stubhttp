@@ -1,4 +1,4 @@
-package uk.org.lidalia.http
+package uk.org.lidalia.http.core
 
 import scala.language.implicitConversions
 import scala.Some

@@ -2,7 +2,7 @@ package uk.org.lidalia.http.client.async
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
-import uk.org.lidalia.http.{Response, Request}
+import uk.org.lidalia.http.core.{Response, Request}
 
 class RedirectFollowingClient(decorated: HttpClient) extends HttpClient {
 

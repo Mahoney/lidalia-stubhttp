@@ -1,10 +1,10 @@
-package uk.org.lidalia
+package uk.org.lidalia.http
 
 import scala.language.implicitConversions
 import scala.Some
 import scala.annotation.meta.field
 
-package object http {
+package object core {
   type ?[T] = Option[T]
   type Identity = uk.org.lidalia.lang.Identity @field
 

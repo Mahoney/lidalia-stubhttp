@@ -1,4 +1,4 @@
-package uk.org.lidalia.http
+package uk.org.lidalia.http.core
 
 import java.util.concurrent.ConcurrentHashMap
 import uk.org.lidalia.lang.WrappedValue
