@@ -6,6 +6,8 @@ import scalatest.prop.TableDrivenPropertyChecks
 import scalatest.junit.JUnitRunner
 import uk.org.lidalia.http.core.Method._
 import org.junit.runner.RunWith
+import scala.collection.immutable.Set
+import java.lang.IllegalArgumentException
 
 @RunWith(classOf[JUnitRunner])
 class MethodTest extends PropSpec with TableDrivenPropertyChecks {
@@ -40,5 +42,28 @@ class MethodTest extends PropSpec with TableDrivenPropertyChecks {
       assert(method.name === name)
       assert(method.toString === name)
     }
+  }
+
+  property("values returns all methods") {
+    assert(Method.values() === Set(GET, HEAD, PUT, DELETE, POST, PATCH, OPTIONS, TRACE))
+  }
+
+  property("unable to re-register a method") {
+    val exception = intercept[IllegalStateException] {
+      Method.registerNonIdempotentMethod("GET", requestMayHaveEntity = true, responseMayHaveEntity = true)
+    }
+    assert(exception.getMessage === "Only one instance of a method may exist! Trying to create duplicate of GET")
+  }
+
+  property("apply returns existing method") {
+    val method = Method("GET")
+    assert(method === GET)
+  }
+
+  property("apply throws exception if unknown method") {
+    val exception = intercept[UnknownMethodException] {
+      Method("UNKNOWN")
+    }
+    assert(exception.getMessage === "Method not found: UNKNOWN; consider registering it.")
   }
 }
