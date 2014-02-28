@@ -4,10 +4,9 @@ import org.scalatest
 import scalatest.PropSpec
 import scalatest.prop.TableDrivenPropertyChecks
 import scalatest.junit.JUnitRunner
-import uk.org.lidalia.http.core.Method._
+import uk.org.lidalia.http.core.Method.{GET, HEAD, PUT, DELETE, POST, PATCH, OPTIONS, TRACE}
 import org.junit.runner.RunWith
 import scala.collection.immutable.Set
-import java.lang.IllegalArgumentException
 
 @RunWith(classOf[JUnitRunner])
 class MethodTest extends PropSpec with TableDrivenPropertyChecks {
