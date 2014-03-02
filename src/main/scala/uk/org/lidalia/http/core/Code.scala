@@ -29,7 +29,7 @@ object Code {
   }
 
   private def register[T <: Code](code: T): T = {
-    codes.putIfAbsent(code.code, code) or code
+    ??? //codes.putIfAbsent(code.code, code) or code
   }
 
   def values(): SortedSet[Code] = codes.values.to[SortedSet]
