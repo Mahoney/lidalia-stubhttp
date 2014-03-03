@@ -1,8 +1,9 @@
 package uk.org.lidalia.http.core.headerfields
 
-import org.joda.time.{DateTimeZone, DateTime}
-import uk.org.lidalia.http.core.{HeaderFieldName, HeaderField}
-import org.joda.time.format.{ISODateTimeFormat, DateTimeFormat}
+import org.joda.time
+import time.{DateTimeZone, DateTime}
+import time.format.{ISODateTimeFormat, DateTimeFormat}
+import uk.org.lidalia.http.core.HeaderField
 import scala.util.Try
 
 object DateHeaderField {
