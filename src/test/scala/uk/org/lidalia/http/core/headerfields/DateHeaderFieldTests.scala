@@ -5,9 +5,14 @@ import org.scalatest.junit.JUnitRunner
 import org.scalatest.PropSpec
 import org.scalatest.prop.TableDrivenPropertyChecks
 import org.joda.time.{DateTimeZone, DateTime}
+import uk.org.lidalia.{DefaultLocale, StaticTime}
+import java.util.Locale
 
 @RunWith(classOf[JUnitRunner])
-class DateHeaderFieldTests extends PropSpec with TableDrivenPropertyChecks {
+class DateHeaderFieldTests extends PropSpec with TableDrivenPropertyChecks with StaticTime with DefaultLocale {
+
+  val staticTime = new DateTime("2000-02-13T12:00:00.000Z").toInstant
+  val defaultLocale = Locale.FRANCE
 
   val testName = "Test-Field"
 
@@ -28,11 +33,18 @@ class DateHeaderFieldTests extends PropSpec with TableDrivenPropertyChecks {
     assert(field.values === List(rfc1123Date))
   }
 
+  val rfc850Past = "Sunday, 01-Jan-50 00:00:00 GMT"
+  val dateTimePast = new DateTime("1950-01-01T00:00:00.000Z").withZone(DateTimeZone.forID("GMT"))
+  val rfc850Future = "Friday, 31-Dec-49 23:59:59 GMT"
+  val dateTimeFuture = new DateTime("2049-12-31T23:59:59.000Z").withZone(DateTimeZone.forID("GMT"))
+
   val dateFormats =
     Table(
       ("header field values",                              "expected date"),
       (List(rfc1123Date),                                  Some(rfc1123CompliantDateTime)),
       (List(rfc850Date),                                   Some(rfc1123CompliantDateTime)),
+      (List(rfc850Past),                                   Some(dateTimePast)),
+      (List(rfc850Future),                                 Some(dateTimeFuture)),
       (List(ascTimeDate),                                  Some(rfc1123CompliantDateTime)),
       (List(iso8601Date),                                  Some(dateTime)),
       (List("not a date", rfc1123Date),                    Some(rfc1123CompliantDateTime)),
