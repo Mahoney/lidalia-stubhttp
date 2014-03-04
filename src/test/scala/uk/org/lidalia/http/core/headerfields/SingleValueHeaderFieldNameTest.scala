@@ -4,26 +4,43 @@ import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.PropSpec
 import org.scalatest.prop.TableDrivenPropertyChecks
+import scala.util.Try
 
 @RunWith(classOf[JUnitRunner])
 class SingleValueHeaderFieldNameTest extends PropSpec with TableDrivenPropertyChecks {
 
-  property("Parse returning null becomes None") {
-    val nullReturningSingleValueHeaderFieldName = new SingleValueHeaderFieldName[String]() {
-      def name = "name"
+  class StubSingleValueHeaderFieldName(parseReturn: => ?[String]) extends SingleValueHeaderFieldName[String] {
 
-      def parse(headerFieldValue: String) = null
-    }
-    assert(nullReturningSingleValueHeaderFieldName.parse(List("")) === None)
+    def name = "X-Stub"
+
+    def parse(headerFieldValue: String) = parseReturn
   }
 
-  property("Parse throwing exception becomes None") {
-    val exceptionThrowingSingleValueHeaderFieldName = new SingleValueHeaderFieldName[String]() {
-      def name = "name"
-
-      def parse(headerFieldValue: String) = throw new UnsupportedOperationException
+  property("Parse returning null throws NullPointerException") {
+    val nullReturningSingleValueHeaderFieldName = new StubSingleValueHeaderFieldName(null)
+    val exception = intercept[IllegalArgumentException] {
+      nullReturningSingleValueHeaderFieldName.parse(List("input value"))
     }
-    assert(exceptionThrowingSingleValueHeaderFieldName.parse(List("")) === None)
+    assert(exception.getMessage === "requirement failed: " +
+        "StubSingleValueHeaderFieldName.parse(String) may not return null for input [input value]")
+  }
+
+  property("Parse returning Some(null) throws NullPointerException") {
+    val someNullReturningSingleValueHeaderFieldName = new StubSingleValueHeaderFieldName(Some(null))
+    val exception = intercept[IllegalArgumentException] {
+      someNullReturningSingleValueHeaderFieldName.parse(List("input value"))
+    }
+    assert(exception.getMessage === "requirement failed: " +
+        "StubSingleValueHeaderFieldName.parse(String) may not return Some(null) for input [input value]")
+  }
+
+  property("Parse throwing exception is propagated") {
+    val toThrow = new IllegalStateException()
+    val exceptionThrowingSingleValueHeaderFieldName = new StubSingleValueHeaderFieldName(throw toThrow)
+    val thrown = intercept[Exception] {
+      exceptionThrowingSingleValueHeaderFieldName.parse(List(""))
+    }
+    assert(thrown === toThrow)
   }
 
   val inputsToOutputs =
@@ -39,8 +56,9 @@ class SingleValueHeaderFieldNameTest extends PropSpec with TableDrivenPropertyCh
     val numberSingleValueHeaderFieldName = new SingleValueHeaderFieldName[Int]() {
       def name = "name"
 
-      def parse(headerFieldValue: String) = Integer.parseInt(headerFieldValue)
+      def parse(headerFieldValue: String) = Try(Integer.parseInt(headerFieldValue)).toOption
     }
+
     forAll(inputsToOutputs) { (input, output) =>
       assert(numberSingleValueHeaderFieldName.parse(input) === Some(output))
     }

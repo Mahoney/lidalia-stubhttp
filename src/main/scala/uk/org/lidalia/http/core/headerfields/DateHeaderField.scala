@@ -20,5 +20,5 @@ object DateHeaderField {
 abstract class DateHeaderField protected(name: String, val date: DateTime) extends HeaderField(name, List(DateHeaderField.rfc1123DateFormat.print(date)))
 
 abstract class DateHeaderFieldName extends SingleValueHeaderFieldName[DateTime] {
-  def parse(headerFieldValue: String): DateTime = DateHeaderField.dateFormats.flatMap( dateFormat => Try(dateFormat.parseDateTime(headerFieldValue)).toOption ).head
+  def parse(headerFieldValue: String) = DateHeaderField.dateFormats.flatMap( dateFormat => Try(dateFormat.parseDateTime(headerFieldValue)).toOption ).headOption
 }
