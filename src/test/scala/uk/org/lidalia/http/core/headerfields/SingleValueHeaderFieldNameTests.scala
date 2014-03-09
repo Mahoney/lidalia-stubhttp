@@ -2,12 +2,37 @@ package uk.org.lidalia.http.core.headerfields
 
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
-import org.scalatest.PropSpec
+import org.scalatest.{PropSpecLike, PropSpec}
 import org.scalatest.prop.TableDrivenPropertyChecks
 import scala.util.Try
+import uk.org.lidalia.http.core.HeaderFieldName
+
+object SingleValueHeaderFieldNameTests extends TableDrivenPropertyChecks with PropSpecLike {
+  def firstParseableValueReturned[T](
+                                        headerFieldName: HeaderFieldName[?[T]],
+                                        parseableString1: String,
+                                        value1: T,
+                                        parseableString2: String,
+                                        value2: T,
+                                        unparseableString: String) {
+    val inputsToOutputs =
+      Table(
+        ("input",                                   "output"),
+        (List(parseableString1, parseableString2),  Some(value1)),
+        (List(parseableString2, parseableString1),  Some(value2)),
+        (List(unparseableString, parseableString1), Some(value1)),
+        (List(parseableString1, unparseableString), Some(value1)),
+        (List(unparseableString),                   None        )
+      )
+
+    forAll(inputsToOutputs) { (input, output) =>
+      assert(headerFieldName.parse(input) === output)
+    }
+  }
+}
 
 @RunWith(classOf[JUnitRunner])
-class SingleValueHeaderFieldNameTest extends PropSpec with TableDrivenPropertyChecks {
+class SingleValueHeaderFieldNameTests extends PropSpec with TableDrivenPropertyChecks {
 
   class StubSingleValueHeaderFieldName(parseReturn: => ?[String]) extends SingleValueHeaderFieldName[String] {
 
@@ -59,8 +84,10 @@ class SingleValueHeaderFieldNameTest extends PropSpec with TableDrivenPropertyCh
       def parse(headerFieldValue: String) = Try(Integer.parseInt(headerFieldValue)).toOption
     }
 
-    forAll(inputsToOutputs) { (input, output) =>
-      assert(numberSingleValueHeaderFieldName.parse(input) === Some(output))
-    }
+    SingleValueHeaderFieldNameTests.firstParseableValueReturned(
+      numberSingleValueHeaderFieldName,
+      "1", 1,
+      "2", 2,
+      "not a number")
   }
 }

@@ -8,7 +8,7 @@ import org.junit.runner.RunWith
 import uk.org.lidalia.net2.EqualsChecks.{possibleArgsFor, reflexiveTest, equalsTest}
 
 @RunWith(classOf[JUnitRunner])
-class HeaderFieldTest extends PropSpec with TableDrivenPropertyChecks {
+class HeaderFieldTests extends PropSpec with TableDrivenPropertyChecks {
 
   property("HeaderField equals contract") {
     val argsForHeaderField = possibleArgsFor(

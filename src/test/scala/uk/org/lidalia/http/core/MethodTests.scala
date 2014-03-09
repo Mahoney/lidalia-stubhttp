@@ -9,7 +9,7 @@ import org.junit.runner.RunWith
 import scala.collection.immutable.Set
 
 @RunWith(classOf[JUnitRunner])
-class MethodTest extends PropSpec with TableDrivenPropertyChecks {
+class MethodTests extends PropSpec with TableDrivenPropertyChecks {
 
   val methodSpecifications =
     Table(
