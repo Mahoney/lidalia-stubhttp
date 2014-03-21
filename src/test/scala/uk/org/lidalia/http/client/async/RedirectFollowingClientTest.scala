@@ -34,7 +34,7 @@ class RedirectFollowingClientTest extends PropSpec with TableDrivenPropertyCheck
   val decorated = mock(classOf[HttpClient])
   val redirectFollowingHttpClient = new RedirectFollowingClient(decorated)
 
-  def valueOf(future: Future[Response]) = Await.result(future, Duration(10, SECONDS))
+  def valueOf[T](future: Future[Response[T]]) = Await.result(future, Duration(10, SECONDS))
 
   property("Returns response from wrapped client when not a redirect") {
     val request = get()

@@ -5,5 +5,5 @@ import scala.concurrent.Future
 import core.{Response, Request}
 
 trait HttpClient {
-  def execute(request: Request): Future[Response] = ???
+  def execute[T](request: Request[T]): Future[Response[T]] = ???
 }

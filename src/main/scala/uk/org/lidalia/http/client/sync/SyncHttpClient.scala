@@ -11,7 +11,7 @@ import http.core.{Response, Request}
 
 class SyncHttpClient(asyncHttpClient: HttpClient) {
 
-  def execute(request: Request, timeout: Duration): Response = {
+  def execute[T](request: Request[T], timeout: Duration): Response[T] = {
     val response = asyncHttpClient.execute(request)
     Await.result(response, toScalaDuration(timeout))
   }

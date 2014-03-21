@@ -4,5 +4,7 @@ import Code.OK
 
 object ResponseBuilder {
 
-  def response(status: Code = OK, headerFields: List[HeaderField] = List()): Response = Response(status, headerFields)
+  def response[T](status: Code = OK,
+               headerFields: List[HeaderField] = Nil,
+               body: T = None): Response[T] = Response(status, headerFields, body)
 }

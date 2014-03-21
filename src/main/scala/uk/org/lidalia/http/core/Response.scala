@@ -3,11 +3,16 @@ package uk.org.lidalia.http.core
 import uk.org.lidalia.net2.Uri
 
 object Response {
-  def apply(status: Code, headerFields: List[HeaderField]): Response = new Response(ResponseHeader(status, headerFields))
-  def apply(status: Code, headerFields: HeaderField*): Response = apply(status, headerFields.to[List])
+  def apply[T](
+               status: Code,
+               headerFields: List[HeaderField] = Nil,
+               body: T = None
+               ): Response[T] = new Response(ResponseHeader(status, headerFields), body)
 }
 
-class Response private(private val responseHeader: ResponseHeader) extends Message(responseHeader) {
+class Response[+T] private(private val responseHeader: ResponseHeader, val body: T) extends Message(responseHeader) {
+
+  val code = responseHeader.code
 
   def requiresRedirect: Boolean = responseHeader.requiresRedirect
 
