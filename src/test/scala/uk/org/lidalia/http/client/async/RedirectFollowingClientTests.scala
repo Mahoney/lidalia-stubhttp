@@ -29,7 +29,7 @@ import Code.Found
 import lidalia.net2.Uri
 
 @RunWith(classOf[JUnitRunner])
-class RedirectFollowingClientTest extends PropSpec with TableDrivenPropertyChecks {
+class RedirectFollowingClientTests extends PropSpec with TableDrivenPropertyChecks {
 
   val decorated = mock(classOf[HttpClient])
   val redirectFollowingHttpClient = new RedirectFollowingClient(decorated)

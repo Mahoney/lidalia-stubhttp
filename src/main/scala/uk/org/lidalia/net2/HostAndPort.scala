@@ -15,8 +15,8 @@ object HostWithoutPort {
 }
 
 abstract sealed class HostAndPort extends Immutable {
-  def host: Host
-  def port: ?[Port]
+  val host: Host
+  val port: ?[Port]
 
   override def equals(other: Any) = {
     other match {
@@ -35,6 +35,6 @@ final class ResolvedHostAndPort private (val host: Host, val port: Some[Port])
 }
 
 final class HostWithoutPort private (val host: Host) extends HostAndPort {
-  def port = None
+  val port = None
   override def toString = host.toString
 }

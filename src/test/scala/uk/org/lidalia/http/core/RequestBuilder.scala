@@ -9,13 +9,15 @@ object RequestBuilder {
 
   def request[T](
     method: Method = GET,
-    uri: Uri = Uri("http://www.example.com/mypath"),
+    uri: RequestUri = RequestUri("/mypath"),
     responseHandler: ResponseHandler[T] = new ResponseHandler[Option[Nothing]]{
       def handle(content: InputStream) = None
     }
                  ) = Request(method, uri, responseHandler)
 
   def get(
-     uri: Uri = Uri("http://www.example.com/mypath")
+     uri: RequestUri = RequestUri("/mypath")
              ) = request(GET, uri)
+
+  def get(uri: Uri) = request(GET, RequestUri(uri))
 }

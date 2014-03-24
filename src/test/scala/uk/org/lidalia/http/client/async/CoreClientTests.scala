@@ -12,19 +12,25 @@ import wiremock.WireMockServer
 import wiremock.client.{RequestPatternBuilder, MappingBuilder, WireMock}
 import wiremock.junit.Stubbing
 import WireMock.{get, urlEqualTo, aResponse}
-import lidalia.net2.{Port, IpV4Address, PartialUri}
-import uk.org.lidalia.http.core.{ResponseHandler, Code, Response, Request}
+
+import lidalia.net2.Target
 import http.core.Method.GET
-import scala.concurrent.{Future, Await}
+import uk.org.lidalia.http.core.{RequestUri, HeaderField, Code, Request, ResponseHandler}
+
+import org.apache.commons.io.IOUtils
+
+import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 import java.util.concurrent.TimeUnit
 import java.io.InputStream
-import scala.io.Source
-import org.apache.commons.io.IOUtils
+import org.joda.time.DateTime
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
 
+@RunWith(classOf[JUnitRunner])
 class CoreClientTests extends PropSpec with TableDrivenPropertyChecks with WireMockTest {
 
-  val handler: ResponseHandler[String] with Object = new ResponseHandler[String]{
+  val handler: ResponseHandler[String] = new ResponseHandler[String] {
     def handle(content: InputStream) = IOUtils.toString(content)
   }
 
@@ -38,12 +44,17 @@ class CoreClientTests extends PropSpec with TableDrivenPropertyChecks with WireM
       .withHeader("Content-Type", "text/plain")))
 
     val coreClient = new CoreClient
-    val request: Request[String] = Request(GET, PartialUri("/foo"), handler)
-    val futResponse: Future[Response[String]] = coreClient.execute(request, IpV4Address("127.0.0.1"), Port(wireMockServer.port()))
-    val response = Await.result(futResponse, Duration(1, TimeUnit.SECONDS))
+    val request = Request(GET, RequestUri("/foo"), handler)
+    val target = Target("127.0.0.1", wireMockServer.port())
+    val response = Await.result(
+      coreClient.execute(request, target),
+      Duration(1, TimeUnit.SECONDS))
 
 
-    assert(response.code == Code(200))
+    assert(response.code === Code(200))
+    assert(response.headerField("Content-Type") === Some(HeaderField("Content-Type", "text/plain")))
+    assert(response.body === "Some text")
+    assert(response.date === Some(new DateTime("1994-11-06T08:49:37")))
   }
 
 }

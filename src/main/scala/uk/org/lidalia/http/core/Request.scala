@@ -1,24 +1,24 @@
 package uk.org.lidalia.http.core
 
-import uk.org.lidalia.net2.{PartialUri, Uri}
+import uk.org.lidalia.net2.Uri
 
 object Request {
   def apply[T](method: Method,
-               uri: Either[Uri, PartialUri],
+               requestUri: RequestUri,
                responseHandler: ResponseHandler[T],
-               headerFields: List[HeaderField] = Nil) = new Request(RequestHeader(method, uri, headerFields), responseHandler)
+               headerFields: List[HeaderField] = Nil) = new Request(RequestHeader(method, requestUri, headerFields), responseHandler)
 }
 
 class Request[+T] private(private val requestHeader: RequestHeader, val responseHandler: ResponseHandler[T]) extends Message(requestHeader) {
 
   def withUri(newUri: Uri): Request[T] = {
-    Request(method, Left(newUri), responseHandler, header.headerFields)
+    Request(method, RequestUri(newUri), responseHandler, header.headerFields)
   }
 
   val method = requestHeader.method
 
-  val uri = requestHeader.uri
+  val requestUri = requestHeader.requestUri
 
-  val referer: ?[Uri] = requestHeader.referer
+  def referer: ?[Uri] = requestHeader.referer
 
 }

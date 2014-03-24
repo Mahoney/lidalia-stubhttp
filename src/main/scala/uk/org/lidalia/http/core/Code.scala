@@ -29,7 +29,9 @@ object Code {
   }
 
   private def register[T <: Code](code: T): T = {
-    ??? //codes.putIfAbsent(code.code, code) or code
+    val existing = codes.putIfAbsent(code.code, code)
+    if (!existing.isEmpty) throw new IllegalStateException("Only one instance of a code may exist! Trying to create duplicate of "+code)
+    code
   }
 
   def values(): SortedSet[Code] = codes.values.to[SortedSet]

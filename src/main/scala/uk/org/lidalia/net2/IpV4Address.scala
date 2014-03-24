@@ -20,7 +20,7 @@ class IpV4Address private (
                               @Identity val byte2: UnsignedByte,
                               @Identity val byte3: UnsignedByte,
                               @Identity val byte4: UnsignedByte
-                              ) extends Host(toString) {
+                              ) extends IpAddress {
   override val toString = s"$byte1.$byte2.$byte3.$byte4"
 }
 

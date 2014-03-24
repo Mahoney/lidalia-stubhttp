@@ -7,6 +7,7 @@ import org.scalatest.prop.TableDrivenPropertyChecks
 import org.joda.time.{DateTimeZone, DateTime}
 import uk.org.lidalia.{DefaultLocale, StaticTime}
 import java.util.Locale
+import uk.org.lidalia.http.core.{ResponseHeader, HeaderField}
 
 @RunWith(classOf[JUnitRunner])
 class DateHeaderFieldTests extends PropSpec with TableDrivenPropertyChecks with StaticTime with DefaultLocale {

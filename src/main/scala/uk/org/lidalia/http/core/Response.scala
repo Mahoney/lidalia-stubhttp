@@ -1,6 +1,7 @@
 package uk.org.lidalia.http.core
 
 import uk.org.lidalia.net2.Uri
+import org.joda.time.DateTime
 
 object Response {
   def apply[T](
@@ -16,6 +17,8 @@ class Response[+T] private(private val responseHeader: ResponseHeader, val body:
 
   def requiresRedirect: Boolean = responseHeader.requiresRedirect
 
-  val location: ?[Uri] = responseHeader.location
+  def location: ?[Uri] = responseHeader.location
+
+  def date: ?[DateTime] = responseHeader.date
 
 }
