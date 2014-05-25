@@ -1,40 +1,35 @@
 package uk.org.lidalia.http.core
 
-import java.util.concurrent.ConcurrentHashMap
 import uk.org.lidalia.lang.WrappedValue
-import scala.collection.immutable.SortedSet
-import scala.collection.convert.Wrappers.JConcurrentMapWrapper
+import scala.collection.mutable
 
 object Code {
 
-  private val codes = new JConcurrentMapWrapper(new ConcurrentHashMap[Int, Code])
 
-  val OK:                  SuccessfulCode  = successful( 200, Reason("OK"))
+  private val tempCodes: mutable.Map[Int, Code] = mutable.Map()
 
-  val Found:               RedirectionCode = redirection(302, Reason("Found"))
+  val OK:                  SuccessfulCode  = register(successful( 200, Reason("OK")))
 
-  val BadRequest:          ClientErrorCode = clientError(400, Reason("Bad Request"))
-  val MethodNotAllowed:    ClientErrorCode = clientError(405, Reason("Method Not Allowed"))
+  val Found:               RedirectionCode = register(redirection(302, Reason("Found")))
 
-  val InternalServerError: ServerErrorCode = serverError(500, Reason("Internal Server Error"))
+  val BadRequest:          ClientErrorCode = register(clientError(400, Reason("Bad Request")))
+  val MethodNotAllowed:    ClientErrorCode = register(clientError(405, Reason("Method Not Allowed")))
 
-  def successful( code: Int, defaultReason: ?[Reason] = None): SuccessfulCode =  register(new SuccessfulCode( code, defaultReason))
-  def redirection(code: Int, defaultReason: ?[Reason] = None): RedirectionCode = register(new RedirectionCode(code, defaultReason))
-  def clientError(code: Int, defaultReason: ?[Reason] = None): ClientErrorCode = register(new ClientErrorCode(code, defaultReason))
-  def serverError(code: Int, defaultReason: ?[Reason] = None): ServerErrorCode = register(new ServerErrorCode(code, defaultReason))
+  val InternalServerError: ServerErrorCode = register(serverError(500, Reason("Internal Server Error")))
 
-  def apply(code: Int, defaultReason: ?[Reason] = None) = {
-    val value = new Code(code, defaultReason)
-    codes.putIfAbsent(code, value) or value
-  }
+  val codes: Map[Int, Code] = tempCodes.toMap
+
+  def successful( code: Int, defaultReason: ?[Reason] = None): SuccessfulCode =  new SuccessfulCode( code, defaultReason)
+  def redirection(code: Int, defaultReason: ?[Reason] = None): RedirectionCode = new RedirectionCode(code, defaultReason)
+  def clientError(code: Int, defaultReason: ?[Reason] = None): ClientErrorCode = new ClientErrorCode(code, defaultReason)
+  def serverError(code: Int, defaultReason: ?[Reason] = None): ServerErrorCode = new ServerErrorCode(code, defaultReason)
 
   private def register[T <: Code](code: T): T = {
-    val existing = codes.putIfAbsent(code.code, code)
-    if (!existing.isEmpty) throw new IllegalStateException("Only one instance of a code may exist! Trying to create duplicate of "+code)
+    tempCodes(code.code) = code
     code
   }
 
-  def values(): SortedSet[Code] = codes.values.to[SortedSet]
+  def apply(code: Int, defaultReason: ?[Reason] = None) = new Code(code, defaultReason)
 
 }
 
