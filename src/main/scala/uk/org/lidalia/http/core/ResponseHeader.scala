@@ -6,11 +6,20 @@ import lidalia.http.core.headerfields.{LastModified, Age, Location, Date, Etag}
 import org.joda.time.{Duration, DateTime}
 
 object ResponseHeader {
-    def apply(status: Code, headerFields: List[HeaderField]): ResponseHeader = new ResponseHeader(status, headerFields)
-    def apply(status: Code, headerFields: HeaderField*): MessageHeader = apply(status, headerFields.to[List])
+    def apply(
+               status: Code,
+               reason: Reason,
+               headerFields: List[HeaderField]
+               ): ResponseHeader = new ResponseHeader(status, reason, headerFields)
+
+    def apply(
+             status: Code,
+             headerFields: List[HeaderField]
+             ): ResponseHeader = new ResponseHeader(status, status.defaultReason or Reason(""), headerFields)
 }
 
 class ResponseHeader private(@Identity val code: Code,
+                             @Identity val reason: Reason,
                              headerFields: List[HeaderField]) extends MessageHeader(headerFields) {
 
   def requiresRedirect: Boolean = code.requiresRedirect
@@ -24,4 +33,6 @@ class ResponseHeader private(@Identity val code: Code,
   lazy val lastModified: ?[DateTime] = headerField(LastModified)
 
   lazy val etag: ?[String] = headerField(Etag)
+
+  override def toString = s"HTTP/1.1 $code $reason\r\n${super.toString}"
 }

@@ -2,9 +2,9 @@ package uk.org.lidalia.http.core
 
 import uk.org.lidalia.lang.RichObject
 
-abstract class MessageHeader private[http](@Identity val headerFields: List[HeaderField]) extends RichObject {
+abstract class MessageHeader private[http](val headerFields: List[HeaderField]) extends RichObject {
 
-  val headerFieldMap: Map[String, HeaderField] = headerFields.groupBy(_.name).map({
+  @Identity val headerFieldMap: Map[String, HeaderField] = headerFields.groupBy(_.name).map({
     case (name, headerFieldsForName) => (name, HeaderField(name, headerFieldsForName.map(_.values).flatten))
   })
 
@@ -17,4 +17,5 @@ abstract class MessageHeader private[http](@Identity val headerFields: List[Head
 
   def headerField(headerFieldName: String): ?[HeaderField] = headerFieldMap.get(headerFieldName)
 
+  override def toString = headerFields.map(_.toString).mkString("\r\n")
 }

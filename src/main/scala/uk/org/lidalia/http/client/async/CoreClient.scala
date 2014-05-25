@@ -39,7 +39,7 @@ class CoreClient {
       val apacheResponseHeaderAndEntity = apacheClient.execute(host, apacheRequest, apacheResponseHandler)
       val apacheResponseHeader = apacheResponseHeaderAndEntity._1
       val entity = apacheResponseHeaderAndEntity._2
-      val headerFields = apacheResponseHeader.getAllHeaders.map( headerField => HeaderField(headerField.getName, headerField.getValue.split(",").toList)).toList
+      val headerFields = apacheResponseHeader.getAllHeaders.map( headerField => HeaderField(headerField.getName, headerField.getValue)).toList
       Response(Code(apacheResponseHeader.getStatusLine.getStatusCode), headerFields, entity)
     }
   }

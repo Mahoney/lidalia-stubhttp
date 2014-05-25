@@ -15,4 +15,5 @@ class RequestHeader private(
 
   lazy val referer: ?[Uri] = headerField(Referer)
 
+  override def toString = s"$method $requestUri HTTP/1.1\r\n${super.toString}"
 }

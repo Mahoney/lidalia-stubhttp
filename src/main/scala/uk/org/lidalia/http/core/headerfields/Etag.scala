@@ -1,9 +1,9 @@
 package uk.org.lidalia.http.core.headerfields
 
-import uk.org.lidalia.http.core.{HeaderField, HeaderFieldName}
+import uk.org.lidalia.http.core.HeaderField
 
-object Etag extends HeaderFieldName[?[String]] {
-  def parse(headerFieldValues: List[String]) = headerFieldValues.headOption
+object Etag extends SingleValueHeaderFieldName[String] {
+  def parse(headerFieldValue: String) = headerFieldValue
 
   def name = "Etag"
 }

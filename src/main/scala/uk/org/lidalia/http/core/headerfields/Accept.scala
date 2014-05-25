@@ -1,9 +1,9 @@
 package uk.org.lidalia.http.core.headerfields
 
-import uk.org.lidalia.http.core.{MediaType, MediaRangePref, HeaderField, HeaderFieldName}
+import uk.org.lidalia.http.core.{MediaType, MediaRangePref, HeaderField}
 
-object Accept extends HeaderFieldName[Accept] {
-  def parse(headerFieldValues: List[String]) = ???
+object Accept extends MultiValueHeaderFieldName[Accept] {
+  def parse(headerFieldValues: String) = ???
 
   def name = "Accept"
 }

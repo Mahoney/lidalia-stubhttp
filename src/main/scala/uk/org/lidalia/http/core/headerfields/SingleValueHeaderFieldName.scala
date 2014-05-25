@@ -4,6 +4,9 @@ import uk.org.lidalia.http.core.HeaderFieldName
 
 abstract class SingleValueHeaderFieldName[T] extends HeaderFieldName[?[T]] {
 
+  /**
+   * Returns the result of parsing the first header that was parseable
+   */
   final def parse(headerFieldValues: List[String]): ?[T] = {
     headerFieldValues.view.flatMap(headerFieldValue => safeParse(headerFieldValue)).headOption
   }
@@ -19,5 +22,11 @@ abstract class SingleValueHeaderFieldName[T] extends HeaderFieldName[?[T]] {
     parsed
   }
 
+  /**
+   * When implementing:
+   * If the input is parseable, return Some[ParsedType]
+   * If the input is not parseable, return None
+   * Do not throw an exception or return either null or Some(null)
+   */
   def parse(headerFieldValue: String): ?[T]
 }

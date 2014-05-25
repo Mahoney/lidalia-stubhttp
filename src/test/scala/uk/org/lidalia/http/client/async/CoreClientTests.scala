@@ -23,7 +23,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 import java.util.concurrent.TimeUnit
 import java.io.InputStream
-import org.joda.time.DateTime
+import org.joda.time.{DateTimeZone, DateTime}
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 
@@ -54,7 +54,7 @@ class CoreClientTests extends PropSpec with TableDrivenPropertyChecks with WireM
     assert(response.code === Code(200))
     assert(response.headerField("Content-Type") === Some(HeaderField("Content-Type", "text/plain")))
     assert(response.body === "Some text")
-    assert(response.date === Some(new DateTime("1994-11-06T08:49:37")))
+    assert(response.date === Some(new DateTime("1994-11-06T08:49:37").withZone(DateTimeZone.forID("GMT"))))
   }
 
 }
