@@ -10,10 +10,10 @@ using the decorator pattern.
 
 To build you will need SNAPSHOT builds of:
 
-lidalia-parent
-lidalia-lang
-scala-module
+ - [lidalia-lang](https://github.com/Mahoney/lidalia-lang)
+ - [scala-module](https://github.com/Mahoney/scala-module)
 
-projects = ( lidalia-parent lidalia-lang scala-module lidalia-http-2 );
-
-for project in "{projects}[@]'; do git clone "git@github.com:Mahoney/$project.git"; cd "$project"; mvn install; cd ..; done
+Then:
+```
+git clone git@github.com:Mahoney/lidalia-http-2.git; cd lidalia-http-2; mvn install
+```
