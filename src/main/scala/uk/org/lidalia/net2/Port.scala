@@ -13,4 +13,6 @@ object Port {
 
 class Port private (val portNumber: Int) extends AnyVal {
   override def toString = portNumber.toString
+
+  def isRestricted = portNumber < 1024
 }

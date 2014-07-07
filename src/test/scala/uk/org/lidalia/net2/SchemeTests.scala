@@ -5,15 +5,62 @@ import org.scalatest.prop.TableDrivenPropertyChecks
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import java.lang.IllegalArgumentException
+import java.util.Locale
 
 @RunWith(classOf[JUnitRunner])
 class SchemeTests extends PropSpec with TableDrivenPropertyChecks {
 
-  property("Only valid schemes work") {
-    val exception = intercept[IllegalArgumentException] {
-      Scheme("1 3")
+  property("Valid scheme names accepted") {
+    val validSchemeNames = Table(
+      "Scheme name",
+      "h",
+      "h1",
+      "h.",
+      "h+",
+      "h-",
+      "Hh",
+      "hH"
+    )
+
+    forAll(validSchemeNames) { validSchemeName =>
+      assert(
+        Scheme(validSchemeName).name === validSchemeName.toLowerCase(Locale.US)
+      )
     }
-    assert(exception.getMessage === "requirement failed: scheme must match [a-zA-Z][a-zA-Z0-9+\\-\\.]*")
+  }
+
+  property("Invalid scheme names rejected") {
+    val invalidSchemeNames = Table(
+      "Scheme name",
+      "h ",
+      " h",
+      "1h",
+      ".h",
+      "+h",
+      "-h",
+      "h,",
+      "h*",
+      "h/",
+      "h)",
+      "h\nh",
+      "\nh",
+      "h\n",
+      "h\r\nh",
+      "\r\nh",
+      "h\r\n"
+    )
+
+    forAll(invalidSchemeNames) { invalidSchemeName =>
+      val exception = intercept[IllegalArgumentException] {
+        Scheme(invalidSchemeName)
+      }
+      assert(
+        exception.getMessage ===
+          "requirement failed: " +
+          s"scheme [$invalidSchemeName] " +
+          "must match ^[a-zA-Z][a-zA-Z0-9\\+\\-\\.]*$"
+      )
+    }
   }
 
   property("Scheme with same name equal") {
@@ -33,24 +80,5 @@ class SchemeTests extends PropSpec with TableDrivenPropertyChecks {
   property("Default ports") {
     assert(Scheme.HTTP.defaultPort === Some(Port(80)))
     assert(Scheme("http").defaultPort === Some(Port(80)))
-  }
-
-  property("Register creates new scheme") {
-    val newScheme = Scheme("newscheme", Port(8090))
-    assert(newScheme.name === "newscheme")
-    assert(newScheme.defaultPort === Some(Port(8090)))
-    val retrievedNewScheme = Scheme("newscheme")
-    assert(retrievedNewScheme === newScheme)
-    assert(retrievedNewScheme.defaultPort === newScheme.defaultPort)
-  }
-
-  property("Register returns existing scheme") {
-    val existingScheme = Scheme("http", Port(8090))
-    assert(existingScheme.name === "http")
-    assert(existingScheme.defaultPort === Some(Port(80)))
-
-    val retrievedNewScheme = Scheme("http")
-    assert(retrievedNewScheme === existingScheme)
-    assert(retrievedNewScheme.defaultPort === existingScheme.defaultPort)
   }
 }

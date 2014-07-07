@@ -13,7 +13,11 @@ class HeaderFieldTests extends PropSpec with TableDrivenPropertyChecks {
   property("HeaderField equals contract") {
     val argsForHeaderField = possibleArgsFor(
       List("Name1", "Name2"),
-      List(List("value1"), List("value1", "value2"), List("value2"))
+      List(
+        List("value1"),
+        List("value1", "value2"),
+        List("value2")
+      )
     )
 
     reflexiveTest(argsForHeaderField) { (args) =>
