@@ -106,6 +106,7 @@ class UriTests extends PropSpec with TableDrivenPropertyChecks {
       ("http", "[http] is not a valid URI"),
       (".http", "[.http] is not a valid URI")
     )
+
     forAll(invalidUrisAndErrorMessages) { (invalidUri,
                                            expectedErrorMessage) =>
       val exception = intercept[UriParseException] {
