@@ -5,7 +5,7 @@ import org.scalatest
 import uk.org.lidalia
 import lidalia.http
 
-import scalatest.{PropSpec, Suite, AbstractSuite}
+import org.scalatest.{Outcome, PropSpec, Suite, AbstractSuite}
 import scalatest.prop.TableDrivenPropertyChecks
 
 import wiremock.WireMockServer
@@ -59,19 +59,18 @@ class CoreClientTests extends PropSpec with TableDrivenPropertyChecks with WireM
 
 }
 
-trait WireMockTest extends AbstractSuite with Stubbing {
-  self : Suite =>
+trait WireMockTest extends Suite with Stubbing {
 
   val wireMockServer = new WireMockServer()
   lazy val wireMock = new WireMock("localhost", wireMockServer.port())
 
-  override abstract def withFixture(test : NoArgTest) {
+  override abstract def withFixture(test : NoArgTest): Outcome = {
 
     wireMockServer.start()
     WireMock.configureFor("localhost", wireMockServer.port())
 
     try {
-      WireMockTest.super.withFixture(test)
+      super.withFixture(test)
     } finally {
       wireMockServer.stop()
     }

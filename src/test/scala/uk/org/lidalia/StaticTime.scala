@@ -1,16 +1,16 @@
 package uk.org.lidalia
 
-import org.scalatest.{AbstractSuite, Suite}
+import org.scalatest.{Outcome, Suite}
 import org.joda.time.{DateTimeUtils, Instant}
 
-trait StaticTime extends AbstractSuite {
-  self : Suite =>
+trait StaticTime extends Suite {
 
   val staticTime: Instant
-  override abstract def withFixture(test : NoArgTest) {
+
+  override abstract def withFixture(test : NoArgTest): Outcome = {
     DateTimeUtils.setCurrentMillisFixed(staticTime.getMillis)
     try {
-      StaticTime.super.withFixture(test)
+      super.withFixture(test)
     } finally {
       DateTimeUtils.setCurrentMillisSystem()
     }

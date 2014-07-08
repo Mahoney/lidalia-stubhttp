@@ -37,6 +37,11 @@
       <artifactId>wiremock</artifactId>
       <version>1.44</version>
     </dependency>
+    <dependency>
+      <groupId>org.scalacheck</groupId>
+      <artifactId>scalacheck_2.10</artifactId>
+      <version>1.11.4</version>
+    </dependency>
   </dependencies>
 
     
