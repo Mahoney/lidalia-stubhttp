@@ -6,54 +6,34 @@ import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalacheck.Gen
 import java.lang.IllegalArgumentException
+import uk.org.lidalia.TestUtils.genRandomStringFrom
+import java.util.regex.Pattern
 
 @RunWith(classOf[JUnitRunner])
 class QueryTests
     extends PropSpec
     with PropertyChecks {
 
-  val unreserved =
-    ('a' to 'z').toSet ++ ('A' to 'Z') ++ ('0' to '9') ++ Set('-', '.', '_', '~')
+  val queryChars: Set[Char] = UriConstants.pchar ++ Set('/', '?')
 
-  val subDelims = Set(
-    '!',
-    '$',
-    '&',
-    '\'',
-    '(',
-    ')',
-    '*',
-    '+',
-    ',',
-    ';',
-    '=')
+  val pctEncoded =
+    for { num <- Gen.choose(0, 255) }
+    yield "%"+String.format("%02X", num.asInstanceOf[Object])
 
-  val pchar = unreserved ++ subDelims ++ Set(':', '@')
+  val otherThanPctEncoded =
+    for (n <- Gen.someOf(queryChars))
+    yield n.mkString
 
-  val additionalQueryChars = Set('/',
-    '?',
-    '/')
-
-  val queryChars: Set[Char] = pchar ++ additionalQueryChars
-
-  val pctEncoded = for { num <- Gen.choose(0, 255) } yield "%"+String.format("%02X", num.asInstanceOf[Object])
-
-  val otherThanPctEncoded = for (n <- Gen.someOf(queryChars)) yield n.mkString
-
-  val genQueryStringElement: Gen[String] = Gen.oneOf(pctEncoded, otherThanPctEncoded)
-
-  def genNode(level: Int): Gen[String] = for {
-    start <- Gen.lzy(genQueryStrings(level))
-    end <- Gen.lzy(genQueryStrings(level))
-  } yield start + end
-
-  def genQueryStrings(level: Int = 0): Gen[String] = {
-    if (level >= 100) genQueryStringElement
-    else Gen.oneOf(genQueryStringElement, genNode(level + 1))
-  }
+  def genValidQueryStrings =
+    genRandomStringFrom(
+      pctEncoded,
+      otherThanPctEncoded
+    )
 
   property("Valid query strings accepted") {
-    forAll((genQueryStrings(), "query string")) { (queryString) =>
+
+    forAll((genValidQueryStrings, "query string")) { (queryString) =>
+      println("Query string: "+queryString)
       assert(Query(queryString).toString === queryString)
     }
   }
@@ -68,12 +48,33 @@ class QueryTests
     }
   }
 
-//  property("Valid query strings rejected") {
-//
-//    forAll("query string") { queryString: String =>
-//      val exception = intercept[IllegalArgumentException] {
-//        Query(queryString)
-//      }
-//    }
-//  }
+  property("Invalid query strings rejected") {
+
+    val allChars: Set[Char] = (' ' to '~').toSet
+    val invalidQueryChars = allChars -- queryChars
+
+    def genInvalidQueryStrings =
+      for {
+        start <- genValidQueryStrings
+        middle <- Gen.someOf(invalidQueryChars)
+        end <- genValidQueryStrings
+      }
+      yield start + middle + end
+
+    forAll((genInvalidQueryStrings, "query string")) { (queryString) =>
+      println(queryString)
+      val exception = intercept[IllegalArgumentException] {
+        Query(queryString)
+      }
+    }
+  }
+
+  property("hex digit") {
+    assert(Pattern.compile(Query.hexDigit).matcher("0").matches())
+    assert(Pattern.compile(Query.hexDigit).matcher("0").matches())
+    assert(Pattern.compile(Query.hexDigit).matcher("9").matches())
+    assert(Pattern.compile(Query.hexDigit).matcher("A").matches())
+    assert(Pattern.compile(Query.hexDigit).matcher("E").matches())
+    assert(!Pattern.compile(Query.hexDigit).matcher("F").matches())
+  }
 }
