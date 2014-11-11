@@ -1,6 +1,7 @@
 package uk.org.lidalia.http.client.async
 
 import com.github.tomakehurst.wiremock
+import org.apache.http.impl.client.{HttpClientBuilder, CloseableHttpClient}
 import org.scalatest
 import uk.org.lidalia
 import lidalia.http
@@ -21,7 +22,7 @@ import org.apache.commons.io.IOUtils
 
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.{TimeoutException, TimeUnit}
 import java.io.InputStream
 import org.joda.time.{DateTimeZone, DateTime}
 import org.junit.runner.RunWith
@@ -30,7 +31,14 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class CoreClientTests extends PropSpec with TableDrivenPropertyChecks with WireMockTest {
 
-  val handler: ResponseHandler[String] = new ResponseHandler[String] {
+  val apacheClient = HttpClientBuilder.create()
+    .setMaxConnPerRoute(Integer.MAX_VALUE)
+    .setMaxConnTotal(Integer.MAX_VALUE)
+    .build()
+  val coreClient = new CoreClient
+  lazy val target = Target("127.0.0.1", wireMockServer.port())
+
+  val handler = new ResponseHandler[String] {
     def handle(content: InputStream) = IOUtils.toString(content)
   }
 
@@ -43,9 +51,8 @@ class CoreClientTests extends PropSpec with TableDrivenPropertyChecks with WireM
       .withHeader("Date", "Sun, 06 Nov 1994 08:49:37 GMT")
       .withHeader("Content-Type", "text/plain")))
 
-    val coreClient = new CoreClient
+
     val request = Request(GET, RequestUri("/foo"), handler)
-    val target = Target("127.0.0.1", wireMockServer.port())
     val response = Await.result(
       coreClient.execute(request, target),
       Duration(1, TimeUnit.SECONDS))
@@ -57,11 +64,30 @@ class CoreClientTests extends PropSpec with TableDrivenPropertyChecks with WireM
     assert(response.date === Some(new DateTime("1994-11-06T08:49:37").withZone(DateTimeZone.forID("GMT"))))
   }
 
+  property("Cancelling future disconnects") {
+    givenThat(
+      get(urlEqualTo("/foo")).willReturn(
+        aResponse().withFixedDelay(2000)
+      ))
+    val request = Request(GET, RequestUri("/foo"), handler)
+
+    try {
+      val response = Await.result(
+        coreClient.execute(request, target),
+        Duration(10, TimeUnit.MILLISECONDS)
+      )
+      fail("Should have timed out!")
+    } catch {
+      case e: TimeoutException => {
+        apacheClient.getConnectionManager.
+      }
+    }
+  }
 }
 
 trait WireMockTest extends Suite with Stubbing {
 
-  val wireMockServer = new WireMockServer()
+  val wireMockServer = new WireMockServer(0)
   lazy val wireMock = new WireMock("localhost", wireMockServer.port())
 
   override abstract def withFixture(test : NoArgTest): Outcome = {

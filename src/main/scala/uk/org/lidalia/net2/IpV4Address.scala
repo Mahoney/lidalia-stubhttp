@@ -33,10 +33,10 @@ object IpV4AddressParser {
     val ipv4AddressMatcher = IpV4AddressParser.IPV4_ADDRESS_PATTERN.matcher(ipv4AddressStr)
     if (ipv4AddressMatcher.matches()) {
       IpV4Address(
-        UnsignedByte.UnsignedByte(ipv4AddressMatcher.group(1)),
-        UnsignedByte.UnsignedByte(ipv4AddressMatcher.group(2)),
-        UnsignedByte.UnsignedByte(ipv4AddressMatcher.group(3)),
-        UnsignedByte.UnsignedByte(ipv4AddressMatcher.group(4)))
+        UnsignedByte(ipv4AddressMatcher.group(1)),
+        UnsignedByte(ipv4AddressMatcher.group(2)),
+        UnsignedByte(ipv4AddressMatcher.group(3)),
+        UnsignedByte(ipv4AddressMatcher.group(4)))
     } else {
       throw new IpV4AddressParseException(ipv4AddressStr)
     }
