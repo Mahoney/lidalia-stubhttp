@@ -5,7 +5,6 @@ import org.scalatest.prop.PropertyChecks
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalacheck.Gen
-import java.lang.IllegalArgumentException
 import uk.org.lidalia.TestUtils.{
   genRandomStringFrom,
   genStringFromChars,
@@ -36,7 +35,7 @@ class QueryTests
   property("Valid query strings accepted") {
 
     forAll((genValidQueryStrings, "query string")) { (queryString) =>
-      whenever (!queryString.matches("%[^0-9A-F]|%[0-9A-F][^0-9A-F]") && queryString.size < 2048) {
+      whenever (queryString.size < 2048 && (!queryString.contains("%") || queryString.matches(".*%[0-9A-Fa-f]{2}.*"))) {
         assert(Query(queryString).toString === queryString)
       }
     }
@@ -67,34 +66,39 @@ class QueryTests
   }
 
   property("hex digit") {
-    assert(Pattern.compile(Query.hexDigit).matcher("0").matches())
-    assert(Pattern.compile(Query.hexDigit).matcher("9").matches())
-    assert(Pattern.compile(Query.hexDigit).matcher("A").matches())
-    assert(Pattern.compile(Query.hexDigit).matcher("E").matches())
-    assert(!Pattern.compile(Query.hexDigit).matcher("G").matches())
+    assert(Pattern.compile(UriConstants.hexDigitRegex).matcher("0").matches())
+    assert(Pattern.compile(UriConstants.hexDigitRegex).matcher("9").matches())
+    assert(Pattern.compile(UriConstants.hexDigitRegex).matcher("A").matches())
+    assert(Pattern.compile(UriConstants.hexDigitRegex).matcher("a").matches())
+    assert(Pattern.compile(UriConstants.hexDigitRegex).matcher("F").matches())
+    assert(Pattern.compile(UriConstants.hexDigitRegex).matcher("f").matches())
+    assert(!Pattern.compile(UriConstants.hexDigitRegex).matcher("G").matches())
+    assert(!Pattern.compile(UriConstants.hexDigitRegex).matcher("g").matches())
   }
 
   property("2 hex digits") {
     val valid = Table(
       "String",
-      "00",
-      "F0",
-      "0F"
+      "%00",
+      "%F0",
+      "%0F",
+      "%f0",
+      "%0f"
     )
     forAll(valid) { validhex =>
-      assert(Pattern.compile(Query.twoHexDigits).matcher(validhex).matches())
+      assert(Pattern.compile(UriConstants.pctEncodedRegex).matcher(validhex).matches())
     }
     val invalid = Table(
       "String",
-      "G0",
-      "0G",
-      "000",
-      "FFF",
-      "0",
-      "F"
+      "%G0",
+      "%0G",
+      "%000",
+      "%FFF",
+      "%0",
+      "%F"
     )
     forAll(invalid) { invalidhex =>
-      assert(!Pattern.compile(Query.twoHexDigits).matcher(invalidhex).matches())
+      assert(!Pattern.compile(UriConstants.pctEncodedRegex).matcher(invalidhex).matches())
     }
   }
 
@@ -125,7 +129,7 @@ class QueryTests
       "@"
     )
     forAll(valid) { validq =>
-      assert(Pattern.compile("["+Query.queryChars+"]").matcher(validq).matches())
+      assert(Pattern.compile(UriConstants.queryRegex).matcher(validq).matches())
     }
     val allChars: Set[String] = (' ' to '~').map(""+_).toSet
     val invalidQueryChars: Set[String] = allChars -- queryChars.map(""+_).toSet
@@ -134,7 +138,7 @@ class QueryTests
       invalidQueryChars.toSeq:_*
     )
     forAll(invalid) { invalidq =>
-      assert(!Pattern.compile(Query.twoHexDigits).matcher(invalidq).matches())
+      assert(!Pattern.compile(UriConstants.pctEncodedRegex).matcher(invalidq).matches())
     }
   }
 

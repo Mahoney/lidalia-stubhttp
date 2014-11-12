@@ -35,7 +35,7 @@ class QueryParamKeyTests
   property("Valid query param key strings accepted") {
 
     forAll((genValidQueryStrings, "query param key string")) { (queryString) =>
-      whenever (!queryString.matches("%[^0-9A-F]|%[0-9A-F][^0-9A-F]") && queryString.size < 2048) {
+      whenever (!queryString.matches("%[^0-9A-F]|%[0-9A-F][^0-9A-F]|.*%$|%[0-9A-F]$") && queryString.size < 2048) {
         assert(QueryParamKey(queryString).toString === queryString)
       }
     }

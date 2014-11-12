@@ -2,35 +2,13 @@ package uk.org.lidalia.net2
 
 import uk.org.lidalia.lang.WrappedValue
 import java.util.regex.Pattern
+import uk.org.lidalia.net2.UriConstants._
+
 import scala.collection.immutable
 
 object Query extends EncodedStringFactory {
 
-  private[net2] val hexDigit = "[0-9A-F]"
-  private[net2] val twoHexDigits = s"($hexDigit){2}"
-  private[net2] val queryParamKeyChars =
-      "a-z" +
-      "A-Z" +
-      "0-9" +
-      "-" +
-      "." +
-      "_" +
-      "~" +
-      "!" +
-      "$" +
-      "'" +
-      "(" +
-      ")" +
-      "*" +
-      "+" +
-      "," +
-      ";" +
-      ":" +
-      "@" +
-      "/" +
-      "?"
-  private[net2] val queryParamValueChars = queryParamKeyChars + "="
-  private[net2] val queryChars = queryParamValueChars + "&"
+
 
   def apply(queryStr: String): Query = {
     new Query(queryStr)
@@ -43,11 +21,10 @@ class Query private(queryStr: String)
     extends WrappedValue(queryStr)
     with EncodedString {
 
-  private val queryPatternStr = s"^([${Query.queryChars}]*(%${Query.twoHexDigits})*)*$$"
-  private val queryPattern = Pattern.compile(queryPatternStr)
+  private val queryPattern = Pattern.compile(queryRegex)
 
   require(queryPattern.matcher(queryStr).matches(),
-    "Query must match "+queryPatternStr)
+    "Query must match "+queryRegex)
 
   lazy val paramMap: Map[QueryParamKey, immutable.Seq[QueryParamValue]] = {
     val keyValuePairStrs = queryStr.split("&", -1).toList
@@ -89,11 +66,10 @@ object QueryParamKey extends EncodedStringFactory {
 class QueryParamKey private(queryParamKeyStr: String)
     extends QueryParamElement(queryParamKeyStr) {
 
-  private val queryPatternStr = s"^([${Query.queryParamKeyChars}]*(%${Query.twoHexDigits})*)*$$"
-  private val queryPattern = Pattern.compile(queryPatternStr)
+  private val queryPattern = Pattern.compile(queryParamKeyRegex)
 
   require(queryPattern.matcher(queryParamKeyStr).matches(),
-    "QueryParamKey must match "+queryPatternStr)
+    "QueryParamKey must match "+queryParamKeyRegex)
 
   override def decode: String = ???
 }
@@ -110,11 +86,10 @@ object QueryParamValue extends EncodedStringFactory {
 class QueryParamValue private(queryParamValueStr: String)
     extends QueryParamElement(queryParamValueStr) {
 
-  private val queryPatternStr = s"^([${Query.queryParamValueChars}]*(%${Query.twoHexDigits})*)*$$"
-  private val queryPattern = Pattern.compile(queryPatternStr)
+  private val queryValuePattern = Pattern.compile(queryParamValueRegex)
 
-  require(queryPattern.matcher(queryParamValueStr).matches(),
-    "QueryParamKey must match "+queryPatternStr)
+  require(queryValuePattern.matcher(queryParamValueStr).matches(),
+    "QueryParamKey must match "+queryParamValueRegex)
 
   override def decode: String = ???
 }

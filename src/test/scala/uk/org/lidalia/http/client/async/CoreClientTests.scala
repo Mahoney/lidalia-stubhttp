@@ -79,7 +79,7 @@ class CoreClientTests extends PropSpec with TableDrivenPropertyChecks with WireM
       fail("Should have timed out!")
     } catch {
       case e: TimeoutException => {
-        apacheClient.getConnectionManager.
+//        apacheClient.getConnectionManager.
       }
     }
   }
