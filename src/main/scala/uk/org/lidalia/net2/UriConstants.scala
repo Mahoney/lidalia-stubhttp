@@ -75,9 +75,4 @@ object UriConstants {
     val queryParamKey = Pattern.compile(queryParamKeyRegex)
     val fragment = query
   }
-
-  def requireRegex(clazz: Class[_], value: String, pattern: Pattern) = {
-    require(pattern.matcher(value).matches(),
-      s"${clazz.getSimpleName} $value must match ${pattern.pattern}")
-  }
 }
