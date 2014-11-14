@@ -1,95 +1,142 @@
 package uk.org.lidalia.net2
 
-import uk.org.lidalia.lang.WrappedValue
 import java.util.regex.Pattern
-import uk.org.lidalia.net2.UriConstants._
+
+import uk.org.lidalia.lang.RegexVerifiedWrappedString
+import uk.org.lidalia.net2.UriConstants.Patterns
 
 import scala.collection.immutable
 
-object Query extends EncodedStringFactory {
-
-
+object Query extends EncodedStringFactory[Query] {
 
   def apply(queryStr: String): Query = {
-    new Query(queryStr)
+    queryStr match {
+      case "" => new Query(List())
+      case _ =>
+        val keyValuePairStrs = queryStr.toString.split("&", -1).toList
+
+        val keyValuePairs = keyValuePairStrs.map {
+          keyValuePairStr =>
+            val keyValuePair = keyValuePairStr.split("=", 2).toList
+            keyValuePair match {
+              case List(key) => QueryParamKey(key) -> None
+              case List(key, value) => QueryParamKey(key) -> Some(QueryParamValue(value))
+            }
+        }
+        new Query (keyValuePairs)
+    }
   }
 
-  def encode(unencoded: String): Query = ???
+  def encode(unencoded: String): Query = apply(unencoded)
 }
 
-class Query private(queryStr: String)
-    extends WrappedValue(queryStr)
-    with EncodedString {
-
-  private val queryPattern = Pattern.compile(queryRegex)
-
-  require(queryPattern.matcher(queryStr).matches(),
-    "Query must match "+queryRegex)
+class Query private(val keyValuePairs: immutable.Seq[(QueryParamKey, ?[QueryParamValue])])
+    extends EncodedString[Query] {
 
   lazy val paramMap: Map[QueryParamKey, immutable.Seq[QueryParamValue]] = {
-    val keyValuePairStrs = queryStr.split("&", -1).toList
-
-    val keyValuePairs: List[(String, ?[String])] = keyValuePairStrs.map { keyValuePairStr =>
-      val keyValuePair = keyValuePairStr.split("=", 2).toList
-      keyValuePair match {
-        case List(key) => (key, None)
-        case List(key, value) => (key, Some(value))
-      }
-    }
 
     val groupedKeyValuePairs = keyValuePairs.groupBy(_._1)
 
-    groupedKeyValuePairs.map {
-      case (key, keyValuePairsForKey) =>
-        val withoutKeys = keyValuePairsForKey.map(_._2)
-        val values = withoutKeys.flatten.map(QueryParamValue(_))
-        (QueryParamKey(key), values)
+    groupedKeyValuePairs.map { case (key, keyAndValues) =>
+      key -> keyAndValues.flatMap(_._2)
     }
   }
 
-  def decode: String = ???
-}
+  def apply(key: String) = getFirstDecoded(key)
 
-sealed abstract class QueryParamElement(str: String)
-    extends WrappedValue(str)
-    with EncodedString
+  def apply(key: QueryParamKey) = getFirst(key)
 
-object QueryParamKey extends EncodedStringFactory {
+  def get(key: QueryParamKey): immutable.Seq[QueryParamValue] = paramMap.getOrElse(key, List())
 
-  def apply(queryParamKeyStr: String): QueryParamKey = {
-    new QueryParamKey(queryParamKeyStr)
+  def getFirst(key: QueryParamKey): ?[QueryParamValue] = paramMap.get(key).flatMap(_.headOption)
+
+  def getDecoded(key: QueryParamKey): immutable.Seq[String] = get(key).map(_.decode)
+
+  def getFirstDecoded(key: QueryParamKey): ?[String] = getFirst(key).map(_.decode)
+
+  def get(key: String): immutable.Seq[QueryParamValue] = get(QueryParamKey.encode(key))
+
+  def getFirst(key: String): ?[QueryParamValue] = getFirst(QueryParamKey.encode(key))
+
+  def getDecoded(key: String): immutable.Seq[String] = getDecoded(QueryParamKey.encode(key))
+
+  def getFirstDecoded(key: String): ?[String] = getFirstDecoded(QueryParamKey.encode(key))
+
+  def -(key: String): Query = this - QueryParamKey.encode(key)
+
+  def -(key: QueryParamKey): Query = {
+    val filtered = keyValuePairs.filter { case (existingKey, value) => existingKey != key }
+    new Query(filtered)
   }
 
-  def encode(unencoded: String): QueryParamKey = ???
+  def -(key: String, values: String*): Query = this - (QueryParamKey.encode(key), values.map(QueryParamValue.encode):_*)
+
+  def -(key: QueryParamKey, values: QueryParamValue*): Query = {
+    val filtered = keyValuePairs.filterNot { case (existingKey, value) => existingKey == key && value.map(values.contains(_)).or(false) }
+    new Query(filtered)
+  }
+
+  def ++(key: String, values: String*): Query = this ++ (QueryParamKey.encode(key), values.map(QueryParamValue.encode):_*)
+
+  def ++(key: QueryParamKey, values: QueryParamValue*): Query = {
+    val newPairs = values.map(value => key -> Some(value))
+    new Query(keyValuePairs ++ newPairs)
+  }
+
+  def set(key: String, values: String*): Query = set(QueryParamKey.encode(key), values.map(QueryParamValue.encode):_*)
+
+  def set(key: QueryParamKey, values: QueryParamValue*): Query = (this - key) ++ (key, values:_*)
+
+  def decode: String = toString
+
+  val factory = Query
+
+  override def toString = {
+    val strings = keyValuePairs.map { case (key, value) => key + (value.map("=" + _) or "")}
+    strings.mkString("&")
+  }
+
+  override def equals(other: Any): Boolean = other match {
+    case that: Query => keyValuePairs == that.keyValuePairs
+    case _ => false
+  }
+
+  override def hashCode(): Int = {
+    val state = Seq(keyValuePairs)
+    state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
+  }
+}
+
+sealed abstract class QueryParamElement[T <: QueryParamElement[T]](str: String, verifier: Pattern)
+    extends RegexVerifiedWrappedString(str, verifier)
+    with EncodedString[T]
+
+object QueryParamKey extends EncodedStringFactory[QueryParamKey] {
+
+  def apply(queryParamKeyStr: String): QueryParamKey = new QueryParamKey(queryParamKeyStr)
+
+  def encode(unencoded: String): QueryParamKey = apply(unencoded)
 }
 
 class QueryParamKey private(queryParamKeyStr: String)
-    extends QueryParamElement(queryParamKeyStr) {
+    extends QueryParamElement[QueryParamKey](queryParamKeyStr, Patterns.queryParamKey) {
 
-  private val queryPattern = Pattern.compile(queryParamKeyRegex)
+  override def decode: String = toString
 
-  require(queryPattern.matcher(queryParamKeyStr).matches(),
-    "QueryParamKey must match "+queryParamKeyRegex)
-
-  override def decode: String = ???
+  val factory = QueryParamKey
 }
 
-object QueryParamValue extends EncodedStringFactory {
+object QueryParamValue extends EncodedStringFactory[QueryParamValue] {
 
-  def apply(queryParamValueStr: String): QueryParamValue = {
-    new QueryParamValue(queryParamValueStr)
-  }
+  def apply(queryParamValueStr: String): QueryParamValue = new QueryParamValue(queryParamValueStr)
 
-  def encode(unencoded: String): QueryParamValue = ???
+  def encode(unencoded: String): QueryParamValue = apply(unencoded)
 }
 
 class QueryParamValue private(queryParamValueStr: String)
-    extends QueryParamElement(queryParamValueStr) {
+    extends QueryParamElement[QueryParamValue](queryParamValueStr, Patterns.queryParamValue) {
 
-  private val queryValuePattern = Pattern.compile(queryParamValueRegex)
+  override def decode: String = toString
 
-  require(queryValuePattern.matcher(queryParamValueStr).matches(),
-    "QueryParamKey must match "+queryParamValueRegex)
-
-  override def decode: String = ???
+  val factory = QueryParamValue
 }

@@ -1,5 +1,7 @@
 package uk.org.lidalia.net2
 
+import java.util.regex.Pattern
+
 object UriConstants {
 
   val unreserved =
@@ -62,8 +64,20 @@ object UriConstants {
   val unreservedRegex = s"[$unreservedRange]"
   val subDelimsRegex = s"[$subDelimsRange]"
   val pcharRegex = s"$unreservedRegex|$pctEncodedRegex|$subDelimsRegex|[:@]"
+
   val queryRegex = s"($pcharRegex|/|\\?)*"
   val queryParamValueRegex = queryRegex.replace("&", "")
   val queryParamKeyRegex = queryParamValueRegex.replace("=", "")
-  val fragmentRegex = queryRegex
+
+  object Patterns {
+    val query = Pattern.compile(queryRegex)
+    val queryParamValue = Pattern.compile(queryParamValueRegex)
+    val queryParamKey = Pattern.compile(queryParamKeyRegex)
+    val fragment = query
+  }
+
+  def requireRegex(clazz: Class[_], value: String, pattern: Pattern) = {
+    require(pattern.matcher(value).matches(),
+      s"${clazz.getSimpleName} $value must match ${pattern.pattern}")
+  }
 }

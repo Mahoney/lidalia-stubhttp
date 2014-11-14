@@ -61,6 +61,7 @@ class QueryParamKeyTests
         val exception = intercept[IllegalArgumentException] {
           QueryParamKey(queryString)
         }
+        assert(exception.getMessage === s"requirement failed: QueryParamKey $queryString must match ([a-zA-Z0-9-._~]|%[0-9A-Fa-f]{2}|[!$$'()*+,;]|[:@]|/|\\?)*")
       }
     }
   }
