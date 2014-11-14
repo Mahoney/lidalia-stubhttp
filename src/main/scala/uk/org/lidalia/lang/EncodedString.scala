@@ -1,4 +1,4 @@
-package uk.org.lidalia.net2
+package uk.org.lidalia.lang
 
 /**
  * Represents a String in encoded form - for instance Base64 encoded or Hex encoded

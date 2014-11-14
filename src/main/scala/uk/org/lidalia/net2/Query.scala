@@ -2,7 +2,7 @@ package uk.org.lidalia.net2
 
 import java.util.regex.Pattern
 
-import uk.org.lidalia.lang.RegexVerifiedWrappedString
+import uk.org.lidalia.lang.{EncodedStringFactory, EncodedString, RegexVerifiedWrappedString}
 import uk.org.lidalia.net2.UriConstants.Patterns
 
 import scala.collection.immutable

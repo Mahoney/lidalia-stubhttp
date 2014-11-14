@@ -1,6 +1,6 @@
 package uk.org.lidalia.net2
 
-import uk.org.lidalia.lang.RegexVerifiedWrappedString
+import uk.org.lidalia.lang.{EncodedStringFactory, EncodedString, RegexVerifiedWrappedString}
 import uk.org.lidalia.net2.UriConstants.Patterns
 
 object Fragment extends EncodedStringFactory[Fragment] {
