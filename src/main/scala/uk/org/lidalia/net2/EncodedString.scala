@@ -49,6 +49,11 @@ trait EncodedString[T <: EncodedString[T]] extends CharSequence {
   def subSequence(start: Int, end: Int): T = factory.apply(toString.substring(start, end))
 }
 
+/**
+ * Allows creation of [[EncodedString]]s from an already encoded or an unencoded String
+ *
+ * @tparam T the type of the EncodedString
+ */
 trait EncodedStringFactory[T <: EncodedString[T]] {
 
   /**
