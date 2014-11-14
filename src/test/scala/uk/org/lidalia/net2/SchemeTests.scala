@@ -57,7 +57,7 @@ class SchemeTests extends PropSpec with TableDrivenPropertyChecks {
       assert(
         exception.getMessage ===
           "requirement failed: " +
-          s"scheme [$invalidSchemeName] " +
+          s"SimpleScheme [$invalidSchemeName] " +
           "must match ^[a-zA-Z][a-zA-Z0-9\\+\\-\\.]*$"
       )
     }

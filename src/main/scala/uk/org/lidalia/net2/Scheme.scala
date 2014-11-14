@@ -1,6 +1,6 @@
 package uk.org.lidalia.net2
 
-import uk.org.lidalia.lang.WrappedValue
+import uk.org.lidalia.lang.{RegexVerifiedWrappedString, WrappedValue}
 import java.util.Locale
 
 /**
@@ -51,16 +51,8 @@ object Scheme {
 sealed abstract class Scheme(
         mixedCaseName: String
     )
-    extends WrappedValue(mixedCaseName)
+    extends RegexVerifiedWrappedString(mixedCaseName, Scheme.VALID_SCHEME_REGEX)
     with Immutable {
-
-  private val isValidSchemeName =
-    Scheme.VALID_SCHEME_REGEX.matcher(mixedCaseName).matches()
-
-  require(
-    isValidSchemeName,
-    s"scheme [$mixedCaseName] must match ${Scheme.VALID_SCHEME_REGEX}"
-  )
 
   val name: String = mixedCaseName.toLowerCase(Locale.US)
   val defaultPort: ?[Port]
