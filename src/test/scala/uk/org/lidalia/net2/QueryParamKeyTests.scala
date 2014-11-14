@@ -67,10 +67,10 @@ class QueryParamKeyTests
   }
 
   property("encode works") {
-    assert(QueryParamKey.encode("/") === QueryParamKey("%2F"))
+    assert(QueryParamKey.encode("/&=") === QueryParamKey("%2F%26%3D"))
   }
 
   property("decode works") {
-    assert(QueryParamKey("%2F").decode === "/")
+    assert(QueryParamKey("%2F%26%3D").decode === "/&=")
   }
 }

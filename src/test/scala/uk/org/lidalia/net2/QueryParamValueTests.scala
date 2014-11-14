@@ -66,10 +66,10 @@ class QueryParamValueTests
   }
 
   property("encode works") {
-    assert(QueryParamValue.encode("/") === QueryParamValue("%2F"))
+    assert(QueryParamValue.encode("/&=") === QueryParamValue("%2F%26="))
   }
 
   property("decode works") {
-    assert(QueryParamValue("%2F").decode === "/")
+    assert(QueryParamValue("%2F%26=").decode === "/&=")
   }
 }
