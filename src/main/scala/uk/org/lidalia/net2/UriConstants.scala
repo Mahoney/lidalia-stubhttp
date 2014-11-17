@@ -1,5 +1,6 @@
 package uk.org.lidalia.net2
 
+import java.util
 import java.util.regex.Pattern
 
 object UriConstants {
@@ -74,5 +75,11 @@ object UriConstants {
     val queryParamValue = Pattern.compile(queryParamValueRegex)
     val queryParamKey = Pattern.compile(queryParamKeyRegex)
     val fragment = query
+  }
+
+  def split(toSplit: String, separator: String): (String, ?[String]) = {
+    val elements: Array[String] = toSplit.split(separator, 2)
+    val secondElement = if (elements.size == 2) Some(elements(1)) else None
+    (elements(0), secondElement)
   }
 }

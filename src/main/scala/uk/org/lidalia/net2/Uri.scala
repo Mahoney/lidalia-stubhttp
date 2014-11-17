@@ -1,6 +1,7 @@
 package uk.org.lidalia.net2
 
 import uk.org.lidalia.lang.RichObject
+import uk.org.lidalia.net2.UriConstants.split
 
 /**
  * Models a URI as defined in
@@ -44,25 +45,21 @@ private object UriParser {
   def parse(uriStr: String): Uri = {
     try {
       val schemeAndRest = uriStr.split(":", 2)
-      val hierarchicalPartAndRest = split(schemeAndRest(1), "(?=[\\?#])")
+      val scheme = Scheme(schemeAndRest(0))
+
+      val hierarchicalPartAndRest = parseHierarchicalPartAndRest(schemeAndRest(1))
+      val hierarchicalPart = HierarchicalPart(hierarchicalPartAndRest._1)
+
       val queryAndOrFragmentStr = hierarchicalPartAndRest._2
-      val queryAndFragment = queryAndOrFragmentStr.map { qf =>
-        if (qf.startsWith("?")) {
-          val queryAndFragmentStr = split(qf.substring(1), "#")
-          val fragment = queryAndFragmentStr._2.map(Fragment(_))
-          (Some(Query(queryAndFragmentStr._1)), fragment)
-        } else if (qf.startsWith("#")) {
-          (None, Some(Fragment(qf.substring(1))))
-        } else {
-          (None, None)
-        }
-      } or (None, None)
+      val queryAndFragment = queryAndOrFragmentStr.map(parseQueryAndFragment) or (None, None)
+      val query = queryAndFragment._1
+      val fragment = queryAndFragment._2
 
       Uri(
-        Scheme(schemeAndRest(0)),
-        HierarchicalPart(hierarchicalPartAndRest._1),
-        queryAndFragment._1,
-        queryAndFragment._2
+        scheme,
+        hierarchicalPart,
+        query,
+        fragment
       )
     } catch {
       case e: Throwable =>
@@ -73,10 +70,26 @@ private object UriParser {
     }
   }
 
-  private def split(toSplit: String, separator: String): (String, ?[String]) = {
-    val elements: Array[String] = toSplit.split(separator, 2)
-    val secondElement = if (elements.size == 2) Some(elements(1)) else None
-    (elements(0), secondElement)
+  def parseHierarchicalPartAndRest(hierarchicalPartAndRest: String) = {
+    if (hierarchicalPartAndRest.startsWith("?") || hierarchicalPartAndRest.startsWith("#")) {
+      ("", Some(hierarchicalPartAndRest))
+    } else {
+      split(hierarchicalPartAndRest, "(?=[\\?#])")
+    }
+  }
+
+  private def parseQueryAndFragment(qf: String): (Option[Query], Option[Fragment]) = {
+    if (qf.startsWith("?")) {
+      val queryAndFragmentStr = split(qf.substring(1), "#")
+      val fragment = queryAndFragmentStr._2.map(Fragment(_))
+      val query = Query(queryAndFragmentStr._1)
+      (Some(query), fragment)
+    } else if (qf.startsWith("#")) {
+      val fragment = Fragment(qf.substring(1))
+      (None, Some(fragment))
+    } else {
+      (None, None)
+    }
   }
 }
 
