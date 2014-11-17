@@ -66,6 +66,7 @@ object UriConstants {
   val subDelimsRegex = s"[$subDelimsRange]"
   val pcharRegex = s"$unreservedRegex|$pctEncodedRegex|$subDelimsRegex|[:@]"
 
+  val userInfoRegex = s"($unreservedRegex|$pctEncodedRegex|$subDelimsRegex|:)*"
   val queryRegex = s"($pcharRegex|/|\\?)*"
   val queryParamValueRegex = queryRegex.replace("&", "")
   val queryParamKeyRegex = queryParamValueRegex.replace("=", "")
@@ -75,6 +76,8 @@ object UriConstants {
     val queryParamValue = Pattern.compile(queryParamValueRegex)
     val queryParamKey = Pattern.compile(queryParamKeyRegex)
     val fragment = query
+    val userInfo = Pattern.compile(userInfoRegex)
+    val pchar = Pattern.compile(s"($pcharRegex)*")
   }
 
   def split(toSplit: String, separator: String): (String, ?[String]) = {
