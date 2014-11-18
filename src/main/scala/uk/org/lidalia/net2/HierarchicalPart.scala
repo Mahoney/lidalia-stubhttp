@@ -4,29 +4,34 @@ object HierarchicalPart {
   def apply(hierarchicalPartStr: String): HierarchicalPart = {
     if (hierarchicalPartStr.startsWith("//")) {
       val authorityAndPath = hierarchicalPartStr.substring(2).split("/", 2)
-      val authority = authorityAndPath(0)
-      val path = if (authorityAndPath.size == 2) authorityAndPath(1).split("/").toList else List()
+      val authority = Authority(authorityAndPath(0))
+      val path = if (authorityAndPath.size == 2) Path(authorityAndPath(1)) else Path()
       HierarchicalPartWithAuthority(authority, path)
     } else {
-      HierarchicalPartPathOnly(hierarchicalPartStr.split("/").toList)
+      HierarchicalPartPathOnly(Path(hierarchicalPartStr))
     }
   }
 }
 
 sealed abstract class HierarchicalPart {
-  val authority: ?[String]
-  val path: List[String]
+  val authority: ?[Authority]
+  val path: Path
 }
 
 object HierarchicalPartWithAuthority {
-  def apply(authority: Some[String],
-            path: List[String]) = new HierarchicalPartWithAuthority(authority, path)
+  def apply(authority: Authority,
+            path: Path) = new HierarchicalPartWithAuthority(authority, path)
 }
 
-class HierarchicalPartWithAuthority private(val authority: Some[String],
-                                            val path: List[String]) extends HierarchicalPart {
-  override def toString = "//"+authority.get+"/"+path.mkString("/")
-
+class HierarchicalPartWithAuthority private(val authority: Some[Authority],
+                                            val path: Path) extends HierarchicalPart {
+  override def toString = {
+    if (path.nonEmpty) {
+      "//"+authority.get+"/"+path
+    } else {
+      "//"+authority.get
+    }
+  }
 
   def canEqual(other: Any): Boolean = other.isInstanceOf[HierarchicalPartWithAuthority]
 
@@ -45,13 +50,12 @@ class HierarchicalPartWithAuthority private(val authority: Some[String],
 }
 
 object HierarchicalPartPathOnly {
-  def apply(path: List[String]) = new HierarchicalPartPathOnly(path)
+  def apply(path: Path) = new HierarchicalPartPathOnly(path)
 }
-class HierarchicalPartPathOnly private(val path: List[String]) extends HierarchicalPart {
+class HierarchicalPartPathOnly private(val path: Path) extends HierarchicalPart {
   val authority: None.type = None
 
   override def toString = path.mkString("/")
-
 
   def canEqual(other: Any): Boolean = other.isInstanceOf[HierarchicalPartPathOnly]
 

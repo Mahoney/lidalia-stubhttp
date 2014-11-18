@@ -38,4 +38,10 @@ class Uri private(@Identity val scheme: Scheme,
     val uriWithFragment = fragment.map(f=>s"$uriWithQuery#$f") or uriWithQuery
     uriWithFragment
   }
+
+  lazy val hostAndPort: ?[HostAndPort] = hierarchicalPart.authority.?(_.hostAndPort)
+  lazy val resolvedPort: ?[Port] = hierarchicalPart.authority.?(_.hostAndPort.port).orElse(scheme.defaultPort)
+  lazy val path: Path = hierarchicalPart.path
+  lazy val pathAndQuery: PathAndQuery = PathAndQuery(path, query)
+  lazy val absoluteUri: Uri = if (fragment.isEmpty) this else Uri(scheme, hierarchicalPart, query, None)
 }

@@ -1,6 +1,21 @@
 package uk.org.lidalia.net2
 
 object HostAndPort {
+  def apply(hostAndPortStr: String): HostAndPort = {
+    val hostAndPortSplit = hostAndPortStr.split(":", 2)
+    val host = Host(hostAndPortSplit(0))
+    if (hostAndPortSplit.size == 2) {
+      ResolvedHostAndPort(
+        host,
+        Port(hostAndPortSplit(1))
+      )
+    } else {
+      HostWithoutPort(
+        host
+      )
+    }
+  }
+
   def apply(host: Host, port: ?[Port] = None): HostAndPort = {
     port.map(ResolvedHostAndPort(host, _)) or HostWithoutPort(host)
   }
