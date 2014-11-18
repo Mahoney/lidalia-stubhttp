@@ -1,19 +1,8 @@
 package uk.org.lidalia.net2
 
 object Authority {
-  def apply(authorityStr: String): Authority = {
-    val userInfoHostAndPort = authorityStr.split("@", 2)
-    if (userInfoHostAndPort.size == 2) {
-      Authority(
-        UserInfo(userInfoHostAndPort(0)),
-        HostAndPort(userInfoHostAndPort(1))
-      )
-    } else {
-      Authority(
-        hostAndPort = HostAndPort(userInfoHostAndPort(0))
-      )
-    }
-  }
+  def apply(authorityStr: String): Authority
+    = AuthorityParser.parse(authorityStr)
 
   def apply(userInfo: ?[UserInfo] = None, hostAndPort: HostAndPort)
     = new Authority(userInfo, hostAndPort)
@@ -22,7 +11,8 @@ object Authority {
 class Authority private(val userInfo: ?[UserInfo],
                         val hostAndPort: HostAndPort) {
 
-  override def toString = userInfo.map(_+"@"+hostAndPort) or hostAndPort.toString
+  override def toString
+    = userInfo.map(_+"@"+hostAndPort) or hostAndPort.toString
 
 
   def canEqual(other: Any): Boolean = other.isInstanceOf[Authority]

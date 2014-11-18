@@ -17,11 +17,11 @@ class HostAndPortTests extends PropSpec with TableDrivenPropertyChecks {
     )
 
     reflexiveTest(argsForResolvedHostAndPort) { (args) =>
-      ResolvedHostAndPort(args._1, args._2)
+      HostWithPort(args._1, args._2)
     }
 
     equalsTest(argsForResolvedHostAndPort) { (args) =>
-      ResolvedHostAndPort(args._1, args._2)
+      HostWithPort(args._1, args._2)
     }
   }
 

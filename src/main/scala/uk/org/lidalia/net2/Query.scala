@@ -9,28 +9,12 @@ import scala.collection.immutable
 
 object Query extends EncodedStringFactory[Query] {
 
-  def apply(queryStr: String): Query = {
-    queryStr match {
-      case "" => new Query(List())
-      case _ =>
-        val keyValuePairStrs = queryStr.toString.split("&", -1).toList
-
-        val keyValuePairs = keyValuePairStrs.map {
-          keyValuePairStr =>
-            val keyValuePair = keyValuePairStr.split("=", 2).toList
-            keyValuePair match {
-              case List(key) => QueryParamKey(key) -> None
-              case List(key, value) => QueryParamKey(key) -> Some(QueryParamValue(value))
-            }
-        }
-        new Query (keyValuePairs)
-    }
-  }
+  def apply(queryStr: String): Query = QueryParser.parse(queryStr)
 
   def encode(unencoded: String): Query = apply(unencoded)
 }
 
-class Query private(val keyValuePairs: immutable.Seq[(QueryParamKey, ?[QueryParamValue])])
+final class Query private[net2] (val keyValuePairs: immutable.Seq[(QueryParamKey, ?[QueryParamValue])])
     extends EncodedString[Query] {
 
   lazy val paramMap: Map[QueryParamKey, immutable.Seq[QueryParamValue]] = {
@@ -118,7 +102,7 @@ object QueryParamKey extends EncodedStringFactory[QueryParamKey] {
   def encode(unencoded: String): QueryParamKey = apply(unencoded)
 }
 
-class QueryParamKey private(queryParamKeyStr: String)
+final class QueryParamKey private(queryParamKeyStr: String)
     extends QueryParamElement[QueryParamKey](queryParamKeyStr, Patterns.queryParamKey) {
 
   override def decode: String = toString
@@ -133,7 +117,7 @@ object QueryParamValue extends EncodedStringFactory[QueryParamValue] {
   def encode(unencoded: String): QueryParamValue = apply(unencoded)
 }
 
-class QueryParamValue private(queryParamValueStr: String)
+final class QueryParamValue private(queryParamValueStr: String)
     extends QueryParamElement[QueryParamValue](queryParamValueStr, Patterns.queryParamValue) {
 
   override def decode: String = toString

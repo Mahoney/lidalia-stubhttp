@@ -1,32 +1,11 @@
 package uk.org.lidalia.net2
 
 object HostAndPort {
-  def apply(hostAndPortStr: String): HostAndPort = {
-    val hostAndPortSplit = hostAndPortStr.split(":", 2)
-    val host = Host(hostAndPortSplit(0))
-    if (hostAndPortSplit.size == 2) {
-      ResolvedHostAndPort(
-        host,
-        Port(hostAndPortSplit(1))
-      )
-    } else {
-      HostWithoutPort(
-        host
-      )
-    }
-  }
+  def apply(hostAndPortStr: String): HostAndPort = HostAndPortParser.parse(hostAndPortStr)
 
   def apply(host: Host, port: ?[Port] = None): HostAndPort = {
-    port.map(ResolvedHostAndPort(host, _)) or HostWithoutPort(host)
+    port.map(HostWithPort(host, _)) or HostWithoutPort(host)
   }
-}
-
-object ResolvedHostAndPort {
-  def apply(host: Host, port: Port) = new ResolvedHostAndPort(host, port)
-}
-
-object HostWithoutPort {
-  def apply(host: Host) = new HostWithoutPort(host)
 }
 
 abstract sealed class HostAndPort extends Immutable {
@@ -44,9 +23,17 @@ abstract sealed class HostAndPort extends Immutable {
   override def hashCode = 31 * (31 * host.hashCode) + port.hashCode
 }
 
-final class ResolvedHostAndPort private (val host: Host, val port: Some[Port])
+object HostWithPort {
+  def apply(host: Host, port: Port) = new HostWithPort(host, port)
+}
+
+final class HostWithPort private (val host: Host, val port: Some[Port])
     extends HostAndPort {
   override def toString = s"$host:${port.get}"
+}
+
+object HostWithoutPort {
+  def apply(host: Host) = new HostWithoutPort(host)
 }
 
 final class HostWithoutPort private (val host: Host) extends HostAndPort {

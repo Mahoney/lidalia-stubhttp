@@ -1,7 +1,6 @@
 package uk.org.lidalia.net2
 
 import uk.org.lidalia.lang.RichObject
-import uk.org.lidalia.net2.UriConstants.split
 
 /**
  * Models a URI as defined in
