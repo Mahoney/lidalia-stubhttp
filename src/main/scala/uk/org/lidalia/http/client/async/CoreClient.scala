@@ -26,7 +26,7 @@ class CoreClient(apacheClient: CloseableHttpClient = HttpClientBuilder.create()
       val host = new HttpHost(target.ipAddress.toString, target.port.portNumber)
       val apacheRequest = new BasicHttpRequest(request.method.toString, request.requestUri.toString)
       val apacheResponseHandler = new ApacheResponseHandler[(HttpResponse, T)] {
-        def handleResponse(response: HttpResponse): (HttpResponse, T) = (response, request.responseHandler.handle(response.getEntity.getContent))
+        def handleResponse(response: HttpResponse): (HttpResponse, T) = (response, request.accept.handle(response.getEntity.getContent))
       }
       val apacheResponseHeaderAndEntity = apacheClient.execute(host, apacheRequest, apacheResponseHandler)
       val apacheResponseHeader = apacheResponseHeaderAndEntity._1

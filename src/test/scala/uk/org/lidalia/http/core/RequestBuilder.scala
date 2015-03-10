@@ -1,8 +1,8 @@
 package uk.org.lidalia.http.core
 
 import Method.GET
-import uk.org.lidalia.net2.{PartialUri, Uri}
-import scala.io.Source
+import uk.org.lidalia.http.client.Accept
+import uk.org.lidalia.net2.Uri
 import java.io.InputStream
 
 object RequestBuilder {
@@ -10,14 +10,13 @@ object RequestBuilder {
   def request[T](
     method: Method = GET,
     uri: RequestUri = RequestUri("/mypath"),
-    responseHandler: ResponseHandler[T] = new ResponseHandler[Option[Nothing]]{
+    accept: Accept[T] = new Accept[None.type](List()) {
       def handle(content: InputStream) = None
-    }
-                 ) = Request(method, uri, responseHandler)
+    }) = {
+    Request(method, uri, accept)
+  }
 
-  def get(
-     uri: RequestUri = RequestUri("/mypath")
-             ) = request(GET, uri)
+  def get(uri: RequestUri = RequestUri("/mypath")) = request(GET, uri)
 
   def get(uri: Uri) = request(GET, RequestUri(uri))
 }

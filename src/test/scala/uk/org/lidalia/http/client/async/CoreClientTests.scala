@@ -1,13 +1,14 @@
 package uk.org.lidalia.http.client.async
 
 import com.github.tomakehurst.wiremock
-import org.apache.http.impl.client.{HttpClientBuilder, CloseableHttpClient}
+import org.apache.http.impl.client.HttpClientBuilder
 import org.scalatest
 import uk.org.lidalia
 import lidalia.http
 
-import org.scalatest.{Outcome, PropSpec, Suite, AbstractSuite}
+import org.scalatest.{Args, PropSpec, Suite, Status}
 import scalatest.prop.TableDrivenPropertyChecks
+import uk.org.lidalia.http.client.Accept
 
 import wiremock.WireMockServer
 import wiremock.client.{RequestPatternBuilder, MappingBuilder, WireMock}
@@ -16,7 +17,7 @@ import WireMock.{get, urlEqualTo, aResponse}
 
 import lidalia.net2.Target
 import http.core.Method.GET
-import uk.org.lidalia.http.core.{RequestUri, HeaderField, Code, Request, ResponseHandler}
+import uk.org.lidalia.http.core.{RequestUri, HeaderField, Code, Request}
 
 import org.apache.commons.io.IOUtils
 
@@ -25,10 +26,7 @@ import scala.concurrent.duration.Duration
 import java.util.concurrent.{TimeoutException, TimeUnit}
 import java.io.InputStream
 import org.joda.time.{DateTimeZone, DateTime}
-import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
 
-@RunWith(classOf[JUnitRunner])
 class CoreClientTests extends PropSpec with TableDrivenPropertyChecks with WireMockTest {
 
   val apacheClient = HttpClientBuilder.create()
@@ -38,7 +36,7 @@ class CoreClientTests extends PropSpec with TableDrivenPropertyChecks with WireM
   val coreClient = new CoreClient
   lazy val target = Target("127.0.0.1", wireMockServer.port())
 
-  val handler = new ResponseHandler[String] {
+  val handler = new Accept[String](List()) {
     def handle(content: InputStream) = IOUtils.toString(content)
   }
 
@@ -88,15 +86,15 @@ class CoreClientTests extends PropSpec with TableDrivenPropertyChecks with WireM
 trait WireMockTest extends Suite with Stubbing {
 
   val wireMockServer = new WireMockServer(0)
-  lazy val wireMock = new WireMock("localhost", wireMockServer.port())
+  var wireMock: WireMock = null
 
-  override abstract def withFixture(test : NoArgTest): Outcome = {
+  override def run(testName: Option[String], args: Args): Status = {
 
     wireMockServer.start()
-    WireMock.configureFor("localhost", wireMockServer.port())
+    wireMock = new WireMock("localhost", wireMockServer.port())
 
     try {
-      super.withFixture(test)
+      super.run(testName, args)
     } finally {
       wireMockServer.stop()
     }
