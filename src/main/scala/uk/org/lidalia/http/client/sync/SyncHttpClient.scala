@@ -1,4 +1,4 @@
-package uk.org.lidalia.http.client.sync
+package uk.org.lidalia.http.client
 
 import uk.org.lidalia.http
 
@@ -6,12 +6,11 @@ import scala.concurrent.{duration => scala, Await}
 import org.joda.time.Duration
 import java.util.concurrent.TimeUnit
 
-import http.client.async.HttpClient
-import http.core.{Response, Request}
+import http.core.Response
 
 class SyncHttpClient(asyncHttpClient: HttpClient) {
 
-  def execute[T](request: Request[T], timeout: Duration): Response[T] = {
+  def execute[T](request: DirectedRequest[T], timeout: Duration): Response[T] = {
     val response = asyncHttpClient.execute(request)
     Await.result(response, toScalaDuration(timeout))
   }

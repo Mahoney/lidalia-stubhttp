@@ -1,4 +1,4 @@
-package uk.org.lidalia.http.client.async
+package uk.org.lidalia.http.client
 
 import org.scalatest
 import org.junit
@@ -22,11 +22,11 @@ import mockito.BDDMockito.given
 
 import http.core.headerfields.Location
 import http.core.ResponseBuilder.response
-import http.core.{RequestBuilder, Response, Code}
-import RequestBuilder.get
+import uk.org.lidalia.http.core.{RequestUri, RequestBuilder, Response, Code}
+import RequestBuilder.{get, request}
 import Code.Found
 
-import lidalia.net2.Uri
+import uk.org.lidalia.net2.{HostAndPort, Authority, Scheme, Uri}
 
 @RunWith(classOf[JUnitRunner])
 class RedirectFollowingClientTests extends PropSpec with TableDrivenPropertyChecks {
@@ -52,7 +52,10 @@ class RedirectFollowingClientTests extends PropSpec with TableDrivenPropertyChec
     val redirectResponse = successful(response(Found, List(Location(redirectLocation))))
     given(decorated.execute(request1)).willReturn(redirectResponse)
 
-    val request2 = get(redirectLocation)
+    val request2 = request(
+      hostAndPort = HostAndPort("www.example.com"),
+      uri = RequestUri("/redirectlocation")
+    )
     val expectedResponse = successful(response())
     given(decorated.execute(request2)).willReturn(expectedResponse)
 

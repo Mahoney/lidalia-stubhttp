@@ -1,17 +1,24 @@
-package uk.org.lidalia.http.client.async
+package uk.org.lidalia.http.client
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
-import uk.org.lidalia.http.core.{Response, Request}
+import uk.org.lidalia.http.core.{RequestUri, Response}
 
 class RedirectFollowingClient(decorated: HttpClient) extends HttpClient {
 
-  override def execute[T](request: Request[T]): Future[Response[T]] = {
+  override def execute[T](request: DirectedRequest[T]): Future[Response[T]] = {
     val initialResponse = decorated.execute(request)
     initialResponse.flatMap { response =>
       if (response.requiresRedirect) {
-        val redirectRequest = request.withUri(response.location.get)
-        execute(redirectRequest)
+        response.location.flatMap(location => {
+          execute(
+            new DirectedRequest(
+              location.scheme,
+              location.hostAndPort.get,
+              request.request.withUri(RequestUri(location.pathAndQuery))
+            )
+          )
+        }).getOrElse(initialResponse)
       } else {
         initialResponse
       }

@@ -19,5 +19,5 @@ class Path private (pathElements: immutable.Seq[PathElement])
 
   override def iterator = pathElements.iterator
 
-  override def toString() = pathElements.mkString("/")
+  override def toString() = pathElements.map("/"+_).mkString
 }

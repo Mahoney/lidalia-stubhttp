@@ -12,8 +12,8 @@ object Request {
 
 class Request[T] private(private val requestHeader: RequestHeader, val accept: Accept[T]) extends Message(requestHeader) {
 
-  def withUri(newUri: Uri): Request[T] = {
-    Request(method, RequestUri(newUri), accept, header.headerFields)
+  def withUri(newUri: RequestUri): Request[T] = {
+    Request(method, newUri, accept, header.headerFields)
   }
 
   val method = requestHeader.method

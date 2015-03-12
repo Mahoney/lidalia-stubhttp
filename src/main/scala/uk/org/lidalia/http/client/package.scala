@@ -1,15 +1,17 @@
-package uk.org.lidalia.http.client
+package uk.org.lidalia.http
 
 import scala.language.implicitConversions
 import scala.Some
 import scala.annotation.meta.field
 
-package object sync {
+package object client {
   type ?[T] = Option[T]
   type Identity = uk.org.lidalia.lang.Identity @field
 
   implicit def instanceToSome[T](instance: T) = Some(instance)
   implicit def someToInstance[T](some: Some[T]) = some.get
+  implicit def typeToLeft[A,B](instance: A): Either[A,B] = Left(instance)
+  implicit def typeToRight[A,B](instance: B): Either[A,B] = Right(instance)
 
   class ToRichOption[A](val option: Option[A]) {
     def or[B >: A](default: => B): B = option.getOrElse(default)

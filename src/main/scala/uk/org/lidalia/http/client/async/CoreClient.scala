@@ -1,4 +1,4 @@
-package uk.org.lidalia.http.client.async
+package uk.org.lidalia.http.client
 
 import uk.org.lidalia
 import lidalia.http
@@ -8,7 +8,7 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import lidalia.net2.Target
-import http.core.{HeaderField, Code, Response, Request}
+import uk.org.lidalia.http.core._
 
 import apache.http.{HttpResponse, HttpHost}
 import org.apache.http.impl.client.{CloseableHttpClient, HttpClientBuilder}
@@ -18,21 +18,44 @@ import apache.http.client.{ResponseHandler => ApacheResponseHandler}
 class CoreClient(apacheClient: CloseableHttpClient = HttpClientBuilder.create()
     .setMaxConnPerRoute(Integer.MAX_VALUE)
     .setMaxConnTotal(Integer.MAX_VALUE)
-    .build()) {
+    .build()) extends TargetedHttpClient {
 
-  def execute[T](request: Request[T],
-                 target: Target): Future[Response[T]] = {
+  override def execute[T](targetedRequest: TargetedRequest[T]): Future[Response[T]] = {
     Future {
-      val host = new HttpHost(target.ipAddress.toString, target.port.portNumber)
-      val apacheRequest = new BasicHttpRequest(request.method.toString, request.requestUri.toString)
-      val apacheResponseHandler = new ApacheResponseHandler[(HttpResponse, T)] {
-        def handleResponse(response: HttpResponse): (HttpResponse, T) = (response, request.accept.handle(response.getEntity.getContent))
+
+      val target = targetedRequest.target
+      val host = new HttpHost(
+        target.ipAddress.toString,
+        target.port.portNumber
+      )
+
+      val request = targetedRequest.request
+      val apacheRequest = new BasicHttpRequest(
+        request.method.toString,
+        request.requestUri.toString
+      )
+      
+      val apacheResponseHandler = new ApacheResponseHandler[Response[T]] {
+        def handleResponse(response: HttpResponse): Response[T] = {
+          val headerFields = response.getAllHeaders.map{
+            headerField => HeaderField(headerField.getName, headerField.getValue)
+          }.toList
+
+          val responseHeader = ResponseHeader(
+            Code(response.getStatusLine.getStatusCode),
+            Reason(response.getStatusLine.getReasonPhrase),
+            headerFields
+          )
+          val entity = request.accept.handle(targetedRequest, responseHeader, response.getEntity.getContent)
+          Response(responseHeader, entity)
+        }
       }
-      val apacheResponseHeaderAndEntity = apacheClient.execute(host, apacheRequest, apacheResponseHandler)
-      val apacheResponseHeader = apacheResponseHeaderAndEntity._1
-      val entity = apacheResponseHeaderAndEntity._2
-      val headerFields = apacheResponseHeader.getAllHeaders.map( headerField => HeaderField(headerField.getName, headerField.getValue)).toList
-      Response(Code(apacheResponseHeader.getStatusLine.getStatusCode), headerFields, entity)
+
+      apacheClient.execute(
+        host, 
+        apacheRequest, 
+        apacheResponseHandler
+      )
     }
   }
 }

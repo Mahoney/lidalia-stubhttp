@@ -1,12 +1,16 @@
 package uk.org.lidalia.http.core
 
+import java.nio.charset.Charset
+
 class MediaRangePref(val mediaRange: MediaRange) {
 
 }
 
 class MediaRange {}
 
-class MediaType
+class MediaType {
+  def charset: ?[Charset] = None
+}
 
 class AcceptParams(val q: Int, val acceptExtensionList: List[(String, String)]) {
   require(q >= 0 && q <= 1000, s"q must be between 0 and 1000, was $q")

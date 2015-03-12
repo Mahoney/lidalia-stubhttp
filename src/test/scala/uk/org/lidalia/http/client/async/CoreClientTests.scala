@@ -1,4 +1,4 @@
-package uk.org.lidalia.http.client.async
+package uk.org.lidalia.http.client
 
 import com.github.tomakehurst.wiremock
 import org.apache.http.impl.client.HttpClientBuilder
@@ -8,16 +8,16 @@ import lidalia.http
 
 import org.scalatest.{Args, PropSpec, Suite, Status}
 import scalatest.prop.TableDrivenPropertyChecks
-import uk.org.lidalia.http.client.Accept
+import uk.org.lidalia.net2.Scheme.HTTP
 
 import wiremock.WireMockServer
 import wiremock.client.{RequestPatternBuilder, MappingBuilder, WireMock}
 import wiremock.junit.Stubbing
 import WireMock.{get, urlEqualTo, aResponse}
 
-import lidalia.net2.Target
+import uk.org.lidalia.net2.{HostAndPort, Scheme, Target}
 import http.core.Method.GET
-import uk.org.lidalia.http.core.{RequestUri, HeaderField, Code, Request}
+import uk.org.lidalia.http.core._
 
 import org.apache.commons.io.IOUtils
 
@@ -37,7 +37,7 @@ class CoreClientTests extends PropSpec with TableDrivenPropertyChecks with WireM
   lazy val target = Target("127.0.0.1", wireMockServer.port())
 
   val handler = new Accept[String](List()) {
-    def handle(content: InputStream) = IOUtils.toString(content)
+    def handle(request: TargetedRequest[String], response: ResponseHeader, entityBytes: InputStream) = IOUtils.toString(entityBytes)
   }
 
   property("Returns response from server") {
@@ -50,10 +50,11 @@ class CoreClientTests extends PropSpec with TableDrivenPropertyChecks with WireM
       .withHeader("Content-Type", "text/plain")))
 
 
-    val request = Request(GET, RequestUri("/foo"), handler)
+    val request = new TargetedRequest(HTTP, target, Request(GET, RequestUri("/foo"), handler))
     val response = Await.result(
-      coreClient.execute(request, target),
-      Duration(1, TimeUnit.SECONDS))
+      coreClient.execute(request),
+      Duration(1, TimeUnit.SECONDS)
+    )
 
 
     assert(response.code === Code(200))
@@ -67,11 +68,11 @@ class CoreClientTests extends PropSpec with TableDrivenPropertyChecks with WireM
       get(urlEqualTo("/foo")).willReturn(
         aResponse().withFixedDelay(2000)
       ))
-    val request = Request(GET, RequestUri("/foo"), handler)
+    val request = new TargetedRequest(HTTP, target, Request(GET, RequestUri("/foo"), handler))
 
     try {
       val response = Await.result(
-        coreClient.execute(request, target),
+        coreClient.execute(request),
         Duration(10, TimeUnit.MILLISECONDS)
       )
       fail("Should have timed out!")

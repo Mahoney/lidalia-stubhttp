@@ -1,7 +1,6 @@
 package uk.org.lidalia.net2
 
 import uk.org.lidalia.net2.UriConstants._
-import uk.org.lidalia.net2.{Fragment, Query, HierarchicalPart, Scheme}
 
 private object UriParser {
 
