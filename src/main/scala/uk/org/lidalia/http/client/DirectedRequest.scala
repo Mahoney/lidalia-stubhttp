@@ -7,8 +7,8 @@ import uk.org.lidalia.net2.{HostAndPort, Scheme}
 class DirectedRequest[T](
         @Identity val scheme: Scheme,
         @Identity val hostAndPort: HostAndPort,
-        @Identity val request: Request[T],
+        @Identity val request: Request,
+        @Identity val unmarshaller: EntityUnmarshaller[T],
         @Identity val parent: ?[DirectedRequest[T]] = None
         ) extends RichObject {
-
 }

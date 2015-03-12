@@ -36,8 +36,8 @@ class CoreClientTests extends PropSpec with TableDrivenPropertyChecks with WireM
   val coreClient = new CoreClient
   lazy val target = Target("127.0.0.1", wireMockServer.port())
 
-  val handler = new Accept[String](List()) {
-    def handle(request: TargetedRequest[String], response: ResponseHeader, entityBytes: InputStream) = IOUtils.toString(entityBytes)
+  val unmarshaller = new Accept[String](List()) {
+    def unmarshal(request: TargetedRequest[String], response: ResponseHeader, entityBytes: InputStream) = IOUtils.toString(entityBytes)
   }
 
   property("Returns response from server") {
@@ -50,7 +50,7 @@ class CoreClientTests extends PropSpec with TableDrivenPropertyChecks with WireM
       .withHeader("Content-Type", "text/plain")))
 
 
-    val request = new TargetedRequest(HTTP, target, Request(GET, RequestUri("/foo"), handler))
+    val request = new TargetedRequest(HTTP, target, Request(GET, RequestUri("/foo")), unmarshaller)
     val response = Await.result(
       coreClient.execute(request),
       Duration(1, TimeUnit.SECONDS)
@@ -68,7 +68,7 @@ class CoreClientTests extends PropSpec with TableDrivenPropertyChecks with WireM
       get(urlEqualTo("/foo")).willReturn(
         aResponse().withFixedDelay(2000)
       ))
-    val request = new TargetedRequest(HTTP, target, Request(GET, RequestUri("/foo"), handler))
+    val request = new TargetedRequest(HTTP, target, Request(GET, RequestUri("/foo")), unmarshaller)
 
     try {
       val response = Await.result(

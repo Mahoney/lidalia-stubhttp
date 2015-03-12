@@ -7,7 +7,8 @@ import uk.org.lidalia.net2.{Scheme, Target}
 class TargetedRequest[T](
         @Identity val scheme: Scheme,
         @Identity val target: Target,
-        @Identity val request: Request[T],
+        @Identity val request: Request,
+        @Identity val unmarshaller: EntityUnmarshaller[T],
         @Identity val targetedParent: ?[TargetedRequest[T]] = None,
         @Identity val directedParent: ?[DirectedRequest[T]] = None
         ) extends RichObject {

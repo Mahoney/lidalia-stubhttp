@@ -27,6 +27,7 @@ class DefaultResolvingHttpClientTest extends PropSpec with TableDrivenPropertyCh
       HTTP,
       Target("127.0.0.1", 80),
       request.request,
+      request.unmarshaller,
       directedParent = request
     )
     val expectedResponse = successful(response())

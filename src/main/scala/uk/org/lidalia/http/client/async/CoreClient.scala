@@ -26,7 +26,8 @@ class CoreClient(apacheClient: CloseableHttpClient = HttpClientBuilder.create()
       val target = targetedRequest.target
       val host = new HttpHost(
         target.ipAddress.toString,
-        target.port.portNumber
+        target.port.portNumber,
+        targetedRequest.scheme.toString
       )
 
       val request = targetedRequest.request
@@ -46,7 +47,7 @@ class CoreClient(apacheClient: CloseableHttpClient = HttpClientBuilder.create()
             Reason(response.getStatusLine.getReasonPhrase),
             headerFields
           )
-          val entity = request.accept.handle(targetedRequest, responseHeader, response.getEntity.getContent)
+          val entity = targetedRequest.unmarshaller.unmarshal(targetedRequest, responseHeader, response.getEntity.getContent)
           Response(responseHeader, entity)
         }
       }
