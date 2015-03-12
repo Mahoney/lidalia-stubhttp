@@ -15,7 +15,8 @@ class RedirectFollowingClient(decorated: HttpClient) extends HttpClient {
             new DirectedRequest(
               location.scheme,
               location.hostAndPort.get,
-              request.request.withUri(RequestUri(location.pathAndQuery))
+              request.request.withUri(RequestUri(location.pathAndQuery)),
+              request.unmarshaller
             )
           )
         }).getOrElse(initialResponse)

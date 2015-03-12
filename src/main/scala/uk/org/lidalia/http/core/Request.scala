@@ -1,19 +1,25 @@
 package uk.org.lidalia.http.core
 
-import uk.org.lidalia.http.client.Accept
 import uk.org.lidalia.net2.Uri
 
 object Request {
-  def apply[T](method: Method,
-               requestUri: RequestUri,
-               accept: Accept[T],
-               headerFields: List[HeaderField] = Nil) = new Request(RequestHeader(method, requestUri, accept :: headerFields), accept)
+  def apply(
+        method: Method,
+        requestUri: RequestUri,
+        headerFields: List[HeaderField] = Nil) =
+    new Request(
+      RequestHeader(
+        method,
+        requestUri,
+        headerFields
+      )
+    )
 }
 
-class Request[T] private(private val requestHeader: RequestHeader, val accept: Accept[T]) extends Message(requestHeader) {
+class Request private(private val requestHeader: RequestHeader) extends Message(requestHeader) {
 
-  def withUri(newUri: RequestUri): Request[T] = {
-    Request(method, newUri, accept, header.headerFields)
+  def withUri(newUri: RequestUri): Request = {
+    Request(method, newUri, header.headerFields)
   }
 
   val method = requestHeader.method

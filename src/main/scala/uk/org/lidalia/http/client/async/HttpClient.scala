@@ -14,7 +14,8 @@ trait HttpClient {
       new DirectedRequest(
         uri.scheme,
         uri.hostAndPort.get,
-        Request(GET, RequestUri(uri.pathAndQuery), accept)
+        Request(GET, RequestUri(uri.pathAndQuery), List(accept)),
+        accept
       )
     )
 }

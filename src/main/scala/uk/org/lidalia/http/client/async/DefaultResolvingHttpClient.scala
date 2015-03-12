@@ -15,6 +15,7 @@ class DefaultResolvingHttpClient(decorated: TargetedHttpClient) extends HttpClie
         request.scheme,
         resolve(request.scheme, request.hostAndPort),
         request.request,
+        request.unmarshaller,
         directedParent = request
       )
     )
