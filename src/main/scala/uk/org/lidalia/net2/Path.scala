@@ -1,16 +1,38 @@
 package uk.org.lidalia.net2
 
+import org.apache.commons.lang3.StringUtils
+
 import scala.collection.immutable
 
-object Path {
+object PathAfterAuthority {
 
-  def apply() = new Path(List())
+  def apply(): Path = new PathAfterAuthority(List())
 
-  def apply(path: String) = new Path(path.split("/").toList.map(PathElement(_)))
-
+  def apply(path: String): Path = {
+    if (path.isEmpty) {
+      PathAfterAuthority()
+    } else {
+      val pathStrs = path.split("(?=/)").toList
+      new PathAfterAuthority(pathStrs.map(it => PathElement(StringUtils.removeStart(it, "/"))))
+    }
+  }
 }
 
-class Path private (pathElements: immutable.Seq[PathElement])
+object PathNoAuthority {
+
+  def apply(): Path = new PathNoAuthority(List())
+
+  def apply(path: String): Path = {
+    if (path.isEmpty) {
+      PathNoAuthority()
+    } else {
+      val pathStrs = path.split("/").toList
+      new PathNoAuthority(pathStrs.map(PathElement(_)))
+    }
+  }
+}
+
+abstract class Path private[net2] (pathElements: immutable.Seq[PathElement])
     extends immutable.Seq[PathElement] {
 
   override def length = pathElements.length
@@ -20,4 +42,12 @@ class Path private (pathElements: immutable.Seq[PathElement])
   override def iterator = pathElements.iterator
 
   override def toString() = pathElements.map("/"+_).mkString
+}
+
+class PathAfterAuthority private (pathElements: immutable.Seq[PathElement]) extends Path(pathElements) {
+  override def toString() = pathElements.map("/"+_).mkString
+}
+
+class PathNoAuthority private (pathElements: immutable.Seq[PathElement]) extends Path(pathElements) {
+  override def toString() = pathElements.mkString("/")
 }

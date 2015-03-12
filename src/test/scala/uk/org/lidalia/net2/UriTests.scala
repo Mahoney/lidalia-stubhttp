@@ -85,43 +85,45 @@ class UriTests extends PropSpec with TableDrivenPropertyChecks {
 
   property("Uri parsed correctly") {
     val uris = Table(
-      ("URI",                                                 "Scheme", "Hierarchical Part",             "Query",             "Fragment"),
-      ("http://example.com:8042/over/there?name=ferret#nose", HTTP,     "//example.com:8042/over/there", Some("name=ferret"), Some("nose")),
-      ("http://example.com:8042/over/there?name=ferret",      HTTP,     "//example.com:8042/over/there", Some("name=ferret"), None),
-      ("http://example.com:8042/over/there",                  HTTP,     "//example.com:8042/over/there", None,                None),
-      ("http://example.com:8042/over/there#nose",             HTTP,     "//example.com:8042/over/there", None,                Some("nose")),
-      ("urn:example:animal?ferret#nose",                      URN,      "example:animal",                Some("ferret"),      Some("nose")),
-      ("urn:example:animal?ferret",                           URN,      "example:animal",                Some("ferret"),      None),
-      ("urn:example:animal#nose",                             URN,      "example:animal",                None,                Some("nose")),
-      ("urn:example:animal#",                                 URN,      "example:animal",                None,                Some("")),
-      ("urn:example:animal?",                                 URN,      "example:animal",                Some(""),            None),
-      ("urn:example:animal?#",                                URN,      "example:animal",                Some(""),            Some("")),
-      ("urn:example:animal?blah#",                            URN,      "example:animal",                Some("blah"),        Some("")),
-      ("urn:example:animal?#blah",                            URN,      "example:animal",                Some(""),            Some("blah")),
-      ("urn:example:animal",                                  URN,      "example:animal",                None,                None),
+      ("URI",                                                 "Scheme", "Authority",              "Path",           "Query",             "Fragment"),
+      ("http://example.com:8042/over/there?name=ferret#nose", HTTP,     Some("example.com:8042"), "/over/there",    Some("name=ferret"), Some("nose")),
+      ("http://example.com:8042/over/there?name=ferret",      HTTP,     Some("example.com:8042"), "/over/there",    Some("name=ferret"), None),
+      ("http://example.com:8042/over/there",                  HTTP,     Some("example.com:8042"), "/over/there",    None,                None),
+      ("http://example.com:8042/over/there#nose",             HTTP,     Some("example.com:8042"), "/over/there",    None,                Some("nose")),
+      ("urn:example:animal?ferret#nose",                      URN,      None,                     "example:animal", Some("ferret"),      Some("nose")),
+      ("urn:example:animal?ferret",                           URN,      None,                     "example:animal", Some("ferret"),      None),
+      ("urn:example:animal#nose",                             URN,      None,                     "example:animal", None,                Some("nose")),
+      ("urn:example:animal#",                                 URN,      None,                     "example:animal", None,                Some("")),
+      ("urn:example:animal?",                                 URN,      None,                     "example:animal", Some(""),            None),
+      ("urn:example:animal?#",                                URN,      None,                     "example:animal", Some(""),            Some("")),
+      ("urn:example:animal?blah#",                            URN,      None,                     "example:animal", Some("blah"),        Some("")),
+      ("urn:example:animal?#blah",                            URN,      None,                     "example:animal", Some(""),            Some("blah")),
+      ("urn:example:animal",                                  URN,      None,                     "example:animal", None,                None),
 
-      ("http://example.com:8042?name=ferret#nose",            HTTP,     "//example.com:8042",            Some("name=ferret"), Some("nose")),
-      ("http://example.com?name=ferret#nose",                 HTTP,     "//example.com",                 Some("name=ferret"), Some("nose")),
-      ("http://example.com:8042?name=ferret",                 HTTP,     "//example.com:8042",            Some("name=ferret"), None),
-      ("http://example.com?name=ferret",                      HTTP,     "//example.com",                 Some("name=ferret"), None),
-      ("http://example.com:8042",                             HTTP,     "//example.com:8042",            None,                None),
-      ("http://example.com",                                  HTTP,     "//example.com",                 None,                None),
-      ("http://example.com:8042/",                            HTTP,     "//example.com:8042/",           None,                None),
-      ("http://example.com/",                                 HTTP,     "//example.com/",                None,                None),
-      ("http:?query#fragment",                                HTTP,     "",                              Some("query"),       Some("fragment")),
-      ("http:path?query#fragment",                            HTTP,     "path",                          Some("query"),       Some("fragment")),
-      ("http:/path?query#fragment",                           HTTP,     "/path",                         Some("query"),       Some("fragment")),
-      ("http:path/path2?query#fragment",                      HTTP,     "path/path2",                    Some("query"),       Some("fragment"))
+      ("http://example.com:8042?name=ferret#nose",            HTTP,     Some("example.com:8042"), "",               Some("name=ferret"), Some("nose")),
+      ("http://example.com?name=ferret#nose",                 HTTP,     Some("example.com"),      "",               Some("name=ferret"), Some("nose")),
+      ("http://example.com:8042?name=ferret",                 HTTP,     Some("example.com:8042"), "",               Some("name=ferret"), None),
+      ("http://example.com?name=ferret",                      HTTP,     Some("example.com"),      "",               Some("name=ferret"), None),
+      ("http://example.com:8042",                             HTTP,     Some("example.com:8042"), "",               None,                None),
+      ("http://example.com",                                  HTTP,     Some("example.com"),      "",               None,                None),
+      ("http://example.com:8042/",                            HTTP,     Some("example.com:8042"), "/",              None,                None),
+      ("http://example.com/",                                 HTTP,     Some("example.com"),      "/",              None,                None),
+      ("http:?query#fragment",                                HTTP,     None,                     "",               Some("query"),       Some("fragment")),
+      ("http:path?query#fragment",                            HTTP,     None,                     "path",           Some("query"),       Some("fragment")),
+      ("http:/path?query#fragment",                           HTTP,     None,                     "/path",          Some("query"),       Some("fragment")),
+      ("http:path/path2?query#fragment",                      HTTP,     None,                     "path/path2",     Some("query"),       Some("fragment"))
     )
 
     forAll(uris) { (uriString,
                     scheme,
-                    hierarchicalPartStr,
+                    authority,
+                    path,
                     queryStr,
                     fragmentStr) =>
       val uri = Uri(uriString)
       assert(uri.scheme === scheme)
-      assert(uri.hierarchicalPart === HierarchicalPart(hierarchicalPartStr))
+      assert(uri.hierarchicalPart.authority === authority.map(Authority(_)))
+      assert(uri.hierarchicalPart.path.toString === path)
       assert(uri.query === queryStr.map(Query(_)))
       assert(uri.fragment === fragmentStr.map(Fragment(_)))
     }

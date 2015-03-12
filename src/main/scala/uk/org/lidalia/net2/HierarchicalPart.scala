@@ -34,7 +34,7 @@ final class HierarchicalPartWithAuthority private(val authority: Some[Authority]
                                             val path: Path) extends HierarchicalPart {
   override def toString = {
     if (path.nonEmpty) {
-      "//"+authority.get+"/"+path
+      "//"+authority.get+path
     } else {
       "//"+authority.get
     }

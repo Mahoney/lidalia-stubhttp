@@ -3,8 +3,12 @@ package uk.org.lidalia.http.core
 import uk.org.lidalia.net2.{Uri, PathAndQuery}
 import uk.org.lidalia.lang.RichObject
 
+import scala.util.Try
+
 object RequestUri {
-  def apply(requestUri: String): RequestUri = apply(PathAndQuery(requestUri))
+  def apply(requestUri: String): RequestUri = {
+    apply(Try(Uri(requestUri)).map(Left(_)).getOrElse(Right(PathAndQuery(requestUri))))
+  }
   def apply(requestUri: Either[Uri, PathAndQuery]): RequestUri = new RequestUri(requestUri)
 }
 
