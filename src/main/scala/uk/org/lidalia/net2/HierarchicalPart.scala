@@ -27,11 +27,11 @@ sealed abstract class HierarchicalPart {
 
 object HierarchicalPartWithAuthority {
   def apply(authority: Authority,
-            path: Path) = new HierarchicalPartWithAuthority(authority, path)
+            path: PathAfterAuthority) = new HierarchicalPartWithAuthority(authority, path)
 }
 
 final class HierarchicalPartWithAuthority private(val authority: Some[Authority],
-                                            val path: Path) extends HierarchicalPart {
+                                            val path: PathAfterAuthority) extends HierarchicalPart {
   override def toString = {
     if (path.nonEmpty) {
       "//"+authority.get+path

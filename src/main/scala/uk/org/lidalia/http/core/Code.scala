@@ -6,43 +6,43 @@ import scala.collection.mutable
 object Code {
 
 
-  private val tempCodes: mutable.Map[Int, Code] = mutable.Map()
+  val OK:                  SuccessfulCode  = successful( 200, Reason("OK"))
 
-  val OK:                  SuccessfulCode  = register(successful( 200, Reason("OK")))
+  val Found:               RedirectionCode = redirection(302, Reason("Found"))
 
-  val Found:               RedirectionCode = register(redirection(302, Reason("Found")))
+  val BadRequest:          ClientErrorCode = clientError(400, Reason("Bad Request"))
+  val MethodNotAllowed:    ClientErrorCode = clientError(405, Reason("Method Not Allowed"))
 
-  val BadRequest:          ClientErrorCode = register(clientError(400, Reason("Bad Request")))
-  val MethodNotAllowed:    ClientErrorCode = register(clientError(405, Reason("Method Not Allowed")))
-
-  val InternalServerError: ServerErrorCode = register(serverError(500, Reason("Internal Server Error")))
-
-  val codes: Map[Int, Code] = tempCodes.toMap
+  val InternalServerError: ServerErrorCode = serverError(500, Reason("Internal Server Error"))
 
   def successful( code: Int, defaultReason: ?[Reason] = None): SuccessfulCode =  new SuccessfulCode( code, defaultReason)
   def redirection(code: Int, defaultReason: ?[Reason] = None): RedirectionCode = new RedirectionCode(code, defaultReason)
   def clientError(code: Int, defaultReason: ?[Reason] = None): ClientErrorCode = new ClientErrorCode(code, defaultReason)
   def serverError(code: Int, defaultReason: ?[Reason] = None): ServerErrorCode = new ServerErrorCode(code, defaultReason)
 
-  private def register[T <: Code](code: T): T = {
-    tempCodes(code.code) = code
-    code
-  }
-
   def apply(code: Int, defaultReason: ?[Reason] = None) = new Code(code, defaultReason)
 
 }
 
 class Code protected(val code: Int, val defaultReason: ?[Reason]) extends WrappedValue(code) with Ordered[Code] {
+
   require(code >= 100 && code < 1000, s"Code must be between 100 and 999, was $code")
   def compare(that: Code) = code.compare(that.code)
 
-  def requiresRedirect: Boolean = (code == 302)
+  def requiresRedirect: Boolean = List(302, 307).contains(code)
 
   protected def validateCode(candidate: Int, lowerBound: Int) {
     val upperBound = lowerBound + 99
     require(candidate >= lowerBound && code <= upperBound, s"Code must be between $lowerBound & $upperBound, was $candidate")
   }
+
+  def isNotError: Boolean = code < 400
+  def isInformational: Boolean = code >= 100 && code < 200
+  def isSuccessful: Boolean = code >= 200 && code < 300
+  def isRedirection: Boolean = code >= 300 && code < 400
+  def isClientError: Boolean = code >= 400 && code < 500
+  def isServerError: Boolean = code >= 500 && code < 600
+  def isError: Boolean = isClientError || isServerError
 }
 
 class InformationalCode private[core](code: Int, defaultReason: ?[Reason]) extends Code(code, defaultReason) {

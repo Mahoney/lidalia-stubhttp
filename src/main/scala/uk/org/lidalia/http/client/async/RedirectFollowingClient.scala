@@ -6,11 +6,11 @@ import uk.org.lidalia.http.core.{RequestUri, Response}
 
 class RedirectFollowingClient(decorated: HttpClient) extends HttpClient {
 
-  override def execute[T](request: DirectedRequest[T]): Future[Response[T]] = {
+  override def execute[T](request: DirectedRequest[T]): Future[Response[Either[String, T]]] = {
     val initialResponse = decorated.execute(request)
     initialResponse.flatMap { response =>
       if (response.requiresRedirect) {
-        response.location.flatMap(location => {
+        response.location.map(location => {
           execute(
             new DirectedRequest(
               location.scheme,

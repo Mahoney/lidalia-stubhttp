@@ -9,7 +9,7 @@ import scala.concurrent.Future
 
 class DefaultResolvingHttpClient(decorated: TargetedHttpClient) extends HttpClient {
 
-  override def execute[T](request: DirectedRequest[T]): Future[Response[T]] = {
+  override def execute[T](request: DirectedRequest[T]): Future[Response[Either[String, T]]] = {
     decorated.execute(
       new TargetedRequest(
         request.scheme,

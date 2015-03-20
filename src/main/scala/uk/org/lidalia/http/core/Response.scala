@@ -20,7 +20,7 @@ object Response {
   }
 }
 
-class Response[+T] private(private val responseHeader: ResponseHeader, val body: T) extends Message(responseHeader) {
+class Response[T] private(val responseHeader: ResponseHeader, entity: T) extends Message(responseHeader, entity) {
 
   val code = responseHeader.code
 
@@ -30,4 +30,11 @@ class Response[+T] private(private val responseHeader: ResponseHeader, val body:
 
   def date: ?[DateTime] = responseHeader.date
 
+  def isNotError: Boolean = responseHeader.isNotError
+  def isInformational: Boolean = responseHeader.isInformational
+  def isSuccessful: Boolean = responseHeader.isSuccessful
+  def isRedirection: Boolean = responseHeader.isRedirection
+  def isClientError: Boolean = responseHeader.isClientError
+  def isServerError: Boolean = responseHeader.isServerError
+  def isError: Boolean = responseHeader.isError
 }

@@ -24,7 +24,7 @@ object Uri {
     )
 }
 
-class Uri private(@Identity val scheme: Scheme,
+class Uri private[net2] (@Identity val scheme: Scheme,
                   @Identity val hierarchicalPart: HierarchicalPart,
                   @Identity val query: ?[Query],
                   @Identity val fragment: ?[Fragment])

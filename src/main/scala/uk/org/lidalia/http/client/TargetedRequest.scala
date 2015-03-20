@@ -12,5 +12,7 @@ class TargetedRequest[T](
         @Identity val targetedParent: ?[TargetedRequest[T]] = None,
         @Identity val directedParent: ?[DirectedRequest[T]] = None
         ) extends RichObject {
-
+  override def toString() = {
+    request+System.lineSeparator()+System.lineSeparator()+"to "+target+" over "+scheme
+  }
 }

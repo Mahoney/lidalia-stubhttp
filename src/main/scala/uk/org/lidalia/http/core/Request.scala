@@ -1,5 +1,7 @@
 package uk.org.lidalia.http.core
 
+import java.lang.System._
+
 import uk.org.lidalia.net2.Uri
 
 object Request {
@@ -16,7 +18,7 @@ object Request {
     )
 }
 
-class Request private(private val requestHeader: RequestHeader) extends Message(requestHeader) {
+class Request private(private val requestHeader: RequestHeader) extends Message(requestHeader, None) {
 
   def withUri(newUri: RequestUri): Request = {
     Request(method, newUri, header.headerFields)
@@ -27,5 +29,4 @@ class Request private(private val requestHeader: RequestHeader) extends Message(
   val requestUri = requestHeader.requestUri
 
   def referer: ?[Uri] = requestHeader.referer
-
 }

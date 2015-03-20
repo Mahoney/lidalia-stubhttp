@@ -1,32 +1,10 @@
 package uk.org.lidalia.http.client
 
-import uk.org.lidalia.http.core.Method.GET
-import uk.org.lidalia.http.core.headerfields.Host
-import uk.org.lidalia.net2.Uri
 import scala.concurrent.Future
-import uk.org.lidalia.http.core.{RequestUri, Response, Request}
+import uk.org.lidalia.http.core.Response
 
-trait HttpClient {
+trait HttpClient extends BaseHttpClient {
 
-  def execute[T](request: DirectedRequest[T]): Future[Response[T]]
+  type Result[A] = Future[Response[Either[String, A]]]
 
-  def get[T](
-    uri: Uri,
-    accept: Accept[T]): Future[Response[T]] =
-
-    execute(
-      new DirectedRequest(
-        uri.scheme,
-        uri.hostAndPort.get,
-        Request(
-          GET,
-          RequestUri(uri.pathAndQuery),
-          List(
-            Host(uri.hostAndPort.get),
-            accept
-          )
-        ),
-        accept
-      )
-    )
 }

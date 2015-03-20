@@ -1,5 +1,9 @@
 package uk.org.lidalia.http.client
 
+import java.io.{ByteArrayOutputStream, InputStream}
+
+import com.google.common.base.Charsets
+import org.apache.commons.io.IOUtils
 import uk.org.lidalia
 import lidalia.http
 import org.apache
@@ -7,7 +11,6 @@ import org.apache
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-import lidalia.net2.Target
 import uk.org.lidalia.http.core._
 
 import apache.http.{HttpResponse, HttpHost}
@@ -18,9 +21,10 @@ import apache.http.client.{ResponseHandler => ApacheResponseHandler}
 class CoreClient(apacheClient: CloseableHttpClient = HttpClientBuilder.create()
     .setMaxConnPerRoute(Integer.MAX_VALUE)
     .setMaxConnTotal(Integer.MAX_VALUE)
+    .disableRedirectHandling()
     .build()) extends TargetedHttpClient {
 
-  override def execute[T](targetedRequest: TargetedRequest[T]): Future[Response[T]] = {
+  override def execute[T](targetedRequest: TargetedRequest[T]): Future[Response[Either[String, T]]] = {
     Future {
 
       val target = targetedRequest.target
@@ -36,8 +40,8 @@ class CoreClient(apacheClient: CloseableHttpClient = HttpClientBuilder.create()
         request.requestUri.toString
       )
       
-      val apacheResponseHandler = new ApacheResponseHandler[Response[T]] {
-        def handleResponse(response: HttpResponse): Response[T] = {
+      val apacheResponseHandler = new ApacheResponseHandler[Response[Either[String, T]]] {
+        def handleResponse(response: HttpResponse): Response[Either[String, T]] = {
           val headerFields = response.getAllHeaders.map{
             headerField => HeaderField(headerField.getName, headerField.getValue)
           }.toList
@@ -47,16 +51,62 @@ class CoreClient(apacheClient: CloseableHttpClient = HttpClientBuilder.create()
             Reason(response.getStatusLine.getReasonPhrase),
             headerFields
           )
-          val entity = targetedRequest.unmarshaller.unmarshal(targetedRequest, responseHeader, response.getEntity.getContent)
+          val entity = unmarshal(targetedRequest, response, responseHeader, targetedRequest.unmarshaller)
           Response(responseHeader, entity)
         }
       }
 
       apacheClient.execute(
-        host, 
-        apacheRequest, 
+        host,
+        apacheRequest,
         apacheResponseHandler
       )
     }
+  }
+
+  def unmarshal[T](targetedRequest: TargetedRequest[T], response: HttpResponse, responseHeader: ResponseHeader, unmarshaller: EntityUnmarshaller[T]): Either[String, T] = {
+
+    val content = new CapturingInputStream(response.getEntity.getContent)
+      try {
+        Right(unmarshaller.unmarshal(targetedRequest.request, responseHeader, content))
+      } catch {
+        case e: Exception =>
+          val array: Array[Byte] = content.captured.toByteArray
+          val charset = responseHeader.contentType.flatMap(_.charset).getOrElse(Charsets.UTF_8)
+          Left(IOUtils.toString(array, charset.name()))
+      }
+  }
+}
+
+class CapturingInputStream(decorated: InputStream, maxSize: Int = 1024 * 512) extends InputStream {
+
+  var firstByte: ?[Int] = None
+  var firstByteRead = false
+
+  val captured = new ByteArrayOutputStream(maxSize)
+
+  override def read(): Int = {
+    if (firstByteRead) {
+      doRead()
+    } else {
+      firstByteRead = true
+      getFirstByte
+    }
+  }
+
+  def doRead(): Int = {
+    val result = decorated.read()
+    if (result >= 0 && captured.size() < maxSize)
+      captured.write(result)
+    result
+  }
+
+  def isEmpty = getFirstByte == -1
+
+  private def getFirstByte = {
+    if (firstByte == null) {
+      firstByte = doRead()
+    }
+    firstByte.get
   }
 }

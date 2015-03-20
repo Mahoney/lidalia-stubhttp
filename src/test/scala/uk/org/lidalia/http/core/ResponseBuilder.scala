@@ -6,5 +6,5 @@ object ResponseBuilder {
 
   def response[T](status: Code = OK,
                headerFields: List[HeaderField] = Nil,
-               body: T = None): Response[T] = Response(status, headerFields, body)
+               body: Either[String, T] = Right(None)): Response[Either[String, T]] = Response(status, headerFields, body)
 }

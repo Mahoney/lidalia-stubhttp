@@ -1,5 +1,9 @@
 package uk.org.lidalia.http.client
 
+import java.lang.System.lineSeparator
+import javax.json.stream.JsonParsingException
+import javax.json.{Json, JsonObject}
+
 import com.github.tomakehurst.wiremock
 import org.apache.http.impl.client.HttpClientBuilder
 import org.scalatest
@@ -24,7 +28,7 @@ import org.apache.commons.io.IOUtils
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 import java.util.concurrent.{TimeoutException, TimeUnit}
-import java.io.InputStream
+import java.io.{InputStreamReader, InputStream}
 import org.joda.time.{DateTimeZone, DateTime}
 
 class CoreClientTests extends PropSpec with TableDrivenPropertyChecks with WireMockTest {
@@ -36,8 +40,8 @@ class CoreClientTests extends PropSpec with TableDrivenPropertyChecks with WireM
   val coreClient = new CoreClient
   lazy val target = Target("127.0.0.1", wireMockServer.port())
 
-  val unmarshaller = new Accept[String](List()) {
-    def unmarshal(request: TargetedRequest[String], response: ResponseHeader, entityBytes: InputStream) = IOUtils.toString(entityBytes)
+  val unmarshaller = new Accept[String](List(new MediaRangePref(new MediaRange("text/plain")))) {
+    def unmarshal(request: Request, response: ResponseHeader, entityBytes: InputStream) = IOUtils.toString(entityBytes)
   }
 
   property("Returns response from server") {
@@ -59,7 +63,7 @@ class CoreClientTests extends PropSpec with TableDrivenPropertyChecks with WireM
 
     assert(response.code === Code(200))
     assert(response.headerField("Content-Type") === Some(HeaderField("Content-Type", "text/plain")))
-    assert(response.body === "Some text")
+    assert(response.entity === "Some text")
     assert(response.date === Some(new DateTime("1994-11-06T08:49:37").withZone(DateTimeZone.forID("GMT"))))
   }
 
@@ -77,10 +81,50 @@ class CoreClientTests extends PropSpec with TableDrivenPropertyChecks with WireM
       )
       fail("Should have timed out!")
     } catch {
-      case e: TimeoutException => {
-//        apacheClient.getConnectionManager.
+      case e: TimeoutException => fail("prove here that the connection has gone...")
+    }
+  }
+
+  property("Failure to unmarshal throws exception") {
+    givenThat(
+      get(urlEqualTo("/foo")).willReturn(
+        aResponse()
+          .withStatus(200)
+          .withBody("Not json!")
+          .withHeader("Date", "Sun, 06 Nov 1994 08:49:37 GMT")
+          .withHeader("Content-Type", "application/json")))
+
+
+    val request = new TargetedRequest(
+      HTTP,
+      target,
+      Request(GET, RequestUri("/foo")),
+      new Accept[JsonObject](List(new MediaRangePref(new MediaRange("application/json")))) {
+        def unmarshal(request: Request, response: ResponseHeader, entityBytes: InputStream) = Json.createReader(new InputStreamReader(entityBytes, "UTF-8")).readObject()
+      }
+    )
+
+    try {
+      Await.result(
+        coreClient.execute(request),
+        Duration(1, TimeUnit.SECONDS)
+      )
+      fail("Should have thrown an exception!")
+    } catch {
+      case e: FailedToUnmarshallEntity => {
+        assert(e.getMessage.contains(e.request.toString))
+        assert(e.getMessage.contains(e.response.toString))
+        assert(e.getCause.getClass === classOf[JsonParsingException])
+        assert(e.request === request)
+        assert(e.response.code === Code(200))
+        assert(e.response.headerField("Content-Type") === Some(HeaderField("Content-Type", "application/json")))
+        assert(e.response.date === Some(new DateTime("1994-11-06T08:49:37").withZone(DateTimeZone.forID("GMT"))))
+        assert(e.response.entity === "Not json!")
       }
     }
+
+
+
   }
 }
 

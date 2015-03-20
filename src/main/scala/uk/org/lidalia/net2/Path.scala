@@ -6,9 +6,9 @@ import scala.collection.immutable
 
 object PathAfterAuthority {
 
-  def apply(): Path = new PathAfterAuthority(List())
+  def apply(): PathAfterAuthority = new PathAfterAuthority(List())
 
-  def apply(path: String): Path = {
+  def apply(path: String): PathAfterAuthority = {
     if (path.isEmpty) {
       PathAfterAuthority()
     } else {

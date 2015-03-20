@@ -1,8 +1,12 @@
 package uk.org.lidalia.http.core
 
+import java.lang.System.lineSeparator
+
 import uk.org.lidalia.lang.RichObject
 
-abstract class Message private[http](@Identity val header: MessageHeader) extends RichObject {
+abstract class Message[T] private[http](
+              @Identity val header: MessageHeader,
+              @Identity val entity: T) extends RichObject {
 
   def headerFieldValues(headerFieldName: String) = header.headerFieldValues(headerFieldName)
 
@@ -14,4 +18,7 @@ abstract class Message private[http](@Identity val header: MessageHeader) extend
 
   val headerFieldMap = header.headerFieldMap
 
+  override def toString = {
+    header+lineSeparator()+lineSeparator()+entity.map(_.toString).getOrElse("")
+  }
 }

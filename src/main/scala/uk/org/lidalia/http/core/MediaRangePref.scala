@@ -3,12 +3,14 @@ package uk.org.lidalia.http.core
 import java.nio.charset.Charset
 
 class MediaRangePref(val mediaRange: MediaRange) {
-
+  override def toString = mediaRange.toString
 }
 
-class MediaRange {}
+class MediaRange(val range: String) {
+  override def toString = range
+}
 
-class MediaType {
+class MediaType(value: String) {
   def charset: ?[Charset] = None
 }
 

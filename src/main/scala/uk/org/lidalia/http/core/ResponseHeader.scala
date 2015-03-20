@@ -37,4 +37,12 @@ class ResponseHeader private(@Identity val code: Code,
   lazy val contentType: ?[MediaType] = headerField(ContentType)
 
   override def toString = s"HTTP/1.1 $code $reason\r\n${super.toString}"
+
+  def isNotError: Boolean = code.isNotError
+  def isInformational: Boolean = code.isInformational
+  def isSuccessful: Boolean = code.isSuccessful
+  def isRedirection: Boolean = code.isRedirection
+  def isClientError: Boolean = code.isClientError
+  def isServerError: Boolean = code.isServerError
+  def isError: Boolean = code.isError
 }
