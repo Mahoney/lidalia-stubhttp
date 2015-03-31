@@ -1,6 +1,6 @@
 package uk.org.lidalia.http.core
 
-import uk.org.lidalia.net2.Uri
+import uk.org.lidalia.net2.{Url, Uri}
 import org.joda.time.DateTime
 
 object Response {
@@ -20,13 +20,13 @@ object Response {
   }
 }
 
-class Response[T] private(val responseHeader: ResponseHeader, entity: T) extends Message(responseHeader, entity) {
+class Response[+T] private(val responseHeader: ResponseHeader, entity: T) extends Message(responseHeader, entity) {
 
   val code = responseHeader.code
 
   def requiresRedirect: Boolean = responseHeader.requiresRedirect
 
-  def location: ?[Uri] = responseHeader.location
+  def location: ?[Url] = responseHeader.location
 
   def date: ?[DateTime] = responseHeader.date
 

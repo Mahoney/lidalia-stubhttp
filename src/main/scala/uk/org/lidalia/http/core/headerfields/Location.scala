@@ -1,13 +1,13 @@
 package uk.org.lidalia.http.core.headerfields
 
-import uk.org.lidalia.net2.Uri
+import uk.org.lidalia.net2.{Url, Uri}
 
-object Location extends UriHeaderFieldName {
+object Location extends UrlHeaderFieldName {
 
-  def apply(uri: Uri) = new Location(uri)
+  def apply(url: Url) = new Location(url)
 
   def name: String = "Location"
 
 }
 
-class Location private (uri: Uri) extends UriHeaderField(Location.name, uri)
+class Location private (url: Url) extends UriHeaderField(Location.name, url)

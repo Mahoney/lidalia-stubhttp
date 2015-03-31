@@ -37,7 +37,7 @@ class CoreClientTests extends PropSpec with TableDrivenPropertyChecks with WireM
     .setMaxConnPerRoute(Integer.MAX_VALUE)
     .setMaxConnTotal(Integer.MAX_VALUE)
     .build()
-  val coreClient = new CoreClient
+  val coreClient = new Apache4Client()
   lazy val target = Target("127.0.0.1", wireMockServer.port())
 
   val unmarshaller = new Accept[String](List(new MediaRangePref(new MediaRange("text/plain")))) {

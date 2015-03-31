@@ -14,11 +14,11 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import uk.org.lidalia.http.core._
 
 import apache.http.{HttpResponse, HttpHost}
-import org.apache.http.impl.client.{CloseableHttpClient, HttpClientBuilder}
+import apache.http.impl.client.{CloseableHttpClient, HttpClientBuilder}
 import apache.http.message.BasicHttpRequest
 import apache.http.client.{ResponseHandler => ApacheResponseHandler}
 
-class CoreClient(apacheClient: CloseableHttpClient = HttpClientBuilder.create()
+class Apache4Client(apacheClient: CloseableHttpClient = HttpClientBuilder.create()
     .setMaxConnPerRoute(Integer.MAX_VALUE)
     .setMaxConnTotal(Integer.MAX_VALUE)
     .disableRedirectHandling()

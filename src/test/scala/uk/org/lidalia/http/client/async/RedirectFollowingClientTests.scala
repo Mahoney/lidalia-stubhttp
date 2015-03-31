@@ -26,7 +26,7 @@ import uk.org.lidalia.http.core.{RequestUri, RequestBuilder, Response, Code}
 import RequestBuilder.{get, request}
 import Code.Found
 
-import uk.org.lidalia.net2.{HostAndPort, Authority, Scheme, Uri}
+import uk.org.lidalia.net2._
 
 @RunWith(classOf[JUnitRunner])
 class RedirectFollowingClientTests extends PropSpec with TableDrivenPropertyChecks {
@@ -48,7 +48,7 @@ class RedirectFollowingClientTests extends PropSpec with TableDrivenPropertyChec
 
   property("Follows 302 redirect") {
     val request1 = get()
-    val redirectLocation = Uri("http://www.example.com/redirectlocation")
+    val redirectLocation = Url("http://www.example.com/redirectlocation")
     val redirectResponse = successful(response(Found, List(Location(redirectLocation))))
     given(decorated.execute(request1)).willReturn(redirectResponse)
 
@@ -66,12 +66,12 @@ class RedirectFollowingClientTests extends PropSpec with TableDrivenPropertyChec
 
   property("Follows two 302 redirects") {
     val request1 = get()
-    val redirectLocation1 = Uri("http://www.example.com/redirectlocation")
+    val redirectLocation1 = Url("http://www.example.com/redirectlocation")
     val redirectResponse1 = successful(response(Found, List(Location(redirectLocation1))))
     given(decorated.execute(request1)).willReturn(redirectResponse1)
 
     val request2 = get(redirectLocation1)
-    val redirectLocation2 = Uri("http://www.example.com/redirectlocation2")
+    val redirectLocation2 = Url("http://www.example.com/redirectlocation2")
     val redirectResponse2 = successful(response(Found, List(Location(redirectLocation2))))
     given(decorated.execute(request2)).willReturn(redirectResponse2)
 

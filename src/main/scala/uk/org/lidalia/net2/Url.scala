@@ -1,21 +1,26 @@
 package uk.org.lidalia.net2
 
 object Url {
-  def apply(url: String): Url = ???
+  def apply(url: String): Url = {
+    val uri = Uri(url)
+    new Url(
+      uri.scheme.asInstanceOf[SchemeWithDefaultPort],
+      uri.hierarchicalPart.asInstanceOf[HierarchicalPartWithAuthority],
+      uri.query,
+      uri.fragment
+    )
+  }
 }
 
-class Url(
-  schemeWithDefaultPort: SchemeWithDefaultPort,
-  hierarchicalPartWithAuthority: HierarchicalPartWithAuthority,
-  query: ?[Query],
-  fragment: ?[Fragment]) extends Uri(schemeWithDefaultPort, hierarchicalPartWithAuthority, query, fragment) {
+class Url private (
+  override val scheme: SchemeWithDefaultPort,
+  override val hierarchicalPart: HierarchicalPartWithAuthority,
+  query: ?[Query] = None,
+  fragment: ?[Fragment] = None) extends Uri(scheme, hierarchicalPart, query, fragment) {
   
-  override val scheme: SchemeWithDefaultPort = schemeWithDefaultPort
-  override val hierarchicalPart: HierarchicalPartWithAuthority = hierarchicalPartWithAuthority
-
-  override lazy val hostAndPort: Some[HostAndPort] = hierarchicalPart.authority.hostAndPort
-  override lazy val resolvedPort: Some[Port] = Some(hierarchicalPart.authority.get.hostAndPort.port.getOrElse(scheme.defaultPort.get))
-  override lazy val path: Path = hierarchicalPart.path
-  override lazy val pathAndQuery: PathAndQuery = PathAndQuery(path, query)
+  override lazy val path: PathAfterAuthority = hierarchicalPart.path
   override lazy val absoluteUri: Url = if (fragment.isEmpty) this else new Url(scheme, hierarchicalPart, query, None)
+
+  lazy val hostAndPort: HostAndPort = hierarchicalPart.authority.get.hostAndPort
+  lazy val resolvedPort: Port = hostAndPort.port.getOrElse(scheme.defaultPort.get)
 }

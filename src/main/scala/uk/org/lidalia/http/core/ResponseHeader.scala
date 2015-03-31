@@ -1,7 +1,7 @@
 package uk.org.lidalia.http.core
 
 import uk.org.lidalia
-import lidalia.net2.Uri
+import uk.org.lidalia.net2.{Url, Uri}
 import lidalia.http.core.headerfields.{LastModified, Age, Location, Date, Etag, ContentType}
 import org.joda.time.{Duration, DateTime}
 
@@ -24,7 +24,7 @@ class ResponseHeader private(@Identity val code: Code,
 
   def requiresRedirect: Boolean = code.requiresRedirect
 
-  lazy val location: ?[Uri] = headerField(Location)
+  lazy val location: ?[Url] = headerField(Location)
 
   lazy val date: ?[DateTime] = headerField(Date)
 

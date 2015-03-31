@@ -4,7 +4,7 @@ import java.lang.System.lineSeparator
 
 import uk.org.lidalia.lang.RichObject
 
-abstract class Message[T] private[http](
+abstract class Message[+T] private[http](
               @Identity val header: MessageHeader,
               @Identity val entity: T) extends RichObject {
 

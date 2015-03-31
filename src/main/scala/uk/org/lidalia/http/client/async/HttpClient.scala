@@ -3,8 +3,10 @@ package uk.org.lidalia.http.client
 import scala.concurrent.Future
 import uk.org.lidalia.http.core.Response
 
-trait HttpClient extends BaseHttpClient {
+object HttpClient {
+  type FutureResponseStringOr[T] = Future[Response[Either[String, T]]]
+}
 
-  type Result[A] = Future[Response[Either[String, A]]]
-
+trait HttpClient extends BaseHttpClient[HttpClient.FutureResponseStringOr] {
+  def execute[T](request: DirectedRequest[T]): Future[Response[Either[String, T]]]
 }
