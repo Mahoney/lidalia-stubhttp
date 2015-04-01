@@ -4,9 +4,9 @@ import org.joda.time.DateTime
 
 object Date extends DateHeaderFieldName {
 
-  def apply(date: DateTime) = new Date(date)
+  override def apply(date: DateTime) = new Date(date)
 
-  def name: String = "Date"
+  override def name: String = "Date"
 
 }
 
