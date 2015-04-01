@@ -4,14 +4,16 @@ import uk.org.lidalia
 import lidalia.net2.Uri
 import lidalia.http.core.headerfields.Referer
 
+import scala.collection.immutable
+
 object RequestHeader {
-    def apply(method: Method, uri: RequestUri, headerFields: List[HeaderField]): RequestHeader = new RequestHeader(method, uri, headerFields)
+    def apply(method: Method, uri: RequestUri, headerFields: immutable.Seq[HeaderField]): RequestHeader = new RequestHeader(method, uri, headerFields)
 }
 
 class RequestHeader private(
                                @Identity val method: Method,
                                @Identity val requestUri: RequestUri,
-                               private val reqHeaderFieldsList: List[HeaderField]) extends MessageHeader(reqHeaderFieldsList) {
+                               private val reqHeaderFieldsList: immutable.Seq[HeaderField]) extends MessageHeader(reqHeaderFieldsList) {
 
   lazy val referer: ?[Uri] = headerField(Referer)
 

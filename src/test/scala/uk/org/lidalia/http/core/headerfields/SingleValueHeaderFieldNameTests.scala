@@ -5,7 +5,7 @@ import org.scalatest.junit.JUnitRunner
 import org.scalatest.{PropSpecLike, PropSpec}
 import org.scalatest.prop.TableDrivenPropertyChecks
 import scala.util.Try
-import uk.org.lidalia.http.core.HeaderFieldName
+import uk.org.lidalia.http.core.{HeaderField, HeaderFieldName}
 
 object SingleValueHeaderFieldNameTests extends TableDrivenPropertyChecks with PropSpecLike {
   def firstParseableValueReturned[T](
@@ -39,6 +39,8 @@ class SingleValueHeaderFieldNameTests extends PropSpec with TableDrivenPropertyC
     def name = "X-Stub"
 
     def parse(headerFieldValue: String) = parseReturn
+
+    override def apply(value: String): HeaderField = HeaderField(name, value)
   }
 
   property("Parse returning null throws NullPointerException") {
@@ -82,6 +84,8 @@ class SingleValueHeaderFieldNameTests extends PropSpec with TableDrivenPropertyC
       def name = "name"
 
       def parse(headerFieldValue: String) = Try(Integer.parseInt(headerFieldValue)).toOption
+
+      override def apply(value: Int): HeaderField = HeaderField(name, value.toString)
     }
 
     SingleValueHeaderFieldNameTests.firstParseableValueReturned(

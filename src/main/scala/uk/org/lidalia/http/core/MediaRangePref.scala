@@ -2,6 +2,8 @@ package uk.org.lidalia.http.core
 
 import java.nio.charset.Charset
 
+import scala.collection.immutable.Seq
+
 class MediaRangePref(val mediaRange: MediaRange) {
   override def toString = mediaRange.toString
 }
@@ -14,10 +16,10 @@ class MediaType(value: String) {
   def charset: ?[Charset] = None
 }
 
-class AcceptParams(val q: Int, val acceptExtensionList: List[(String, String)]) {
+class AcceptParams(val q: Int, val acceptExtensionList: Seq[(String, String)]) {
   require(q >= 0 && q <= 1000, s"q must be between 0 and 1000, was $q")
 
-  val acceptExtensions: Map[String, List[String]] = acceptExtensionList.groupBy(_._1).map({
+  val acceptExtensions: Map[String, Seq[String]] = acceptExtensionList.groupBy(_._1).map({
     case (name, nameAndValues) => (name, nameAndValues.map(_._2))
   })
 

@@ -5,22 +5,24 @@ import uk.org.lidalia.net2.{Url, Uri}
 import lidalia.http.core.headerfields.{LastModified, Age, Location, Date, Etag, ContentType}
 import org.joda.time.{Duration, DateTime}
 
+import scala.collection.immutable.Seq
+
 object ResponseHeader {
     def apply(
                status: Code,
                reason: Reason,
-               headerFields: List[HeaderField]
+               headerFields: Seq[HeaderField]
                ): ResponseHeader = new ResponseHeader(status, reason, headerFields)
 
     def apply(
              status: Code,
-             headerFields: List[HeaderField]
+             headerFields: Seq[HeaderField]
              ): ResponseHeader = new ResponseHeader(status, status.defaultReason or Reason(""), headerFields)
 }
 
 class ResponseHeader private(@Identity val code: Code,
                              @Identity val reason: Reason,
-                             headerFields: List[HeaderField]) extends MessageHeader(headerFields) {
+                             headerFields: Seq[HeaderField]) extends MessageHeader(headerFields) {
 
   def requiresRedirect: Boolean = code.requiresRedirect
 

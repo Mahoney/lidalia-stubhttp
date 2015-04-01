@@ -3,10 +3,12 @@ package uk.org.lidalia.http.core
 import uk.org.lidalia.net2.{Url, Uri}
 import org.joda.time.DateTime
 
+import scala.collection.immutable.Seq
+
 object Response {
   def apply[T](
     status: Code,
-    headerFields: List[HeaderField] = Nil,
+    headerFields: Seq[HeaderField] = Nil,
     body: T = None): Response[T] = {
 
     new Response(ResponseHeader(status, headerFields), body)

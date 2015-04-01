@@ -1,7 +1,9 @@
 package uk.org.lidalia.http.core
 
+import scala.collection.immutable.Seq
+
 trait HeaderFieldName[+T] {
-  def parse(headerFieldValues: List[String]): T
+  def parse(headerFieldValues: Seq[String]): T
   def name: String
   override val toString = name
 }

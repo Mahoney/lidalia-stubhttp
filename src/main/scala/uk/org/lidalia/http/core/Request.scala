@@ -1,14 +1,14 @@
 package uk.org.lidalia.http.core
 
-import java.lang.System._
-
 import uk.org.lidalia.net2.Uri
+
+import scala.collection.immutable.Seq
 
 object Request {
   def apply(
         method: Method,
         requestUri: RequestUri,
-        headerFields: List[HeaderField] = Nil) =
+        headerFields: Seq[HeaderField] = Nil) =
     new Request(
       RequestHeader(
         method,

@@ -9,7 +9,7 @@ import org.mockito.Mockito.mock
 import org.scalatest.{PropSpec, FunSuite}
 import uk.org.lidalia.http.client.EntityOnlyHttpClient.Is
 import uk.org.lidalia.http.client.ExpectedEntityHttpClient.FutureResponse
-import uk.org.lidalia.http.core.headerfields.Host
+import uk.org.lidalia.http.core.headerfields.{Etag, Host}
 import uk.org.lidalia.http.core.{Response, RequestUri, Request, ResponseHeader}
 import uk.org.lidalia.net2._
 import uk.org.lidalia.net2.Scheme._
@@ -38,14 +38,19 @@ class ConvenientHttpClientTest extends PropSpec {
           GET,
           RequestUri("/blah"),
           List(
-            Host(HostAndPort("localhost")),
-            accept
+            Host := HostAndPort("localhost"),
+            accept,
+            Etag := "my-custom-etag"
           )),
         accept
       )
     )).willReturn("Result")
 
-    val result: String = client.get(Url("http://localhost/blah"), accept)
+    val result: String = client.get(
+      Url("http://localhost/blah"),
+      accept,
+      Etag := "my-custom-etag"
+    )
 
     assert(result === "Result")
   }

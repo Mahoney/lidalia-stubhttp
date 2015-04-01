@@ -26,6 +26,8 @@ class DateHeaderFieldTests extends PropSpec with TableDrivenPropertyChecks with 
 
   val fieldName = new DateHeaderFieldName {
     def name = testName
+
+    override def apply(value: DateTime): HeaderField = HeaderField(name, DateHeaderField.rfc1123DateFormat.print(value))
   }
 
   property("DateHeaderField serialises to RFC 1123 format (http://tools.ietf.org/html/rfc2616#section-3.3)") {
