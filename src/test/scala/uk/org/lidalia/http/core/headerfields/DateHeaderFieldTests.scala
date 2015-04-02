@@ -1,15 +1,12 @@
 package uk.org.lidalia.http.core.headerfields
 
-import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
 import org.scalatest.PropSpec
 import org.scalatest.prop.TableDrivenPropertyChecks
 import org.joda.time.{DateTimeZone, DateTime}
-import uk.org.lidalia.{DefaultLocale, StaticTime}
+import uk.org.lidalia.DefaultLocale
 import java.util.Locale
-import uk.org.lidalia.http.core.{ResponseHeader, HeaderField}
+import uk.org.lidalia.http.core.HeaderField
 
-@RunWith(classOf[JUnitRunner])
 class DateHeaderFieldTests extends PropSpec with TableDrivenPropertyChecks with DefaultLocale {
 
   val defaultLocale = Locale.FRANCE

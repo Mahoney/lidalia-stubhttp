@@ -2,12 +2,8 @@ package uk.org.lidalia.net2
 
 import org.scalatest.PropSpec
 import org.scalatest.prop.TableDrivenPropertyChecks
-import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
-import java.lang.IllegalArgumentException
 import java.util.Locale
 
-@RunWith(classOf[JUnitRunner])
 class SchemeTests extends PropSpec with TableDrivenPropertyChecks {
 
   property("Valid scheme names accepted") {

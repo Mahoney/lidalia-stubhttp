@@ -1,13 +1,10 @@
 package uk.org.lidalia.http.core.headerfields
 
-import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
 import org.scalatest.PropSpec
 import org.scalatest.prop.TableDrivenPropertyChecks
 import uk.org.lidalia.http.core.headerfields.SingleValueHeaderFieldNameTests._
-import uk.org.lidalia.net2.{Url, Uri}
+import uk.org.lidalia.net2.Url
 
-@RunWith(classOf[JUnitRunner])
 class LocationTests extends PropSpec with TableDrivenPropertyChecks {
   property("First Parseable Value Returned") {
     firstParseableValueReturned[Url](

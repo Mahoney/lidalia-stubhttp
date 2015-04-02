@@ -2,17 +2,13 @@ package uk.org.lidalia.net2
 
 import org.scalatest.PropSpec
 import org.scalatest.prop.PropertyChecks
-import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
 import org.scalacheck.Gen
-import java.lang.IllegalArgumentException
 import uk.org.lidalia.TestUtils.{
   genRandomStringFrom,
   genStringFromChars,
   genNonEmptyStringFromChars
 }
 
-@RunWith(classOf[JUnitRunner])
 class QueryParamValueTests
     extends PropSpec
     with PropertyChecks {

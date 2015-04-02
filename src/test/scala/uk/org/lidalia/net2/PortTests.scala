@@ -2,10 +2,7 @@ package uk.org.lidalia.net2
 
 import org.scalatest.PropSpec
 import org.scalatest.prop.TableDrivenPropertyChecks
-import org.scalatest.junit.JUnitRunner
-import org.junit.runner.RunWith
 
-@RunWith(classOf[JUnitRunner])
 class PortTests extends PropSpec with TableDrivenPropertyChecks {
 
 

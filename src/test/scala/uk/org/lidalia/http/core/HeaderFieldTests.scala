@@ -3,11 +3,8 @@ package uk.org.lidalia.http.core
 import org.scalatest
 import scalatest.PropSpec
 import scalatest.prop.TableDrivenPropertyChecks
-import scalatest.junit.JUnitRunner
-import org.junit.runner.RunWith
-import uk.org.lidalia.net2.EqualsChecks.{possibleArgsFor, reflexiveTest, equalsTest}
+import uk.org.lidalia.net2.EqualsChecks.{equalsTest, possibleArgsFor, reflexiveTest}
 
-@RunWith(classOf[JUnitRunner])
 class HeaderFieldTests extends PropSpec with TableDrivenPropertyChecks {
 
   property("HeaderField equals contract") {

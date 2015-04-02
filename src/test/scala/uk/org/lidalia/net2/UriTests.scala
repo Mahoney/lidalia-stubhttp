@@ -2,12 +2,9 @@ package uk.org.lidalia.net2
 
 import org.scalatest.PropSpec
 import org.scalatest.prop.TableDrivenPropertyChecks
-import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
 import uk.org.lidalia.net2.EqualsChecks.{possibleArgsFor, reflexiveTest, equalsTest}
 import Scheme.{ HTTP, URN }
 
-@RunWith(classOf[JUnitRunner])
 class UriTests extends PropSpec with TableDrivenPropertyChecks {
 
   property("Uri equals contract") {

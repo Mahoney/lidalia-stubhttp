@@ -3,11 +3,8 @@ package uk.org.lidalia.net2
 import org.scalatest
 import scalatest.PropSpec
 import org.scalatest.prop.TableDrivenPropertyChecks
-import scalatest.junit.JUnitRunner
-import org.junit.runner.RunWith
 import EqualsChecks.{possibleArgsFor, reflexiveTest, equalsTest }
 
-@RunWith(classOf[JUnitRunner])
 class HostAndPortTests extends PropSpec with TableDrivenPropertyChecks {
 
   property("ResolvedHostAndPort equals") {

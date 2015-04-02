@@ -1,7 +1,5 @@
 package uk.org.lidalia.http.core.headerfields
 
-import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
 import org.scalatest.{PropSpecLike, PropSpec}
 import org.scalatest.prop.TableDrivenPropertyChecks
 import scala.util.Try
@@ -31,7 +29,6 @@ object SingleValueHeaderFieldNameTests extends TableDrivenPropertyChecks with Pr
   }
 }
 
-@RunWith(classOf[JUnitRunner])
 class SingleValueHeaderFieldNameTests extends PropSpec with TableDrivenPropertyChecks {
 
   class StubSingleValueHeaderFieldName(parseReturn: => ?[String]) extends SingleValueHeaderFieldName[String] {

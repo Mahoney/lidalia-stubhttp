@@ -1,34 +1,25 @@
 package uk.org.lidalia.http.client
 
-import org.scalatest
-import org.junit
-import org.mockito
-import uk.org.lidalia
-import lidalia.http
-
-import scala.concurrent.{Await, Future}
-import scala.concurrent.duration.Duration
-import Future.successful
 import java.util.concurrent.TimeUnit.SECONDS
 
+import org.{mockito, scalatest}
+import mockito.BDDMockito.given
+import mockito.Mockito.mock
 import scalatest.PropSpec
 import scalatest.prop.TableDrivenPropertyChecks
-import scalatest.junit.JUnitRunner
-
-import junit.runner.RunWith
-
-import mockito.Mockito.mock
-import mockito.BDDMockito.given
-
-import http.core.headerfields.Location
+import uk.org.lidalia
+import lidalia.http
+import http.core.Code.Found
+import http.core.RequestBuilder.{get, request}
 import http.core.ResponseBuilder.response
-import uk.org.lidalia.http.core.{RequestUri, RequestBuilder, Response, Code}
-import RequestBuilder.{get, request}
-import Code.Found
+import http.core.headerfields.Location
+import http.core.{RequestUri, Response}
+import lidalia.net2.{Url, HostAndPort}
 
-import uk.org.lidalia.net2._
+import scala.concurrent.Future.successful
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, Future}
 
-@RunWith(classOf[JUnitRunner])
 class RedirectFollowingClientTests extends PropSpec with TableDrivenPropertyChecks {
 
   val decorated = mock(classOf[HttpClient])
