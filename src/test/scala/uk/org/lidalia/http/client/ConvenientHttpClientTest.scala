@@ -4,26 +4,23 @@ import java.io.InputStream
 
 import org.apache.commons.io.IOUtils
 import org.mockito.BDDMockito.given
-import org.mockito.{BDDMockito, Mockito}
 import org.mockito.Mockito.mock
-import org.scalatest.{PropSpec, FunSuite}
+import org.scalatest.PropSpec
 import uk.org.lidalia.http.client.EntityOnlyHttpClient.Is
-import uk.org.lidalia.http.client.ExpectedEntityHttpClient.FutureResponse
+import uk.org.lidalia.http.core.Code.OK
+import uk.org.lidalia.http.core.Method.{GET, HEAD}
+import uk.org.lidalia.http.core.{Response, RequestUri, ResponseHeader, Request}
 import uk.org.lidalia.http.core.headerfields.{Etag, Host}
-import uk.org.lidalia.http.core.{Response, RequestUri, Request, ResponseHeader}
-import uk.org.lidalia.net2._
-import uk.org.lidalia.net2.Scheme._
-import uk.org.lidalia.http.core.Method.GET
-
-import scala.concurrent.Future
+import uk.org.lidalia.net2.Scheme.HTTP
+import uk.org.lidalia.net2.{Url, HostAndPort}
 
 class ConvenientHttpClientTest extends PropSpec {
 
-  val decoratedClient = mock(classOf[EntityOnlyHttpClient])
-  val client: ConvenientHttpClient[Is] = new ConvenientHttpClient(decoratedClient)
+  val decoratedClient = mock(classOf[BaseHttpClient[Is]])
+  val client = new ConvenientHttpClient(decoratedClient)
 
   property("Default has expected type") {
-    val client: ConvenientHttpClient[FutureResponse] = ConvenientHttpClient()
+    val client = ConvenientHttpClient()
   }
 
   property("Makes get request") {
@@ -41,7 +38,8 @@ class ConvenientHttpClientTest extends PropSpec {
             Host := HostAndPort("localhost"),
             accept,
             Etag := "my-custom-etag"
-          )),
+          )
+        ),
         accept
       )
     )).willReturn("Result")
@@ -53,5 +51,38 @@ class ConvenientHttpClientTest extends PropSpec {
     )
 
     assert(result === "Result")
+  }
+
+  property("Makes head request") {
+    val decoratedClient = mock(classOf[BaseHttpClient[Response]])
+    val client = new ConvenientHttpClient(decoratedClient)
+    val accept: Accept[String] = new Accept[String](List()) {
+      override def unmarshal(request: Request, response: ResponseHeader, entityBytes: InputStream): String = IOUtils.toString(entityBytes)
+    }
+
+    given(decoratedClient.execute(
+      new DirectedRequest(
+        HTTP,
+        HostAndPort("localhost"),
+        Request(
+          HEAD,
+          RequestUri("/blah"),
+          List(
+            Host := HostAndPort("localhost"),
+            accept,
+            Etag := "my-custom-etag"
+          )
+        ),
+        NoopEntityUnmarshaller
+      )
+    )).willReturn(Response(OK))
+
+    val result = client.head(
+      Url("http://localhost/blah"),
+      accept,
+      Etag := "my-custom-etag"
+    )
+
+    assert(result === Response(OK))
   }
 }

@@ -19,10 +19,24 @@ class ConvenientHttpClient[Result[_]](decorated: BaseHttpClient[Result]) extends
     accept: Accept[T],
     headerFields: HeaderField*): Result[T] = execute(GET, url, accept, headerFields:_*)
 
-  def head[T](
+  def head(
     url: Url,
-    accept: Accept[T],
-    headerFields: HeaderField*): Result[T] = execute(HEAD, url, accept, headerFields:_*)
+    headerFields: HeaderField*): Result[None.type] = {
+    decorated.execute(
+      new DirectedRequest(
+        url.scheme,
+        url.hostAndPort,
+        Request(
+          HEAD,
+          RequestUri(url.pathAndQuery),
+          List(
+            Host := url.hostAndPort
+          ) ++ headerFields.toSeq
+        ),
+        NoopEntityUnmarshaller
+      )
+    )
+  }
 
   def delete[T](
     url: Url,
