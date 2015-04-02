@@ -104,8 +104,8 @@ class CapturingInputStream(decorated: InputStream, maxSize: Int = 1024 * 512) ex
   def isEmpty = getFirstByte == -1
 
   private def getFirstByte = {
-    if (firstByte == null) {
-      firstByte = doRead()
+    if (firstByte == None) {
+      firstByte = Some(doRead())
     }
     firstByte.get
   }

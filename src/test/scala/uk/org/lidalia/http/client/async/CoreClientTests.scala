@@ -1,6 +1,5 @@
 package uk.org.lidalia.http.client
 
-import java.lang.System.lineSeparator
 import javax.json.stream.JsonParsingException
 import javax.json.{Json, JsonObject}
 
@@ -19,9 +18,9 @@ import wiremock.client.{RequestPatternBuilder, MappingBuilder, WireMock}
 import wiremock.junit.Stubbing
 import WireMock.{get, urlEqualTo, aResponse}
 
-import uk.org.lidalia.net2.{HostAndPort, Scheme, Target}
+import uk.org.lidalia.net2.Target
 import http.core.Method.GET
-import uk.org.lidalia.http.core._
+import uk.org.lidalia.http.core.{MediaRangePref, MediaRange, Request, ResponseHeader, RequestUri, HeaderField, Code, FailedToUnmarshallEntity}
 
 import org.apache.commons.io.IOUtils
 
@@ -63,7 +62,7 @@ class CoreClientTests extends PropSpec with TableDrivenPropertyChecks with WireM
 
     assert(response.code === Code(200))
     assert(response.headerField("Content-Type") === Some(HeaderField("Content-Type", "text/plain")))
-    assert(response.entity === "Some text")
+    assert(response.entity === Right("Some text"))
     assert(response.date === Some(new DateTime("1994-11-06T08:49:37").withZone(DateTimeZone.forID("GMT"))))
   }
 
