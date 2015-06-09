@@ -12,13 +12,13 @@ abstract class Message[+T] private[http](
 
   def headerField(headerFieldName: String) = header.headerField(headerFieldName)
 
-  def headerField[T](headerFieldName: HeaderFieldName[T]) = header.headerField(headerFieldName)
+  def headerField[A](headerFieldName: HeaderFieldName[A]) = header.headerField(headerFieldName)
 
   val headerFields = header.headerFields
 
   val headerFieldMap = header.headerFieldMap
 
   override def toString = {
-    header+lineSeparator()+lineSeparator()+entity.map(_.toString).getOrElse("")
+    header+lineSeparator()+lineSeparator()+entity.toString
   }
 }

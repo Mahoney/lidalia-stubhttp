@@ -10,7 +10,7 @@ class ThrowServerErrorHttpClient(decorated: HttpClient) extends HttpClient {
   def execute[A](request: DirectedRequest[A]): Future[Response[Either[String, A]]] = {
     val futureResponse = decorated.execute(request)
     futureResponse.map(response => {
-      if (response.isServerError) throw ServerError(response)
+      if (response.isServerError) throw ServerError(response, request.request)
       else response
     })
   }

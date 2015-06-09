@@ -11,10 +11,12 @@ object ExpectedEntityHttpClient {
 
   def apply(): BaseHttpClient[FutureResponse] = {
     new ExpectedEntityHttpClient(
-      new ThrowClientErrorHttpClient(
-        new ThrowServerErrorHttpClient(
-          new DefaultResolvingHttpClient(
-            new Apache4Client()
+      new RedirectFollowingClient(
+        new ThrowClientErrorHttpClient(
+          new ThrowServerErrorHttpClient(
+            new DefaultResolvingHttpClient(
+              new Apache4Client()
+            )
           )
         )
       )
@@ -28,8 +30,8 @@ class ExpectedEntityHttpClient(decorated: HttpClient) extends FutureHttpClient[R
     val futureResponse = decorated.execute(request)
     futureResponse.map(response => {
       response.entity match {
-        case Left(error) => throw new Exception()
-        case Right(success) => Response(response.responseHeader, success)
+        case Left(error) => throw new Exception(Response(response.header, error).toString)
+        case Right(success) => Response(response.header, success)
       }
     })
   }

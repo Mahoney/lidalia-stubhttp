@@ -18,15 +18,15 @@ object Request {
     )
 }
 
-class Request private(private val requestHeader: RequestHeader) extends Message(requestHeader, None) {
+class Request private(override val header: RequestHeader) extends Message(header, None) {
 
   def withUri(newUri: RequestUri): Request = {
     Request(method, newUri, header.headerFields)
   }
 
-  val method = requestHeader.method
+  val method = header.method
 
-  val requestUri = requestHeader.requestUri
+  val requestUri = header.requestUri
 
-  def referer: ?[Uri] = requestHeader.referer
+  def referer: ?[Uri] = header.referer
 }

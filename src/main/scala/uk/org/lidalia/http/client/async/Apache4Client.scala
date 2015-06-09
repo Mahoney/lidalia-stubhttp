@@ -67,14 +67,14 @@ class Apache4Client(apacheClient: CloseableHttpClient = HttpClientBuilder.create
   def unmarshal[T](targetedRequest: TargetedRequest[T], response: HttpResponse, responseHeader: ResponseHeader, unmarshaller: EntityUnmarshaller[T]): Either[String, T] = {
 
     val content = new CapturingInputStream(response.getEntity.getContent)
-      try {
-        Right(unmarshaller.unmarshal(targetedRequest.request, responseHeader, content))
-      } catch {
-        case e: Exception =>
-          val array: Array[Byte] = content.captured.toByteArray
-          val charset = responseHeader.contentType.flatMap(_.charset).getOrElse(Charsets.UTF_8)
-          Left(IOUtils.toString(array, charset.name()))
-      }
+    try {
+      Right(unmarshaller.unmarshal(targetedRequest.request, responseHeader, content))
+    } catch {
+      case e: Exception =>
+        val array: Array[Byte] = content.captured.toByteArray
+        val charset = responseHeader.contentType.flatMap(_.charset).getOrElse(Charsets.UTF_8)
+        Left(IOUtils.toString(array, charset.name()))
+    }
   }
 }
 
@@ -104,7 +104,7 @@ class CapturingInputStream(decorated: InputStream, maxSize: Int = 1024 * 512) ex
   def isEmpty = getFirstByte == -1
 
   private def getFirstByte = {
-    if (firstByte == None) {
+    if (firstByte.isEmpty) {
       firstByte = Some(doRead())
     }
     firstByte.get

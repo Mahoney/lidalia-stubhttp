@@ -11,7 +11,7 @@ object Response {
     headerFields: Seq[HeaderField] = Nil,
     body: T = None): Response[T] = {
 
-    new Response(ResponseHeader(status, headerFields), body)
+    apply(ResponseHeader(status, headerFields), body)
   }
 
   def apply[T](
@@ -22,21 +22,21 @@ object Response {
   }
 }
 
-class Response[+T] private(val responseHeader: ResponseHeader, entity: T) extends Message(responseHeader, entity) {
+class Response[+T] private(override val header: ResponseHeader, entity: T) extends Message(header, entity) {
 
-  val code = responseHeader.code
+  val code = header.code
 
-  def requiresRedirect: Boolean = responseHeader.requiresRedirect
+  def requiresRedirect: Boolean = header.requiresRedirect
 
-  def location: ?[Url] = responseHeader.location
+  def location: ?[Url] = header.location
 
-  def date: ?[DateTime] = responseHeader.date
+  def date: ?[DateTime] = header.date
 
-  def isNotError: Boolean = responseHeader.isNotError
-  def isInformational: Boolean = responseHeader.isInformational
-  def isSuccessful: Boolean = responseHeader.isSuccessful
-  def isRedirection: Boolean = responseHeader.isRedirection
-  def isClientError: Boolean = responseHeader.isClientError
-  def isServerError: Boolean = responseHeader.isServerError
-  def isError: Boolean = responseHeader.isError
+  def isNotError: Boolean = header.isNotError
+  def isInformational: Boolean = header.isInformational
+  def isSuccessful: Boolean = header.isSuccessful
+  def isRedirection: Boolean = header.isRedirection
+  def isClientError: Boolean = header.isClientError
+  def isServerError: Boolean = header.isServerError
+  def isError: Boolean = header.isError
 }
