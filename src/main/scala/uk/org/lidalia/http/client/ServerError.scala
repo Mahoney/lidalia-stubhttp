@@ -27,3 +27,9 @@ object HttpException {
 }
 
 class HttpException(val response: Response[Either[String, _]], val request: Request) extends Exception(HttpException.resolve(response)+lineSeparator()+"for"+lineSeparator()+request.toString)
+
+object InfiniteRedirectException {
+  def apply(response: Response[Either[String, _]], request: Request) = new InfiniteRedirectException(response, request)
+}
+
+class InfiniteRedirectException private (response: Response[Either[String, _]], request: Request) extends HttpException(response, request)

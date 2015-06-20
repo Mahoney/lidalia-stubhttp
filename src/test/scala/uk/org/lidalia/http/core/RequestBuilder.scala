@@ -3,7 +3,7 @@ package uk.org.lidalia.http.core
 import Method.GET
 import uk.org.lidalia.http.client.{TargetedRequest, DirectedRequest, Accept}
 import uk.org.lidalia.net2.Scheme.HTTP
-import uk.org.lidalia.net2.{SchemeWithDefaultPort, Scheme, HostAndPort, Uri}
+import uk.org.lidalia.net2.{Url, SchemeWithDefaultPort, Scheme, HostAndPort, Uri}
 import java.io.InputStream
 
 object RequestBuilder {
@@ -21,5 +21,5 @@ object RequestBuilder {
 
   def get(uri: RequestUri = RequestUri("/mypath")) = request(GET, uri = uri)
 
-  def get(uri: Uri) = request(GET, uri = RequestUri(uri))
+  def get(url: Url) = request(GET, url.scheme, url.hostAndPort, uri = RequestUri(url.pathAndQuery))
 }
