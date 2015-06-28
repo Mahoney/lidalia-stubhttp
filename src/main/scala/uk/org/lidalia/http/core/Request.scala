@@ -20,9 +20,9 @@ object Request {
 
 class Request private(override val header: RequestHeader) extends Message(header, None) {
 
-  def withUri(newUri: RequestUri): Request = {
-    Request(method, newUri, header.headerFields)
-  }
+  def withMethod(method: Method) = Request(method, requestUri, header.headerFields)
+
+  def withUri(newUri: RequestUri) = Request(method, newUri, header.headerFields)
 
   val method = header.method
 
