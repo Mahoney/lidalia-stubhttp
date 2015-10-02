@@ -10,7 +10,7 @@ object RequestBuilder {
 
   def request[T](
         method: Method = GET,
-        scheme: SchemeWithDefaultPort = HTTP,
+        scheme: Scheme = HTTP,
         hostAndPort: HostAndPort = HostAndPort("localhost"),
         uri: RequestUri = RequestUri("/mypath"),
         accept: Accept[T] = new Accept[None.type](List()) {

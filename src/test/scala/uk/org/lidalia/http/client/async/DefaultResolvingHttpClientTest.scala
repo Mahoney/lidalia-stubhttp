@@ -5,11 +5,11 @@ import java.util.concurrent.TimeUnit._
 import org.mockito.BDDMockito._
 import org.mockito.Mockito.mock
 import org.scalatest.prop.TableDrivenPropertyChecks
-import org.scalatest.{PropSpec, FunSuite}
+import org.scalatest.PropSpec
 import uk.org.lidalia.http.core.RequestBuilder.get
 import uk.org.lidalia.http.core.Response
 import uk.org.lidalia.http.core.ResponseBuilder._
-import uk.org.lidalia.net2.{Target, Scheme}
+import uk.org.lidalia.net2.{Port, IpV4Address, Target}
 import uk.org.lidalia.net2.Scheme.HTTP
 
 import scala.concurrent.duration.Duration
@@ -25,7 +25,7 @@ class DefaultResolvingHttpClientTest extends PropSpec with TableDrivenPropertyCh
     val request = get()
     val targetedRequest = new TargetedRequest(
       HTTP,
-      Target("127.0.0.1", 80),
+      Target(IpV4Address("127.0.0.1"), Port(80)),
       request.request,
       request.unmarshaller,
       directedParent = request

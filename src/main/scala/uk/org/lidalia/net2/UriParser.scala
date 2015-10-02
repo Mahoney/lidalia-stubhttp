@@ -4,7 +4,7 @@ import uk.org.lidalia.net2.UriConstants._
 
 private object UriParser {
 
-  def parse(uriStr: String): Uri = {
+  def apply(uriStr: String): Uri = {
     try {
       val schemeAndRest = uriStr.split(":", 2)
       val scheme = Scheme(schemeAndRest(0))
@@ -32,7 +32,7 @@ private object UriParser {
     }
   }
 
-  def parseHierarchicalPartAndRest(hierarchicalPartAndRest: String) = {
+  private def parseHierarchicalPartAndRest(hierarchicalPartAndRest: String) = {
     if (hierarchicalPartAndRest.startsWith("?") || hierarchicalPartAndRest.startsWith("#")) {
       ("", Some(hierarchicalPartAndRest))
     } else {

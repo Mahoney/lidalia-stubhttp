@@ -27,8 +27,11 @@ object HostWithPort {
   def apply(host: Host, port: Port) = new HostWithPort(host, port)
 }
 
-final class HostWithPort private (val host: Host, val port: Some[Port])
-    extends HostAndPort {
+final class HostWithPort private (
+  override val host: Host,
+  override val port: Some[Port])
+  extends HostAndPort
+{
   override def toString = s"$host:${port.get}"
 }
 
@@ -36,7 +39,7 @@ object HostWithoutPort {
   def apply(host: Host) = new HostWithoutPort(host)
 }
 
-final class HostWithoutPort private (val host: Host) extends HostAndPort {
-  val port = None
+final class HostWithoutPort private (override val host: Host) extends HostAndPort {
+  override val port = None
   override def toString = host.toString
 }

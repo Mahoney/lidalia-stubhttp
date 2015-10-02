@@ -28,6 +28,6 @@ class DefaultResolvingHttpClient(decorated: TargetedHttpClient) extends HttpClie
   }
 
   def resolve(host: Host): IpAddress = {
-    IpAddress(InetAddress.getByName(host.toString).getHostAddress)
+    IpAddress(InetAddress.getByName(host.toString))
   }
 }

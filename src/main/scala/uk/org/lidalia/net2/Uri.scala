@@ -8,7 +8,7 @@ import uk.org.lidalia.lang.RichObject
  */
 object Uri {
 
-  def apply(uri: String) = UriParser.parse(uri)
+  def apply(uri: String) = UriParser(uri)
 
   def apply(
          scheme: Scheme,

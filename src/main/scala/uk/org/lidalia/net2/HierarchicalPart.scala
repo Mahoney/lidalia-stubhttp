@@ -30,24 +30,21 @@ object HierarchicalPartWithAuthority {
             path: PathAfterAuthority) = new HierarchicalPartWithAuthority(authority, path)
 }
 
-final class HierarchicalPartWithAuthority private(val authority: Some[Authority],
-                                            val path: PathAfterAuthority) extends HierarchicalPart {
-  override def toString = {
-    if (path.nonEmpty) {
-      "//"+authority.get+path
-    } else {
-      "//"+authority.get
-    }
-  }
+final class HierarchicalPartWithAuthority private(
+               override val authority: Some[Authority],
+               override val path: PathAfterAuthority) extends HierarchicalPart {
+
+  override def toString = "//"+authority.get+path
+
 }
 
 object HierarchicalPartPathOnly {
   def apply(path: Path) = new HierarchicalPartPathOnly(path)
 }
 
-final class HierarchicalPartPathOnly private(val path: Path) extends HierarchicalPart {
+final class HierarchicalPartPathOnly private(override val path: Path) extends HierarchicalPart {
 
-  val authority: None.type = None
+  override val authority = None
 
   override def toString = path.toString()
 }
