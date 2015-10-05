@@ -15,7 +15,10 @@ object PathAndQuery {
   def apply(path: Path, query: ?[Query] = None): PathAndQuery = new PathAndQuery(path, query)
 }
 
-class PathAndQuery private (@Identity val path: Path,
-                            @Identity val query: ?[Query]) extends RichObject {
-  override def toString = query.map(q=>s"$path?$q") or path.toString
+class PathAndQuery private (
+  @Identity val path: Path,
+  @Identity val query: ?[Query]
+) extends RichObject
+{
+  override def toString = query.map(q => s"$path?$q") or path.toString
 }

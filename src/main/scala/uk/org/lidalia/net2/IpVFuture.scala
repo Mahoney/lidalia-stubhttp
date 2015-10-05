@@ -6,12 +6,12 @@ object IpVFuture {
 
 }
 
-class IpVFuture extends IpAddressInternal {
+class IpVFuture private [net2] (override val toString: String) extends IpAddressInternal {
   override val toUriString: String = s"[$toString]"
 }
 
-object IpVFutureParser {
+private object IpVFutureParser {
 
-  def apply(IpVFutureStr: String): IpVFuture = ???
+  def apply(ipVFutureStr: String): IpVFuture = new IpVFuture(ipVFutureStr)
 
 }

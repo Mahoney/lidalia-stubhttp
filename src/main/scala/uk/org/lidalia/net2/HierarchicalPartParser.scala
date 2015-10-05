@@ -1,7 +1,5 @@
 package uk.org.lidalia.net2
 
-import org.apache.commons.lang3.StringUtils
-
 object HierarchicalPartParser {
 
   def parse(hierarchicalPartStr: String): HierarchicalPart = {

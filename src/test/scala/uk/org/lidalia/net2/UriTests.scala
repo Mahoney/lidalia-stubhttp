@@ -69,6 +69,7 @@ class UriTests extends PropSpec with TableDrivenPropertyChecks {
       "foo:?query#fragment",
       "foo:path?query#fragment",
       "foo:path/path2?query#fragment",
+      "foo:/path2/path3?query#fragment",
       "urn:example:animal?ferret#nose",
       "urn:example:animal?ferret",
       "urn:example:animal?ferret",
@@ -145,6 +146,42 @@ class UriTests extends PropSpec with TableDrivenPropertyChecks {
       assert(
         exception.getMessage === expectedErrorMessage
       )
+    }
+  }
+
+  property("Absolute uri strips fragment") {
+
+    val uris = Table(
+      ("URI with fragment",                                   "URI without fragment"                          ),
+      ("http://example.com:8042/over/there?name=ferret#nose", "http://example.com:8042/over/there?name=ferret"),
+      ("http://example.com:8042/over/there#nose",             "http://example.com:8042/over/there"            ),
+      ("http:?query#fragment",                                "http:?query"                                   ),
+      ("http:path?query#fragment",                            "http:path?query"                               ),
+      ("http:/path?query#fragment",                           "http:/path?query"                              ),
+      ("http:path/path2?query#fragment",                      "http:path/path2?query"                         ),
+      ("http:path/path2?query#",                              "http:path/path2?query"                         )
+    )
+
+    forAll(uris) { (uriWithFragment, uriWithoutFragment) =>
+      assert(Uri(uriWithFragment).absoluteUri === Uri(uriWithoutFragment))
+    }
+  }
+
+  property("Absolute uri does nothing to uri with no fragment") {
+
+    val uris = Table(
+      "URI Without fragment",
+      "http://example.com:8042/over/there?name=ferret",
+      "http://example.com:8042/over/there",
+      "http:?query",
+      "http:path?query",
+      "http:/path?query",
+      "http:path/path2?query"
+    )
+
+    forAll(uris) { uriWithoutFragment =>
+      val uri = Uri(uriWithoutFragment)
+      assert(uri.absoluteUri === uri)
     }
   }
 }

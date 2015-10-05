@@ -11,12 +11,15 @@ object UserInfo extends EncodedStringFactory[UserInfo] {
 
 }
 
+/**
+ * Models a URI as defined in
+ * <a href="http://tools.ietf.org/html/rfc3986#section-3.2.1">RFC 3986</a>.
+ */
 class UserInfo private (userInfoStr: String)
     extends RegexVerifiedWrappedString(userInfoStr, Patterns.userInfo)
     with EncodedString[UserInfo] {
 
   override def decode = ???
 
-  override val factory: EncodedStringFactory[UserInfo] = UserInfo
+  override val factory = UserInfo
 }
-
