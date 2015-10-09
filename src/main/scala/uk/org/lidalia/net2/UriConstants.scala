@@ -1,6 +1,5 @@
 package uk.org.lidalia.net2
 
-import java.util
 import java.util.regex.Pattern
 
 object UriConstants {
@@ -75,7 +74,8 @@ object UriConstants {
     val queryParamValue = Pattern.compile(queryParamValueRegex)
     val queryParamKey = Pattern.compile(queryParamKeyRegex)
     val fragment = query
-    val userInfo = Pattern.compile(s"($pctEncodedRegex|[$subDelimsRange$unreservedRange:])*")
+    val username = Pattern.compile(s"($pctEncodedRegex|[$subDelimsRange$unreservedRange])*")
+    val password = Pattern.compile(s"($pctEncodedRegex|[$subDelimsRange$unreservedRange:])*")
     val pchar = Pattern.compile(s"($pcharRegex)*")
   }
 
