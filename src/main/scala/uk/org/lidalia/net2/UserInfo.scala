@@ -5,14 +5,19 @@ import uk.org.lidalia.net2.UriConstants.Patterns
 
 object UserInfo {
 
-  def apply(userInfoStr: String) = {
+  def apply(
+    userInfoStr: String
+  ) = {
     val parts = userInfoStr.split(":", 2)
     val username = UriUsername(parts(0))
     val password = if (parts.size > 1) Some(UriPassword(parts(1))) else None
     new UserInfo(username, password)
   }
 
-  def apply(username: UriUsername, password: ?[UriPassword] = None) = {
+  def apply(
+    username: UriUsername,
+    password: ?[UriPassword] = None
+  ) = {
     new UserInfo(username, password)
   }
 
