@@ -2,6 +2,7 @@ package uk.org.lidalia.lang
 
 import java.util.regex.Pattern
 
+import uk.org.lidalia.lang.Classes.inSameClassHierarchy
 import uk.org.lidalia.net2.UriConstants.Patterns.pctEncoded
 
 abstract class PercentEncodedStringFactory[T <: PercentEncodedString[T]](
@@ -42,14 +43,21 @@ abstract class PercentEncodedStringFactory[T <: PercentEncodedString[T]](
 
 abstract class PercentEncodedString[T <: PercentEncodedString[T]] (
   override final val factory: PercentEncodedStringFactory[T],
-  encodedStr: String
-) extends RegexVerifiedWrappedString(encodedStr, factory.regex) with EncodedString[T] {
+  encoded: String
+) extends EncodedString[T] {
+
+  require(
+    factory.regex.matcher(encoded).matches(),
+    s"${getClass.getSimpleName} [$encoded] must match ${factory.regex}"
+  )
+
+  override final val toString = encoded
 
   /**
    * @return the decoded representation of the String
    */
-  override final def decode: String = {
-    val split = encodedStr.split(s"""((?=$pctEncoded)|(?<=$pctEncoded))""")
+  override final lazy val decode: String = {
+    val split = encoded.split(s"""((?=$pctEncoded)|(?<=$pctEncoded))""")
     val decoded = split.map { s =>
       if (pctEncoded.matcher(s).matches())
         Integer.parseInt(s.substring(1), 16).toChar.toString
@@ -58,6 +66,13 @@ abstract class PercentEncodedString[T <: PercentEncodedString[T]] (
     decoded.mkString("")
   }
 
+  override final lazy val hashCode = decode.hashCode
+
+  override final def equals(other: Any): Boolean = other match {
+    case that: PercentEncodedString[T] =>
+      inSameClassHierarchy(that.getClass, this.getClass) && decode == that.decode
+    case _ => false
+  }
 }
 
 class ConcretePercentEncodedStringFactory(permittedChars: Set[Char]) extends PercentEncodedStringFactory[ConcretePercentEncodedString](permittedChars) {
