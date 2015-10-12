@@ -20,8 +20,8 @@ class PercentEncodedStringTest extends FunSuite {
 
 }
 
-object AllCharsPercentEncodedStringFactory extends PercentEncodedStringFactoryAid[AllCharsPercentEncodedString](Set()) {
+object AllCharsPercentEncodedStringFactory extends PercentEncodedStringFactory[AllCharsPercentEncodedString](Set()) {
   override def apply(encoded: String) = new AllCharsPercentEncodedString(encoded)
 }
 
-class AllCharsPercentEncodedString(encoded: String) extends PercentEncodedStringAid[AllCharsPercentEncodedString](AllCharsPercentEncodedStringFactory, encoded)
+class AllCharsPercentEncodedString(encoded: String) extends PercentEncodedString[AllCharsPercentEncodedString](AllCharsPercentEncodedStringFactory, encoded)

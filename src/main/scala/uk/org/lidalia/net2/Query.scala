@@ -1,13 +1,20 @@
 package uk.org.lidalia.net2
 
-import uk.org.lidalia.lang.{PercentEncodedStringFactory, PercentEncodedStringAid, PercentEncodedStringFactoryAid, EncodedStringFactory, EncodedString, RegexVerifiedWrappedString}
+import uk.org.lidalia.lang.{PercentEncodedString, PercentEncodedStringFactory, EncodedStringFactory, EncodedString}
 import uk.org.lidalia.net2.UriConstants.{pchar, Patterns}
 
 import scala.collection.immutable
 
 object Query extends EncodedStringFactory[Query] {
 
-  private [net2] val factory = new PercentEncodedStringFactory(pchar + '/' + '?')
+  private class Delegate (
+    factory: PercentEncodedStringFactory[Delegate],
+    encodedStr: String
+  ) extends PercentEncodedString[Delegate](factory, encodedStr)
+
+  private val factory = new PercentEncodedStringFactory[Delegate](pchar + '/' + '?') {
+    override def apply(encoded: String) = new Delegate(this, encoded)
+  }
 
   def apply(queryStr: String): Query = QueryParser.parse(queryStr)
 
@@ -91,17 +98,17 @@ final class Query private[net2] (val keyValuePairs: immutable.Seq[(QueryParamKey
   }
 }
 
-sealed abstract class QueryParamElement[T <: QueryParamElement[T]](factory: PercentEncodedStringFactoryAid[T], str: String)
-    extends PercentEncodedStringAid[T](factory, str)
+sealed abstract class QueryParamElement[T <: QueryParamElement[T]](factory: PercentEncodedStringFactory[T], str: String)
+    extends PercentEncodedString[T](factory, str)
 
-object QueryParamKey extends PercentEncodedStringFactoryAid[QueryParamKey](pchar + '/' + '?' - '=' - '&') {
+object QueryParamKey extends PercentEncodedStringFactory[QueryParamKey](pchar + '/' + '?' - '=' - '&') {
   def apply(queryParamKeyStr: String): QueryParamKey = new QueryParamKey(queryParamKeyStr)
 }
 
 final class QueryParamKey private(queryParamKeyStr: String)
     extends QueryParamElement[QueryParamKey](QueryParamKey, queryParamKeyStr)
 
-object QueryParamValue extends PercentEncodedStringFactoryAid[QueryParamValue](pchar + '/' + '?' - '&') {
+object QueryParamValue extends PercentEncodedStringFactory[QueryParamValue](pchar + '/' + '?' - '&') {
   def apply(queryParamValueStr: String): QueryParamValue = new QueryParamValue(queryParamValueStr)
 }
 

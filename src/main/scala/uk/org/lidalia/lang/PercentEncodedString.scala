@@ -4,11 +4,11 @@ import java.util.regex.Pattern
 
 import uk.org.lidalia.net2.UriConstants.Patterns.pctEncoded
 
-final class PercentEncodedStringFactory(
+abstract class PercentEncodedStringFactory[T <: PercentEncodedString[T]](
   permittedChars: Set[Char]
-) extends EncodedStringFactory[PercentEncodedString] {
+) extends EncodedStringFactory[T] {
 
-  override def encode(unencoded: String): PercentEncodedString = {
+  override def encode(unencoded: String): T = {
     apply(unencoded.flatMap { c =>
       if (permittedChars(c))
         c.toString
@@ -38,13 +38,12 @@ final class PercentEncodedStringFactory(
     }
   }
 
-  override def apply(encoded: String) = new PercentEncodedString(this, encoded)
 }
 
-class PercentEncodedString (
-  override final val factory: PercentEncodedStringFactory,
+abstract class PercentEncodedString[T <: PercentEncodedString[T]] (
+  override final val factory: PercentEncodedStringFactory[T],
   encodedStr: String
-) extends RegexVerifiedWrappedString(encodedStr, factory.regex) with EncodedString[PercentEncodedString] {
+) extends RegexVerifiedWrappedString(encodedStr, factory.regex) with EncodedString[T] {
 
   /**
    * @return the decoded representation of the String
@@ -58,30 +57,5 @@ class PercentEncodedString (
     }
     decoded.mkString("")
   }
-
-}
-
-abstract class PercentEncodedStringFactoryAid[T <: PercentEncodedStringAid[T]](
-  permittedChars: Set[Char]
-) extends EncodedStringFactory[T] {
-
-  private [lang] val factory = new PercentEncodedStringFactory(permittedChars)
-
-  override final def encode(unencoded: String): T = {
-    apply(factory.encode(unencoded).toString)
-  }
-
-  private val metaChars = Set('^', '-', ']', '\\')
-
-  private [lang] val regex = factory.regex
-
-}
-
-abstract class PercentEncodedStringAid[T <: PercentEncodedStringAid[T]] (
-  override final val factory: PercentEncodedStringFactoryAid[T],
-  encodedStr: String
-) extends RegexVerifiedWrappedString(encodedStr, factory.regex) with EncodedString[T] {
-
-  override final def decode = factory.factory(encodedStr).decode
 
 }
