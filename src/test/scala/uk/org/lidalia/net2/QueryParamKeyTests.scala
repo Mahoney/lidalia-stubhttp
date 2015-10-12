@@ -8,6 +8,7 @@ import uk.org.lidalia.TestUtils.{
   genStringFromChars,
   genNonEmptyStringFromChars
 }
+import uk.org.lidalia.lang.EncodedStringChecks
 
 class QueryParamKeyTests
     extends PropSpec
@@ -63,10 +64,14 @@ class QueryParamKeyTests
   }
 
   property("encode works") {
-    assert(QueryParamKey.encode("/&=") === QueryParamKey("%2F%26%3D"))
+    assert(QueryParamKey.encode("/&=") === QueryParamKey("/%26%3D"))
   }
 
   property("decode works") {
     assert(QueryParamKey("%2F%26%3D").decode === "/&=")
+  }
+
+  property("encoded string contract") {
+    EncodedStringChecks.checks(QueryParamKey)
   }
 }

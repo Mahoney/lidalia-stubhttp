@@ -10,6 +10,8 @@ import uk.org.lidalia.TestUtils.{
 }
 import java.util.regex.Pattern
 
+import uk.org.lidalia.lang.EncodedStringChecks
+
 class QueryTests
     extends PropSpec
     with PropertyChecks {
@@ -377,10 +379,14 @@ class QueryTests
   }
 
   property("encode works") {
-    assert(Query.encode("/") === Query("%2F"))
+    assert(Query.encode("hello &param#=value#") === Query("hello%20&param%23=value%23"))
   }
 
   property("decode works") {
     assert(Query("%2F").decode === "/")
+  }
+
+  property("encoded string contract") {
+    EncodedStringChecks.checks(Query)
   }
 }

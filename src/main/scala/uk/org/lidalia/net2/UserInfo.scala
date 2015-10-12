@@ -1,7 +1,7 @@
 package uk.org.lidalia.net2
 
-import uk.org.lidalia.lang.{RichObject, EncodedStringFactory, EncodedString, RegexVerifiedWrappedString}
-import uk.org.lidalia.net2.UriConstants.Patterns
+import uk.org.lidalia.lang.{PercentEncodedStringAid, PercentEncodedStringFactoryAid, RichObject, EncodedStringFactory, EncodedString, RegexVerifiedWrappedString}
+import uk.org.lidalia.net2.UriConstants.{subDelims, unreserved}
 
 object UserInfo {
 
@@ -35,36 +35,16 @@ class UserInfo private (
 
 }
 
-object UriUsername extends EncodedStringFactory[UriUsername] {
-
-  def apply(usernameStr: String) = new UriUsername(usernameStr)
-
-  override def encode(unencoded: String) = ???
-
+object UriUsername extends PercentEncodedStringFactoryAid[UriUsername](unreserved ++ subDelims) {
+  override def apply(usernameStr: String) = new UriUsername(usernameStr)
 }
 
 class UriUsername private (usernameStr: String)
-  extends RegexVerifiedWrappedString(usernameStr, Patterns.username)
-  with EncodedString[UriUsername] {
+  extends PercentEncodedStringAid[UriUsername](UriUsername, usernameStr)
 
-  override def decode = ???
-
-  override val factory = UriUsername
-}
-
-object UriPassword extends EncodedStringFactory[UriPassword] {
-
-  def apply(passwordStr: String) = new UriPassword(passwordStr)
-
-  override def encode(unencoded: String) = ???
-
+object UriPassword extends PercentEncodedStringFactoryAid[UriPassword](unreserved ++ subDelims +':') {
+  override def apply(passwordStr: String) = new UriPassword(passwordStr)
 }
 
 class UriPassword private (passwordStr: String)
-  extends RegexVerifiedWrappedString(passwordStr, Patterns.password)
-  with EncodedString[UriPassword] {
-
-  override def decode = ???
-
-  override val factory = UriPassword
-}
+  extends PercentEncodedStringAid[UriPassword](UriPassword, passwordStr)

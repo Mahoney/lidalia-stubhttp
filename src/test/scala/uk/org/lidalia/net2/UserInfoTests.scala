@@ -38,7 +38,7 @@ class UserInfoTests extends PropSpec {
       val userInfo = UserInfo("username@password")
     }
 
-    assert(exception.getMessage == "requirement failed: UriUsername [username@password] must match (%[0-9A-Fa-f]{2}|[!$&'()*+,;=a-zA-Z0-9-._~])*")
+    assert(exception.getMessage == "requirement failed: UriUsername [username@password] must match (%[0-9A-Fa-f]{2}|[EeXsx8*4n\\-.9NjyT=YtJuUf&F!Aa5mM)Ii,;vG61VqQL'bgBlPp0_2CH+cWh(7rKwR$3k~ODZozSd])*")
   }
 
   property("equals and hashcode") {

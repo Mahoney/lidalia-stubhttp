@@ -8,6 +8,7 @@ import uk.org.lidalia.TestUtils.{
   genStringFromChars,
   genNonEmptyStringFromChars
 }
+import uk.org.lidalia.lang.EncodedStringChecks
 
 class QueryParamValueTests
     extends PropSpec
@@ -62,10 +63,14 @@ class QueryParamValueTests
   }
 
   property("encode works") {
-    assert(QueryParamValue.encode("/&=") === QueryParamValue("%2F%26="))
+    assert(QueryParamValue.encode("/&=") === QueryParamValue("/%26="))
   }
 
   property("decode works") {
     assert(QueryParamValue("%2F%26=").decode === "/&=")
+  }
+
+  property("encoded string contract") {
+    EncodedStringChecks.checks(QueryParamValue)
   }
 }

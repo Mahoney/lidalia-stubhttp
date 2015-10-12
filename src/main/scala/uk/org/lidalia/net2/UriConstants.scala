@@ -71,6 +71,7 @@ object UriConstants {
 
   object Patterns {
     val query = Pattern.compile(queryRegex)
+    val pctEncoded = Pattern.compile(pctEncodedRegex)
     val queryParamValue = Pattern.compile(queryParamValueRegex)
     val queryParamKey = Pattern.compile(queryParamKeyRegex)
     val fragment = query
