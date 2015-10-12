@@ -50,7 +50,7 @@ abstract class PercentEncodedString[T <: PercentEncodedString[T]] (
    */
   override final def decode: String = {
     val split = encodedStr.split(s"""((?=$pctEncoded)|(?<=$pctEncoded))""")
-    val decoded = split.flatMap { s =>
+    val decoded = split.map { s =>
       if (pctEncoded.matcher(s).matches())
         Integer.parseInt(s.substring(1), 16).toChar.toString
       else s
