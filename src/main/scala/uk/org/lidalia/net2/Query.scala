@@ -1,20 +1,13 @@
 package uk.org.lidalia.net2
 
-import uk.org.lidalia.lang.{PercentEncodedString, PercentEncodedStringFactory, EncodedStringFactory, EncodedString}
+import uk.org.lidalia.lang.{ConcretePercentEncodedStringFactory, PercentEncodedString, PercentEncodedStringFactory, EncodedStringFactory, EncodedString}
 import uk.org.lidalia.net2.UriConstants.{pchar, Patterns}
 
 import scala.collection.immutable
 
 object Query extends EncodedStringFactory[Query] {
 
-  private class Delegate (
-    factory: PercentEncodedStringFactory[Delegate],
-    encodedStr: String
-  ) extends PercentEncodedString[Delegate](factory, encodedStr)
-
-  private val factory = new PercentEncodedStringFactory[Delegate](pchar + '/' + '?') {
-    override def apply(encoded: String) = new Delegate(this, encoded)
-  }
+  private val factory = new ConcretePercentEncodedStringFactory(pchar + '/' + '?')
 
   def apply(queryStr: String): Query = QueryParser.parse(queryStr)
 

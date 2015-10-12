@@ -39,6 +39,7 @@ object EncodedStringChecks extends TableDrivenPropertyChecks with PropSpecLike {
     )
 
     assertAllEqual(
+      stringToEncode,
       decoded1,
       decoded2,
       decoded3,

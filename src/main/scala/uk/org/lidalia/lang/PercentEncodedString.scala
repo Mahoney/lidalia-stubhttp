@@ -59,3 +59,10 @@ abstract class PercentEncodedString[T <: PercentEncodedString[T]] (
   }
 
 }
+
+class ConcretePercentEncodedStringFactory(permittedChars: Set[Char]) extends PercentEncodedStringFactory[ConcretePercentEncodedString](permittedChars) {
+  override def apply(encoded: String) = new ConcretePercentEncodedString(this, encoded)
+}
+
+class ConcretePercentEncodedString(factory: ConcretePercentEncodedStringFactory, encoded: String)
+  extends PercentEncodedString[ConcretePercentEncodedString](factory, encoded)
