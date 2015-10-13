@@ -32,6 +32,15 @@ class UserInfoTests extends PropSpec {
     assert(userInfo.toString === "username:password:rest")
   }
 
+  property("empty password") {
+
+    val userInfo = UserInfo("username:")
+
+    assert(userInfo.username === UriUsername("username"))
+    assert(userInfo.password === Some(UriPassword("")))
+    assert(userInfo.toString === "username:")
+  }
+
   property("@ not allowed") {
 
     val exception = intercept[IllegalArgumentException] {
