@@ -11,7 +11,7 @@ object Path extends EncodedStringFactory[Path] {
 
   def apply(): Path = apply(Segment.emptySegment)
 
-  def apply(elements: Segment*): Path = apply(elements.toList)
+  def apply(element: Segment, elements: Segment*): Path = apply(element :: elements.toList)
 
   def apply(elements: immutable.Seq[Segment]): Path = new Path(elements)
 
@@ -24,8 +24,10 @@ object Path extends EncodedStringFactory[Path] {
 
 }
 
-class Path private[net2] (pathElements: immutable.Seq[Segment])
+class Path private[net2] (private val pathElements: immutable.Seq[Segment])
     extends immutable.Seq[Segment] with EncodedString[Path] {
+
+  require(pathElements.nonEmpty, "Path must have at least one segment; segment can be empty")
 
   override def length = pathElements.length
 
@@ -39,4 +41,13 @@ class Path private[net2] (pathElements: immutable.Seq[Segment])
 
   override val factory = Path
 
+  val isAbsolute = length > 1 && apply(0).isEmpty
+
+  override def equals(other: Any): Boolean = other match {
+    case that: Path =>
+      pathElements == that.pathElements
+    case _ => false
+  }
+
+  override def hashCode() = pathElements.hashCode()
 }
