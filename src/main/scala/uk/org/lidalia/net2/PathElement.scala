@@ -1,20 +1,13 @@
 package uk.org.lidalia.net2
 
-import uk.org.lidalia.lang.{EncodedStringFactory, EncodedString, RegexVerifiedWrappedString}
-import uk.org.lidalia.net2.UriConstants.Patterns
+import uk.org.lidalia.lang.{PercentEncodedString, PercentEncodedStringFactory}
+import uk.org.lidalia.net2.UriConstants.pchar
 
-object PathElement extends EncodedStringFactory[PathElement] {
+object PathElement extends PercentEncodedStringFactory[PathElement](pchar) {
 
   def apply(pathElementStr: String) = new PathElement(pathElementStr)
 
-  override def encode(unencoded: String) = ???
 }
 
 class PathElement private (pathStr: String)
-    extends RegexVerifiedWrappedString(pathStr, Patterns.pchar)
-    with EncodedString[PathElement] {
-
-  override def decode = ???
-
-  override val factory: EncodedStringFactory[PathElement] = PathElement
-}
+    extends PercentEncodedString[PathElement](PathElement, pathStr)

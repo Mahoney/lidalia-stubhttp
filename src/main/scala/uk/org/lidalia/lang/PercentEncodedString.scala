@@ -1,6 +1,5 @@
 package uk.org.lidalia.lang
 
-import java.util
 import java.util.regex.Pattern
 
 import uk.org.lidalia.lang.Classes.inSameClassHierarchy
