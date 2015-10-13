@@ -28,7 +28,7 @@ object UriConstants {
     subDelims ++
     Set(':', '@')
 
-  private val unreservedRange =
+  val unreservedRange =
       "a-z" +
       "A-Z" +
       "0-9" +
@@ -37,7 +37,7 @@ object UriConstants {
       "_" +
       "~"
 
-  private val subDelimsRange =
+  val subDelimsRange =
       "!" +
       "$" +
       "&" +

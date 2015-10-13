@@ -25,6 +25,8 @@ abstract sealed class HostAndPort extends Immutable {
 
 object HostWithPort {
   def apply(host: Host, port: Port) = new HostWithPort(host, port)
+  def apply(host: String, port: String) = new HostWithPort(Host(host), Port(port))
+  def apply(host: String, port: Int) = new HostWithPort(Host(host), Port(port))
 }
 
 final class HostWithPort private (
@@ -37,6 +39,7 @@ final class HostWithPort private (
 
 object HostWithoutPort {
   def apply(host: Host) = new HostWithoutPort(host)
+  def apply(host: String) = new HostWithoutPort(Host(host))
 }
 
 final class HostWithoutPort private (override val host: Host) extends HostAndPort {

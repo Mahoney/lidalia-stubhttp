@@ -1,16 +1,12 @@
 package uk.org.lidalia.net2
 
-import java.util.regex.Pattern
-
-import uk.org.lidalia.lang.UnsignedByte
-
 object IpV6Address {
   def apply(ipAddressStr: String) = {
-    IpV6AddressParser.parse(ipAddressStr)
+    IpV6AddressParser(ipAddressStr)
   }
 }
 
-class IpV6Address extends IpAddressInternal {
+class IpV6Address(override val toString: String) extends IpAddressInternal {
   override val toUriString: String = s"[$toString]"
 }
 
@@ -19,7 +15,7 @@ object IpV6AddressParser {
 //  val IPV4_ADDRESS_PATTERN = Pattern.compile(
 //    "("+DEC_OCTET_RGX+")\\.("+DEC_OCTET_RGX+")\\.("+DEC_OCTET_RGX+")\\.("+DEC_OCTET_RGX+")")
 
-  def parse(ipv6AddressStr: String): IpV6Address = ???
+  def apply(ipv6AddressStr: String): IpV6Address = new IpV6Address(ipv6AddressStr)
 //  {
 //    val ipv4AddressMatcher = IpV4AddressParser.IPV4_ADDRESS_PATTERN.matcher(ipv4AddressStr)
 //    if (ipv4AddressMatcher.matches()) {

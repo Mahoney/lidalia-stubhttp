@@ -8,7 +8,11 @@ object Host {
   def apply(hostStr: String): Host = {
     if (hostStr.startsWith("[") && hostStr.endsWith("]")) {
       val literalStr = hostStr.substring(1, hostStr.size - 1)
-      Try(IpV6Address(hostStr)).getOrElse(IpVFuture(hostStr))
+      if (literalStr.startsWith("v")) {
+        IpVFuture(hostStr)
+      } else {
+        IpV6Address(hostStr)
+      }
     } else {
       Try(IpV4Address(hostStr)).getOrElse(RegisteredName(hostStr))
     }

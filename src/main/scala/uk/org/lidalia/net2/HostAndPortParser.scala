@@ -1,18 +1,21 @@
 package uk.org.lidalia.net2
 
+import java.util.regex.Pattern
+import UriConstants.{unreservedRange, subDelimsRange, pctEncodedRegex}
+
 object HostAndPortParser {
+
+  private val regNameOrIpv4 = s"($pctEncodedRegex|[$unreservedRange$subDelimsRange])*"
+  private val ipLiteral = s"""\\[.*\\]"""
+  private val port = "[0-9]+"
+  private §val hostAndPort = Pattern.compile(s"^($ipLiteral|$regNameOrIpv4)(:($port))?$$")
+
   def parse(hostAndPortStr: String): HostAndPort = {
-    val hostAndPortSplit = if (hostAndPortStr.startsWith("[")) hostAndPortStr.split("]:", 2) else hostAndPortStr.split(":", 2)
-    val host = Host(hostAndPortSplit(0))
-    if (hostAndPortSplit.size == 2) {
-      HostWithPort(
-        host,
-        Port(hostAndPortSplit(1))
-      )
+    val matcher = hostAndPort.matcher(hostAndPortStr)
+    if (matcher.matches() && matcher.group(4) != null) {
+      HostWithPort(matcher.group(1), matcher.group(4))
     } else {
-      HostWithoutPort(
-        host
-      )
+      HostWithoutPort(hostAndPortStr)
     }
   }
 }
