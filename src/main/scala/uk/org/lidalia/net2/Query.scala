@@ -9,9 +9,9 @@ object Query extends EncodedStringFactory[Query] {
 
   private val factory = new ConcretePercentEncodedStringFactory(pchar + '/' + '?')
 
-  def apply(queryStr: String): Query = QueryParser.parse(queryStr)
+  override def apply(queryStr: String): Query = QueryParser.parse(queryStr)
 
-  def encode(unencoded: String): Query = apply(factory.encode(unencoded).toString)
+  override def encode(unencoded: String): Query = apply(factory.encode(unencoded).toString)
 }
 
 final class Query private[net2] (val keyValuePairs: immutable.Seq[(QueryParamKey, ?[QueryParamValue])])
@@ -71,9 +71,9 @@ final class Query private[net2] (val keyValuePairs: immutable.Seq[(QueryParamKey
 
   def set(key: QueryParamKey, values: QueryParamValue*): Query = (this - key) ++ (key, values:_*)
 
-  def decode: String = Query.factory(toString).decode
+  override def decode: String = Query.factory(toString).decode
 
-  val factory = Query
+  override val factory = Query
 
   override def toString = {
     val strings = keyValuePairs.map { case (key, value) => key + (value.map("=" + _) or "")}
@@ -95,14 +95,14 @@ sealed abstract class QueryParamElement[T <: QueryParamElement[T]](factory: Perc
     extends PercentEncodedString[T](factory, str)
 
 object QueryParamKey extends PercentEncodedStringFactory[QueryParamKey](pchar + '/' + '?' - '=' - '&') {
-  def apply(queryParamKeyStr: String): QueryParamKey = new QueryParamKey(queryParamKeyStr)
+  override def apply(queryParamKeyStr: String): QueryParamKey = new QueryParamKey(queryParamKeyStr)
 }
 
 final class QueryParamKey private(queryParamKeyStr: String)
     extends QueryParamElement[QueryParamKey](QueryParamKey, queryParamKeyStr)
 
 object QueryParamValue extends PercentEncodedStringFactory[QueryParamValue](pchar + '/' + '?' - '&') {
-  def apply(queryParamValueStr: String): QueryParamValue = new QueryParamValue(queryParamValueStr)
+  override def apply(queryParamValueStr: String): QueryParamValue = new QueryParamValue(queryParamValueStr)
 }
 
 final class QueryParamValue private(queryParamValueStr: String)

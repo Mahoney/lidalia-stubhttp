@@ -32,11 +32,11 @@ class HierarchicalPartTest extends PropSpec with TableDrivenPropertyChecks {
   property("HierarchicalPartWithAuthority when part has authority") {
 
     val cases = Table(
-      ("HierarchicalPart String", "Authority",       "Path"                            ),
-      ("//name/path",             Authority("name"), PathAfterAuthority("/path")       ),
-      ("//name/",                 Authority("name"), PathAfterAuthority("/")           ),
-      ("//name",                  Authority("name"), PathAfterAuthority("")            ),
-      ("//name/path1/path2",      Authority("name"), PathAfterAuthority("/path1/path2"))
+      ("HierarchicalPart String", "Authority",       "Path"              ),
+      ("//name/path",             Authority("name"), Path("/path")       ),
+      ("//name/",                 Authority("name"), Path("/")           ),
+      ("//name",                  Authority("name"), Path("")            ),
+      ("//name/path1/path2",      Authority("name"), Path("/path1/path2"))
     )
 
     forAll(cases) { (hierPartStr, expectedAuthority, expectedPath) =>
@@ -51,10 +51,10 @@ class HierarchicalPartTest extends PropSpec with TableDrivenPropertyChecks {
 
     val cases = Table(
       ("HierarchicalPart String", "Path"                         ),
-      ("/path",                   PathNoAuthority("/path")       ),
-      ("/",                       PathNoAuthority("/")           ),
-      ("",                        PathNoAuthority("")            ),
-      ("/path1/path2",            PathNoAuthority("/path1/path2"))
+      ("/path",                   Path("/path")       ),
+      ("/",                       Path("/")           ),
+      ("",                        Path("")            ),
+      ("/path1/path2",            Path("/path1/path2"))
     )
 
     forAll(cases) { (hierPartStr, expectedPath) =>

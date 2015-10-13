@@ -1,39 +1,31 @@
 package uk.org.lidalia.net2
 
-import org.apache.commons.lang3.StringUtils
+import uk.org.lidalia.lang.{ConcretePercentEncodedStringFactory, EncodedStringFactory, EncodedString, PercentEncodedStringFactory, PercentEncodedString}
+import uk.org.lidalia.net2.UriConstants.pchar
 
 import scala.collection.immutable
 
-object PathAfterAuthority {
+object Path extends EncodedStringFactory[Path] {
 
-  def apply(): PathAfterAuthority = new PathAfterAuthority(List())
+  private val factory = new ConcretePercentEncodedStringFactory(pchar + '/')
 
-  def apply(path: String): PathAfterAuthority = {
-    if (path.isEmpty) {
-      PathAfterAuthority()
-    } else {
-      val pathStrs = path.split("(?=/)").toList
-      new PathAfterAuthority(pathStrs.map(it => PathElement(StringUtils.removeStart(it, "/"))))
-    }
+  def apply(): Path = apply(Segment.emptySegment)
+
+  def apply(elements: Segment*): Path = apply(elements.toList)
+
+  def apply(elements: immutable.Seq[Segment]): Path = new Path(elements)
+
+  override def apply(path: String): Path = {
+    val elements = path.split("/", Int.MaxValue).map(Segment(_)).toList
+    apply(elements)
   }
+
+  override def encode(unencoded: String): Path = apply(factory.encode(unencoded).toString)
+
 }
 
-object PathNoAuthority {
-
-  def apply(): Path = new PathNoAuthority(List())
-
-  def apply(path: String): Path = {
-    if (path.isEmpty) {
-      PathNoAuthority()
-    } else {
-      val pathStrs = path.split("/").toList
-      new PathNoAuthority(pathStrs.map(PathElement(_)))
-    }
-  }
-}
-
-abstract class Path private[net2] (pathElements: immutable.Seq[PathElement])
-    extends immutable.Seq[PathElement] {
+class Path private[net2] (pathElements: immutable.Seq[Segment])
+    extends immutable.Seq[Segment] with EncodedString[Path] {
 
   override def length = pathElements.length
 
@@ -41,13 +33,10 @@ abstract class Path private[net2] (pathElements: immutable.Seq[PathElement])
 
   override def iterator = pathElements.iterator
 
-  override def toString() = pathElements.map("/"+_).mkString
-}
+  override lazy val decode: String = pathElements.map(_.decode).mkString("/")
 
-class PathAfterAuthority private (pathElements: immutable.Seq[PathElement]) extends Path(pathElements) {
-  override def toString() = pathElements.map("/"+_).mkString
-}
+  override lazy val toString = pathElements.mkString("/")
 
-class PathNoAuthority private (pathElements: immutable.Seq[PathElement]) extends Path(pathElements) {
-  override def toString() = pathElements.mkString("/")
+  override val factory = Path
+
 }
