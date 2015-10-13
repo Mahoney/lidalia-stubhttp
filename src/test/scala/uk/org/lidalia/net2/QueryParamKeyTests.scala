@@ -77,4 +77,23 @@ class QueryParamKeyTests
   property("encoded string contract") {
     EncodedStringChecks.checks(QueryParamKey)
   }
+
+  property("equals checks") {
+
+    EqualsChecks.equalsTest(List("a", "b")) {
+      QueryParamKey(_)
+    }
+
+    EqualsChecks.reflexiveTest(List("a", "b")) {
+      QueryParamKey(_)
+    }
+
+    EqualsChecks.equalsTest(List("=", "&")) {
+      QueryParamKey.encode
+    }
+
+    EqualsChecks.reflexiveTest(List("=", "&")) {
+      QueryParamKey.encode
+    }
+  }
 }

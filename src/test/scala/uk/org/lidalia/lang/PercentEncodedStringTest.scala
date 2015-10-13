@@ -1,7 +1,7 @@
 package uk.org.lidalia.lang
 
 import org.scalatest.FunSuite
-
+import uk.org.lidalia.net2.EqualsChecks
 
 
 class PercentEncodedStringTest extends FunSuite {
@@ -22,10 +22,29 @@ class PercentEncodedStringTest extends FunSuite {
   }
   
   test("case ignored in hex digits") {
-    assert(allChars("%ff") == allChars("%FF"))
+    assert(allChars("%ff") === allChars("%FF"))
   }
 
   test("case expected in other digits") {
-    assert(fNotEncoded("ff") != fNotEncoded("FF"))
+    assert(fNotEncoded("ff") !== fNotEncoded("FF"))
+  }
+
+  test("equals checks for factory") {
+
+    EqualsChecks.equalsTest(List(Set[Char](), Set('a'), Set('a', 'A'))) { args =>
+      new ConcretePercentEncodedStringFactory(args)
+    }
+
+    EqualsChecks.reflexiveTest(List(Set[Char](), Set('a'), Set('a', 'A'))) { args =>
+      new ConcretePercentEncodedStringFactory(args)
+    }
+  }
+
+  test("not equal when one is encoded and other is not") {
+    assert(fNotEncoded("f") !== fNotEncoded("%66"))
+  }
+
+  test("not equal when have different factories") {
+    assert(fNotEncoded("%66") !== allChars("%66"))
   }
 }

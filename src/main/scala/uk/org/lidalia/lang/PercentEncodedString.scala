@@ -1,12 +1,13 @@
 package uk.org.lidalia.lang
 
+import java.util
 import java.util.regex.Pattern
 
 import uk.org.lidalia.lang.Classes.inSameClassHierarchy
 import uk.org.lidalia.net2.UriConstants.Patterns.pctEncoded
 
 abstract class PercentEncodedStringFactory[T <: PercentEncodedString[T]](
-  permittedChars: Set[Char]
+  private val permittedChars: Set[Char]
 ) extends EncodedStringFactory[T] {
 
   override def encode(unencoded: String): T = {
@@ -39,6 +40,13 @@ abstract class PercentEncodedStringFactory[T <: PercentEncodedString[T]](
     }
   }
 
+  override final lazy val hashCode = permittedChars.hashCode()
+
+  override final def equals(other: Any): Boolean = other match {
+    case that: PercentEncodedStringFactory[T] =>
+      inSameClassHierarchy(that.getClass, this.getClass) && permittedChars == that.permittedChars
+    case _ => false
+  }
 }
 
 abstract class PercentEncodedString[T <: PercentEncodedString[T]] (
@@ -53,24 +61,32 @@ abstract class PercentEncodedString[T <: PercentEncodedString[T]] (
 
   override final val toString = encoded
 
+  private final lazy val parsed = {
+    val split = encoded.split(s"""((?=$pctEncoded)|(?<=$pctEncoded))""").toList
+    split.map { s =>
+      if (pctEncoded.matcher(s).matches())
+        Integer.parseInt(s.substring(1), 16)
+      else s
+    }
+  }
+
   /**
    * @return the decoded representation of the String
    */
   override final lazy val decode: String = {
-    val split = encoded.split(s"""((?=$pctEncoded)|(?<=$pctEncoded))""")
-    val decoded = split.map { s =>
-      if (pctEncoded.matcher(s).matches())
-        Integer.parseInt(s.substring(1), 16).toChar.toString
-      else s
-    }
-    decoded.mkString("")
+    parsed.map {
+      case i: Int => i.toChar.toString
+      case s: String => s.toString
+    }.mkString("")
   }
 
-  override final lazy val hashCode = decode.hashCode
+  override final lazy val hashCode = parsed.hashCode()
 
   override final def equals(other: Any): Boolean = other match {
     case that: PercentEncodedString[T] =>
-      inSameClassHierarchy(that.getClass, this.getClass) && decode == that.decode
+      inSameClassHierarchy(that.getClass, this.getClass) &&
+        factory == that.factory &&
+        (parsed sameElements that.parsed)
     case _ => false
   }
 }
