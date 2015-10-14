@@ -8,7 +8,7 @@ object HostAndPortParser {
   private val regNameOrIpv4 = s"($pctEncodedRegex|[$unreservedRange$subDelimsRange])*"
   private val ipLiteral = s"""\\[.*\\]"""
   private val port = "[0-9]+"
-  private §val hostAndPort = Pattern.compile(s"^($ipLiteral|$regNameOrIpv4)(:($port))?$$")
+  private val hostAndPort = Pattern.compile(s"^($ipLiteral|$regNameOrIpv4)(:($port))?$$")
 
   def parse(hostAndPortStr: String): HostAndPort = {
     val matcher = hostAndPort.matcher(hostAndPortStr)
