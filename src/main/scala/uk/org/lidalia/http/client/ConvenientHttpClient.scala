@@ -3,7 +3,9 @@ package uk.org.lidalia.http.client
 import uk.org.lidalia.http.core.Method._
 import uk.org.lidalia.http.core.headerfields.Host
 import uk.org.lidalia.http.core.{Method, HeaderField, Request, RequestUri}
+import uk.org.lidalia.lang.UnsignedByte
 import uk.org.lidalia.net2.Url
+import scala.collection.immutable
 
 object ConvenientHttpClient {
   def apply[Result[_]](
@@ -17,23 +19,26 @@ class ConvenientHttpClient[Result[_]](decorated: BaseHttpClient[Result]) extends
   def get[T](
     url: Url,
     accept: Accept[T],
-    headerFields: HeaderField*): Result[T] = execute(GET, url, accept, headerFields:_*)
+    headerFields: HeaderField*
+  ) = execute(GET, url, accept, headerFields:_*)
+
+  def get(
+    url: Url,
+    headerFields: HeaderField*
+  ) = execute(GET, url, headerFields:_*)
 
   def head(
     url: Url,
-    headerFields: HeaderField*): Result[None.type] = {
+    headerFields: HeaderField*) = {
     decorated.execute(
-      DirectedRequest(
-        url.scheme,
-        url.hostAndPort,
-        Request(
-          HEAD,
-          RequestUri(url.pathAndQuery),
-          List(
-            Host := url.hostAndPort
-          ) ++ headerFields.toSeq
-        ),
-        NoopEntityUnmarshaller
+      requestFor(
+        HEAD,
+        url,
+        headerFields.toList,
+        NoopEntityUnmarshaller,
+        List(
+          Host := url.hostAndPort
+        )
       )
     )
   }
@@ -41,12 +46,20 @@ class ConvenientHttpClient[Result[_]](decorated: BaseHttpClient[Result]) extends
   def delete[T](
     url: Url,
     accept: Accept[T],
-    headerFields: HeaderField*): Result[T] = execute(DELETE, url, accept, headerFields:_*)
+    headerFields: HeaderField*) = execute(DELETE, url, accept, headerFields:_*)
+
+  def delete(
+     url: Url,
+     headerFields: HeaderField*) = execute(DELETE, url, headerFields:_*)
 
   def options[T](
     url: Url,
     accept: Accept[T],
-    headerFields: HeaderField*): Result[T] = execute(TRACE, url, accept, headerFields:_*)
+    headerFields: HeaderField*) = execute(TRACE, url, accept, headerFields:_*)
+
+  def options(
+    url: Url,
+    headerFields: HeaderField*) = execute(TRACE, url, headerFields:_*)
 
   def execute[T](
     method: Method,
@@ -55,19 +68,47 @@ class ConvenientHttpClient[Result[_]](decorated: BaseHttpClient[Result]) extends
     headerFields: HeaderField*): Result[T] = {
 
     decorated.execute(
-      DirectedRequest(
-        url.scheme,
-        url.hostAndPort,
-        Request(
-          method,
-          RequestUri(url.pathAndQuery),
-          List(
-            Host := url.hostAndPort,
-            accept
-          ) ++ headerFields.toSeq
-        ),
+      requestFor(method, url, headerFields.toList, accept, List(
+        Host := url.hostAndPort,
         accept
+      ))
+    )
+  }
+
+  def execute(
+    method: Method,
+    url: Url,
+    headerFields: HeaderField*): Result[immutable.Seq[UnsignedByte]] =
+  {
+    decorated.execute(
+      requestFor(
+        method,
+        url,
+        headerFields.toList,
+        BytesUnmarshaller,
+        List(
+          Host := url.hostAndPort
+        )
       )
+    )
+  }
+
+  private def requestFor[T](
+    method: Method,
+    url: Url,
+    headerFields: immutable.Seq[HeaderField],
+    unmarshaller: EntityUnmarshaller[T],
+    baseFields: List[HeaderField]): DirectedRequest[T] =
+  {
+    DirectedRequest(
+      url.scheme,
+      url.hostAndPort,
+      Request(
+        method,
+        RequestUri(url.pathAndQuery),
+        baseFields ++ headerFields.toSeq
+      ),
+      unmarshaller
     )
   }
 
