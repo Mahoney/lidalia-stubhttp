@@ -4,13 +4,32 @@ import uk.org.lidalia.http.core.{Method, RequestUri, Request}
 import uk.org.lidalia.lang.RichObject
 import uk.org.lidalia.net2.{Url, HostAndPort, Scheme}
 
-class DirectedRequest[T](
+object DirectedRequest {
+
+  def apply[T](
+    scheme: Scheme,
+    hostAndPort: HostAndPort,
+    request: Request,
+    unmarshaller: EntityUnmarshaller[T],
+    parent: ?[DirectedRequest[T]] = None
+  ) = {
+    new DirectedRequest[T](
+      scheme,
+      hostAndPort,
+      request,
+      unmarshaller,
+      parent
+    )
+  }
+}
+
+class DirectedRequest[T] private (
   @Identity val scheme: Scheme,
   @Identity val hostAndPort: HostAndPort,
   @Identity val request: Request,
   val unmarshaller: EntityUnmarshaller[T],
-  val parent: ?[DirectedRequest[T]] = None
-  ) extends RichObject {
+  val parent: ?[DirectedRequest[T]]
+) extends RichObject {
 
   def redirected(location: Url, method: Method = request.method): DirectedRequest[T] =
     new DirectedRequest(

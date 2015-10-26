@@ -35,7 +35,7 @@ class Path private[net2] (private val pathElements: immutable.Seq[Segment])
 
   override def iterator = pathElements.iterator
 
-  override lazy val decode: String = pathElements.map(_.decode).mkString("/")
+  override lazy val decode = pathElements.map(_.decode).mkString("/")
 
   override lazy val toString = pathElements.mkString("/")
 

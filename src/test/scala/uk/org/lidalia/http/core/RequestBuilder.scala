@@ -16,7 +16,7 @@ object RequestBuilder {
         accept: Accept[T] = new Accept[None.type](List()) {
           def unmarshal(request: Request, response: ResponseHeader, entityBytes: InputStream) = None
         }): DirectedRequest[T] = {
-    new DirectedRequest(scheme, hostAndPort, Request(method, uri), accept)
+    DirectedRequest(scheme, hostAndPort, Request(method, uri), accept)
   }
 
   def get(uri: RequestUri = RequestUri("/mypath")) = request(GET, uri = uri)

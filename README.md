@@ -1,5 +1,5 @@
 lidalia-http-2
-=============
+==============
 
 An experiment in modelling HTTP & creating an HTTP client in Scala.
 

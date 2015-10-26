@@ -47,7 +47,7 @@ class TargetedHttpClientTests extends PropSpec with TableDrivenPropertyChecks wi
       .withHeader("Content-Type", "text/plain")))
 
 
-    val request = new TargetedRequest(HTTP, target, Request(GET, RequestUri("/foo")), unmarshaller)
+    val request = TargetedRequest(HTTP, target, Request(GET, RequestUri("/foo")), unmarshaller)
     val response = Await.result(
       coreClient.execute(request),
       Duration(1, TimeUnit.SECONDS)
@@ -65,7 +65,7 @@ class TargetedHttpClientTests extends PropSpec with TableDrivenPropertyChecks wi
       get(urlEqualTo("/foo")).willReturn(
         aResponse().withFixedDelay(2000)
       ))
-    val request = new TargetedRequest(HTTP, target, Request(GET, RequestUri("/foo")), unmarshaller)
+    val request = TargetedRequest(HTTP, target, Request(GET, RequestUri("/foo")), unmarshaller)
 
     try {
       val response = Await.result(
@@ -88,7 +88,7 @@ class TargetedHttpClientTests extends PropSpec with TableDrivenPropertyChecks wi
           .withHeader("Content-Type", "application/json")))
 
 
-    val request = new TargetedRequest(
+    val request = TargetedRequest(
       HTTP,
       target,
       Request(GET, RequestUri("/foo")),

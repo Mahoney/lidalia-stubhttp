@@ -23,7 +23,7 @@ class ConvenientHttpClient[Result[_]](decorated: BaseHttpClient[Result]) extends
     url: Url,
     headerFields: HeaderField*): Result[None.type] = {
     decorated.execute(
-      new DirectedRequest(
+      DirectedRequest(
         url.scheme,
         url.hostAndPort,
         Request(
@@ -55,7 +55,7 @@ class ConvenientHttpClient[Result[_]](decorated: BaseHttpClient[Result]) extends
     headerFields: HeaderField*): Result[T] = {
 
     decorated.execute(
-      new DirectedRequest(
+      DirectedRequest(
         url.scheme,
         url.hostAndPort,
         Request(

@@ -23,7 +23,7 @@ class DefaultResolvingHttpClientTest extends PropSpec with TableDrivenPropertyCh
 
   property("Returns response from wrapped client when not a redirect") {
     val request = get()
-    val targetedRequest = new TargetedRequest(
+    val targetedRequest = TargetedRequest(
       HTTP,
       Target(IpV4Address("127.0.0.1"), Port(80)),
       request.request,

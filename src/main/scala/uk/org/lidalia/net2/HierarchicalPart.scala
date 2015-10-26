@@ -46,5 +46,5 @@ final class HierarchicalPartPathOnly private(override val path: Path) extends Hi
 
   override val authority = None
 
-  override def toString = path.toString()
+  override def toString = path.toString
 }

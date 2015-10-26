@@ -28,7 +28,7 @@ class ConvenientHttpClientTest extends PropSpec {
       override def unmarshal(request: Request, response: ResponseHeader, entityBytes: InputStream): String = IOUtils.toString(entityBytes)
     }
     given(decoratedClient.execute(
-      new DirectedRequest(
+      DirectedRequest(
         HTTP,
         HostAndPort("localhost"),
         Request(
@@ -61,7 +61,7 @@ class ConvenientHttpClientTest extends PropSpec {
     }
 
     given(decoratedClient.execute(
-      new DirectedRequest(
+      DirectedRequest(
         HTTP,
         HostAndPort("localhost"),
         Request(

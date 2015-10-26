@@ -11,7 +11,7 @@ class DefaultResolvingHttpClient(decorated: TargetedHttpClient) extends HttpClie
 
   override def execute[T](request: DirectedRequest[T]): Future[Response[Either[String, T]]] = {
     decorated.execute(
-      new TargetedRequest(
+      TargetedRequest(
         request.scheme,
         resolve(request.scheme, request.hostAndPort),
         request.request,
