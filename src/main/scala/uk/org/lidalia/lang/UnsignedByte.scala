@@ -1,15 +1,20 @@
 package uk.org.lidalia.lang
 
 object UnsignedByte {
-  private[UnsignedByte] val MAX_BYTE_VALUE = 255
 
-  def apply(theByte: Int) = new UnsignedByte(theByte)
-  def apply(theByte: String) = new UnsignedByte(theByte.toInt)
+  val MaxValue = UnsignedByte(Byte.MaxValue)
+  val MinValue = UnsignedByte(Byte.MinValue)
+
+  def apply(theByte: Byte): UnsignedByte = new UnsignedByte(theByte)
+  def apply(theByte: Int): UnsignedByte = UnsignedByte((theByte - 128).toByte)
+  def apply(theByte: String): UnsignedByte = UnsignedByte(theByte.toInt)
 }
 
-class UnsignedByte(@Identity private val theByte: Int) extends RichObject {
+class UnsignedByte private (@Identity private val theByte: Byte) extends RichObject {
 
-  require(theByte >= 0 && theByte <= UnsignedByte.MAX_BYTE_VALUE)
+  def toInt = theByte+128
 
-  override def toString: String = String.valueOf(theByte)
+  def toSignedByte = theByte
+
+  override def toString: String = String.valueOf(toInt)
 }
