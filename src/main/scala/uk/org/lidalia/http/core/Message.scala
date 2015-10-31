@@ -2,11 +2,14 @@ package uk.org.lidalia.http.core
 
 import java.lang.System.lineSeparator
 
+import uk.org.lidalia.http.client.{EntityMarshaller, EntityUnmarshaller}
 import uk.org.lidalia.lang.RichObject
 
 abstract class Message[+T] private[http](
-              @Identity val header: MessageHeader,
-              @Identity val entity: T) extends RichObject {
+  @Identity val header: MessageHeader,
+  marshaller: EntityMarshaller[T],
+  @Identity val entity: T
+) extends RichObject {
 
   def headerFieldValues(headerFieldName: String) = header.headerFieldValues(headerFieldName)
 

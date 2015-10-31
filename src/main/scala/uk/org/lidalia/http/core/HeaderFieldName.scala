@@ -6,4 +6,6 @@ trait HeaderFieldName[+T] {
   def parse(headerFieldValues: Seq[String]): T
   def name: String
   override val toString = name
+
+  final def :=[C >: HeaderField](headerField: C) = headerField
 }

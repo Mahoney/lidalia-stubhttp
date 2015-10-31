@@ -12,4 +12,4 @@ object ContentType extends SingleValueHeaderFieldName[MediaType] {
   override def apply(value: MediaType): HeaderField = new ContentType(value)
 }
 
-class ContentType private (val contentType: MediaType) extends HeaderField(ContentType.name, List(contentType.toString))
+class ContentType private[http] (val contentType: MediaType) extends HeaderField(ContentType.name, List(contentType.toString))

@@ -1,5 +1,7 @@
 package uk.org.lidalia.http.core
 
+import uk.org.lidalia.http.client.{EntityUnmarshaller, EntityMarshaller}
+
 import scala.collection.convert.Wrappers.JConcurrentMapWrapper
 import java.util.concurrent.ConcurrentHashMap
 import scala.collection.immutable.Set
@@ -21,18 +23,18 @@ object Method {
   val TRACE   = registerSafeMethod(            "TRACE",   requestMayHaveEntity = false, responseMayHaveEntity = true )
 
   def registerSafeMethod(name: String, requestMayHaveEntity: Boolean, responseMayHaveEntity: Boolean): SafeMethod = {
-    register(new SafeMethod(name, requestMayHaveEntity, responseMayHaveEntity))
+    register(new SafeMethod(name) with HasEntity with ResponseHasEntity)
   }
 
   def registerUnsafeIdempotentMethod(name: String, requestMayHaveEntity: Boolean, responseMayHaveEntity: Boolean): UnsafeIdempotentMethod = {
-    register(new UnsafeIdempotentMethod(name, requestMayHaveEntity, responseMayHaveEntity))
+    register(new UnsafeIdempotentMethod(name) with HasEntity with ResponseHasEntity)
   }
 
   def registerNonIdempotentMethod(name: String, requestMayHaveEntity: Boolean, responseMayHaveEntity: Boolean): NonIdempotentMethod = {
-    register(new NonIdempotentMethod(name, requestMayHaveEntity, responseMayHaveEntity))
+    register(new NonIdempotentMethod(name) with HasEntity with ResponseHasEntity)
   }
 
-  private def register[T <: Method](method: T): T = {
+  def register[T <: Method](method: T): T = {
     val existing: ?[Method] = methods.putIfAbsent(method.name, method)
     if (!existing.isEmpty) throw new IllegalStateException("Only one instance of a method may exist! Trying to create duplicate of "+method)
     method
@@ -41,13 +43,13 @@ object Method {
   def values(): Set[Method] = methods.values.to[Set]
 
   def apply(name: String): Method = {
-    methods.get(name).or(throw new UnknownMethodException(name))
+    methods.get(name).or(new NonIdempotentMethod(name) with HasEntity with ResponseHasEntity)
   }
 }
 
-sealed abstract class Method(val name: String,
-                             val requestMayHaveEntity: Boolean,
-                             val responseMayHaveEntity: Boolean) {
+sealed abstract class Method(
+  val name: String
+) {
 
   val isSafe: Boolean
   final val isUnsafe: Boolean = !isSafe
@@ -55,8 +57,10 @@ sealed abstract class Method(val name: String,
   val isIdempotent: Boolean
   final val isNotIdempotent: Boolean = !isIdempotent
 
+  val requestMayHaveEntity: Boolean
   final val requestMayNotHaveEntity: Boolean = !requestMayHaveEntity
 
+  val responseMayHaveEntity: Boolean
   final val responseMayNotHaveEntity: Boolean = !responseMayHaveEntity
 
   override val toString = name
@@ -70,21 +74,40 @@ sealed trait UnsafeMethod extends Method {
   final override val isSafe = false
 }
 
-final class NonIdempotentMethod private[core](name: String,
-                                requestMayHaveEntity: Boolean,
-                                responseMayHaveEntity: Boolean)
-  extends Method(name, requestMayHaveEntity, responseMayHaveEntity) with UnsafeMethod {
-  final override val isIdempotent = false
+sealed trait HasEntity extends Method {
+  final override val requestMayHaveEntity = true
 }
 
-final class SafeMethod private[core](name: String,
-                       requestMayHaveEntity: Boolean,
-                       responseMayHaveEntity: Boolean)
-  extends Method(name, requestMayHaveEntity, responseMayHaveEntity) with IdempotentMethod {
-  final override val isSafe = true
+sealed trait HasNoEntity extends Method {
+  final override val requestMayHaveEntity = false
 }
 
-final class UnsafeIdempotentMethod private[core](name: String,
-                                   requestMayHaveEntity: Boolean,
-                                   responseMayHaveEntity: Boolean)
-  extends Method(name, requestMayHaveEntity, responseMayHaveEntity) with UnsafeMethod with IdempotentMethod
+sealed trait ResponseHasEntity extends Method {
+  final override val responseMayHaveEntity = true
+}
+
+sealed trait ResponseHasNoEntity extends Method {
+  final override val responseMayHaveEntity = false
+}
+
+abstract class NonIdempotentMethod private[core](
+  name: String
+) extends Method(
+  name
+) with UnsafeMethod {
+  override val isIdempotent = false
+}
+
+abstract class SafeMethod private[core](
+  name: String
+) extends Method(
+  name
+) with IdempotentMethod {
+  override val isSafe = true
+}
+
+abstract class UnsafeIdempotentMethod private[core](
+  name: String
+) extends Method(
+  name
+) with UnsafeMethod with IdempotentMethod

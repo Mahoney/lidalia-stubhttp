@@ -9,7 +9,7 @@ object DirectedRequest {
   def apply[T](
     scheme: Scheme,
     hostAndPort: HostAndPort,
-    request: Request,
+    request: Request[T, _],
     unmarshaller: EntityUnmarshaller[T],
     parent: ?[DirectedRequest[T]] = None
   ) = {
@@ -26,7 +26,7 @@ object DirectedRequest {
 class DirectedRequest[T] private (
   @Identity val scheme: Scheme,
   @Identity val hostAndPort: HostAndPort,
-  @Identity val request: Request,
+  @Identity val request: Request[T, _],
   val unmarshaller: EntityUnmarshaller[T],
   val parent: ?[DirectedRequest[T]]
 ) extends RichObject {

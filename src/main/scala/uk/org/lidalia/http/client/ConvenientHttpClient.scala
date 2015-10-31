@@ -78,17 +78,18 @@ class ConvenientHttpClient[Result[_]](decorated: BaseHttpClient[Result]) extends
   def execute(
     method: Method,
     url: Url,
-    headerFields: HeaderField*): Result[immutable.Seq[UnsignedByte]] =
-  {
+    headerFields: HeaderField*
+  ): Result[immutable.Seq[UnsignedByte]] = {
     decorated.execute(
-      requestFor(
-        method,
-        url,
-        headerFields.toList,
-        BytesUnmarshaller,
-        List(
-          Host := url.hostAndPort
-        )
+      DirectedRequest(
+        url.scheme,
+        url.hostAndPort,
+        Request(
+          method,
+          RequestUri(url.pathAndQuery),
+          List(Host := url.hostAndPort) ++ headerFields.toSeq
+        ),
+        BytesUnmarshaller
       )
     )
   }
@@ -97,7 +98,7 @@ class ConvenientHttpClient[Result[_]](decorated: BaseHttpClient[Result]) extends
     method: Method,
     url: Url,
     headerFields: immutable.Seq[HeaderField],
-    unmarshaller: EntityUnmarshaller[T],
+    accept: Accept[T],
     baseFields: List[HeaderField]): DirectedRequest[T] =
   {
     DirectedRequest(
@@ -106,9 +107,10 @@ class ConvenientHttpClient[Result[_]](decorated: BaseHttpClient[Result]) extends
       Request(
         method,
         RequestUri(url.pathAndQuery),
+        accept,
         baseFields ++ headerFields.toSeq
       ),
-      unmarshaller
+      accept
     )
   }
 

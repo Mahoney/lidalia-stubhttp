@@ -9,17 +9,17 @@ import uk.org.lidalia.lang.UnsignedByte
 import scala.collection.immutable
 
 object NoopEntityUnmarshaller extends EntityUnmarshaller[None.type] {
-  override def unmarshal(request: Request, response: ResponseHeader, entityBytes: InputStream): None.type = None
+  override def unmarshal(request: Request[_, None.type], response: ResponseHeader, entityBytes: InputStream): None.type = None
 }
 
 object BytesUnmarshaller extends EntityUnmarshaller[immutable.Seq[UnsignedByte]] {
-  override def unmarshal(request: Request, response: ResponseHeader, entityBytes: InputStream): immutable.Seq[UnsignedByte] = {
+  override def unmarshal(request: Request[_, immutable.Seq[UnsignedByte]], response: ResponseHeader, entityBytes: InputStream): immutable.Seq[UnsignedByte] = {
     immutable.Seq(IOUtils.toByteArray(entityBytes).map(UnsignedByte(_)):_*)
   }
 }
 
 trait EntityUnmarshaller[T] {
 
-  def unmarshal(request: Request, response: ResponseHeader, entityBytes: InputStream): T
+  def unmarshal(request: Request[_, T], response: ResponseHeader, entityBytes: InputStream): T
 
 }

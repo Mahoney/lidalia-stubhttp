@@ -8,11 +8,15 @@ class MediaRangePref(val mediaRange: MediaRange) {
   override def toString = mediaRange.toString
 }
 
+object MediaType {
+  val text_plain = new MediaType("text/plain")
+}
+
 class MediaRange(val range: String) {
   override def toString = range
 }
 
-class MediaType(value: String) {
+class MediaType(value: String) extends MediaRange(value) {
   def charset: ?[Charset] = None
 }
 

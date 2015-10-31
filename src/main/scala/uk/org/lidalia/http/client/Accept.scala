@@ -1,8 +1,6 @@
 package uk.org.lidalia.http.client
 
-import java.io.InputStream
-
-import uk.org.lidalia.http.core.{ResponseHeader, MediaRangePref}
+import uk.org.lidalia.http.core.{MediaRangePref}
 
 import scala.collection.immutable.Seq
 
