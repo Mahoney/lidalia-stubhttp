@@ -1,17 +1,22 @@
 package uk.org.lidalia.http.client
 
+import java.net.InetAddress
+
 import uk.org.lidalia.http.core.Method._
-import uk.org.lidalia.http.core.headerfields.Host
 import uk.org.lidalia.http.core._
+import uk.org.lidalia.http.core.headerfields.Host
 import uk.org.lidalia.lang.UnsignedByte
-import uk.org.lidalia.net2.Url
+import uk.org.lidalia.net2.{IpAddress, Socket, Url}
 import scala.collection.immutable
 
 object ConvenientHttpClient {
   def apply[Result[_]](
-    decorated: BaseHttpClient[Result] = ExpectedEntityHttpClient()) = {
-    new ConvenientHttpClient(decorated)
-  }
+    decorated: BaseHttpClient[Result]
+  ) = new ConvenientHttpClient(decorated)
+
+  def apply[Result[_]](
+    baseUrl: Url
+  ) = new ConvenientHttpClient(ExpectedEntityHttpClient(baseUrl))
 }
 
 class ConvenientHttpClient[Result[_]](decorated: BaseHttpClient[Result]) extends BaseHttpClient[Result] {
@@ -31,15 +36,10 @@ class ConvenientHttpClient[Result[_]](decorated: BaseHttpClient[Result]) extends
     url: Url,
     headerFields: HeaderField*) = {
     decorated.execute(
-      DirectedRequest(
-        url.scheme,
-        url.hostAndPort,
-        Request(
-          HEAD,
-          RequestUri(url.pathAndQuery),
-          List(Host := url.hostAndPort) ++ headerFields.toSeq
-        ),
-        NoopEntityUnmarshaller
+      Request(
+        HEAD,
+        RequestUri(url.pathAndQuery),
+        List(Host := url.hostAndPort) ++ headerFields.toSeq
       )
     )
   }
@@ -82,15 +82,10 @@ class ConvenientHttpClient[Result[_]](decorated: BaseHttpClient[Result]) extends
     headerFields: HeaderField*
   ): Result[immutable.Seq[UnsignedByte]] = {
     decorated.execute(
-      DirectedRequest(
-        url.scheme,
-        url.hostAndPort,
-        Request(
-          method,
-          RequestUri(url.pathAndQuery),
-          List(Host := url.hostAndPort) ++ headerFields.toSeq
-        ),
-        BytesUnmarshaller
+      Request(
+        method,
+        RequestUri(url.pathAndQuery),
+        List(Host := url.hostAndPort) ++ headerFields.toSeq
       )
     )
   }
@@ -100,20 +95,17 @@ class ConvenientHttpClient[Result[_]](decorated: BaseHttpClient[Result]) extends
     url: Url,
     headerFields: immutable.Seq[HeaderField],
     accept: Accept[T],
-    baseFields: List[HeaderField]): DirectedRequest[T] =
+    baseFields: List[HeaderField]) =
   {
-    DirectedRequest(
-      url.scheme,
-      url.hostAndPort,
-      Request(
-        method,
-        RequestUri(url.pathAndQuery),
-        accept,
-        baseFields ++ headerFields.toSeq
-      ),
-      accept
+    new Socket(IpAddress(InetAddress.getLocalHost))
+
+    Request(
+      method,
+      RequestUri(url.pathAndQuery),
+      accept,
+      baseFields ++ headerFields.toSeq
     )
   }
 
-  override def execute[T](request: DirectedRequest[T]) = decorated.execute(request)
+  override def execute[T](request: Request[T, _]) = decorated.execute(request)
 }

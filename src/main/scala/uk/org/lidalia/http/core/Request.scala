@@ -126,7 +126,7 @@ object Request {
 class Request[+A, +C] private(
   override val header: RequestHeader,
   marshaller: EntityMarshaller[C],
-  unmarshaller: EntityUnmarshaller[A],
+  val unmarshaller: EntityUnmarshaller[A],
   entity: C
 ) extends Message[C](header, marshaller, entity) {
 

@@ -1,12 +1,14 @@
 package uk.org.lidalia.http.client
 
 import java.io.{ByteArrayOutputStream, InputStream}
+import java.net.InetAddress
 
 import com.google.common.base.Charsets
 import org.apache.commons.io.IOUtils
 import uk.org.lidalia
 import lidalia.http
 import org.apache
+import uk.org.lidalia.net2.{Url, IpAddress}
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -19,31 +21,43 @@ import apache.http.message.BasicHttpRequest
 import apache.http.client.{ResponseHandler => ApacheResponseHandler}
 
 class Apache4Client(
-
+   target: Url,
    apacheClient: CloseableHttpClient = HttpClientBuilder.create()
     .setMaxConnPerRoute(Integer.MAX_VALUE)
     .setMaxConnTotal(Integer.MAX_VALUE)
     .disableRedirectHandling()
     .build()
-) extends TargetedHttpClient {
+) extends HttpClient {
 
-  override def execute[T](targetedRequest: Request[T, _]): Future[Response[Either[String, T]]] = {
+  private def marshallerFor[T](marshaller: EntityMarshaller[T]) = {
+    new EntityMarshaller[Either[String, T]] {
+      override def marshal(header: MessageHeader, entity: Either[String, T]): InputStream = {
+        entity match {
+          case Left(e) => StringEntityMarshaller.marshal(header, e)
+          case Right(e) => marshaller.marshal(header, e)
+        }
+      }
+    }
+  }
+
+  override def execute[T](request: Request[T, _]): Future[Response[Either[String, T]]] = {
     Future {
 
-      val target = targetedRequest.target
-      val host = new HttpHost(
-        target.ipAddress.toString,
-        target.port.portNumber,
-        targetedRequest.scheme.toString
+      val apacheHost = new HttpHost(
+        IpAddress(InetAddress.getByName(target.host.toString)).toString,
+        target.resolvedPort.portNumber,
+        target.scheme.toString
       )
 
-      val request = targetedRequest.request
       val apacheRequest = new BasicHttpRequest(
         request.method.toString,
         request.requestUri.toString
       )
       
       val apacheResponseHandler = new ApacheResponseHandler[Response[Either[String, T]]] {
+
+
+
         def handleResponse(response: HttpResponse): Response[Either[String, T]] = {
           val headerFields = response.getAllHeaders.map{
             headerField => HeaderField(headerField.getName, headerField.getValue)
@@ -54,24 +68,24 @@ class Apache4Client(
             Reason(response.getStatusLine.getReasonPhrase),
             headerFields
           )
-          val entity = unmarshal(targetedRequest, response, responseHeader, targetedRequest.unmarshaller)
-          Response(responseHeader, entity)
+          val entity = unmarshal(request, response, responseHeader, request.unmarshaller)
+          Response(responseHeader, marshallerFor(request.unmarshaller.marshaller), entity)
         }
       }
 
       apacheClient.execute(
-        host,
+        apacheHost,
         apacheRequest,
         apacheResponseHandler
       )
     }
   }
 
-  def unmarshal[T](targetedRequest: TargetedRequest[T], response: HttpResponse, responseHeader: ResponseHeader, unmarshaller: EntityUnmarshaller[T]): Either[String, T] = {
+  def unmarshal[T](request: Request[T, _], response: HttpResponse, responseHeader: ResponseHeader, unmarshaller: EntityUnmarshaller[T]): Either[String, T] = {
 
     val content = new CapturingInputStream(response.getEntity.getContent)
     try {
-      Right(unmarshaller.unmarshal(targetedRequest.request, responseHeader, content))
+      Right(unmarshaller.unmarshal(request, responseHeader, content))
     } catch {
       case e: Exception =>
         val array: Array[Byte] = content.captured.toByteArray

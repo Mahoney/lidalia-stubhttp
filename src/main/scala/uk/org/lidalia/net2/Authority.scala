@@ -4,8 +4,10 @@ object Authority {
   def apply(authorityStr: String): Authority
     = AuthorityParser.parse(authorityStr)
 
-  def apply(userInfo: ?[UserInfo] = None, hostAndPort: HostAndPort)
-    = new Authority(userInfo, hostAndPort)
+  def apply(
+    userInfo: ?[UserInfo] = None,
+    hostAndPort: HostAndPort
+  ) = new Authority(userInfo, hostAndPort)
 }
 
 class Authority private(val userInfo: ?[UserInfo],

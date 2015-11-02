@@ -1,23 +1,21 @@
 package uk.org.lidalia.http.client
 
 import uk.org.lidalia.http.client.async.FutureHttpClient
-import uk.org.lidalia.http.core.Response
+import uk.org.lidalia.http.core.{Request, Response}
+import uk.org.lidalia.net2.Url
 
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
 
 object ExpectedEntityHttpClient {
   type FutureResponse[T] = Future[Response[T]]
 
-  def apply(): BaseHttpClient[FutureResponse] = {
+  def apply(
+    baseUrl: Url
+  ): BaseHttpClient[FutureResponse] = {
     new ExpectedEntityHttpClient(
-      new RedirectFollowingClient(
-        new ThrowClientErrorHttpClient(
-          new ThrowServerErrorHttpClient(
-            new DefaultResolvingHttpClient(
-              new Apache4Client()
-            )
-          )
+      new ThrowClientErrorHttpClient(
+        new ThrowServerErrorHttpClient(
+            new Apache4Client(baseUrl)
         )
       )
     )
@@ -26,12 +24,12 @@ object ExpectedEntityHttpClient {
 
 class ExpectedEntityHttpClient(decorated: HttpClient) extends FutureHttpClient[Response] {
 
-  def execute[A](request: DirectedRequest[A]): Future[Response[A]] = {
+  def execute[A](request: Request[A, _]): Future[Response[A]] = {
     val futureResponse = decorated.execute(request)
     futureResponse.map(response => {
       response.entity match {
         case Left(error) => throw new Exception(Response(response.header, error).toString)
-        case Right(success) => Response(response.header, success)
+        case Right(success) => Response(response.header, response.marshaller, success)
       }
     })
   }

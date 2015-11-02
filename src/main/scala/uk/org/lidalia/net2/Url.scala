@@ -52,7 +52,22 @@ class Url private (
   override lazy val absoluteUri: Url = if (fragment.isEmpty) this else Url(scheme, hierarchicalPart, query, None)
 
   lazy val hostAndPort: HostAndPort = hierarchicalPart.authority.hostAndPort
+  lazy val host: Host = hostAndPort.host
   lazy val resolvedPort: Port = hostAndPort.port.orElse(scheme.defaultPort).getOrElse(
     throw new IllegalStateException(s"No port specified and no default port for scheme in $this")
+  )
+
+  lazy val baseUrl: Url = Url(
+    scheme,
+    HierarchicalPartWithAuthority(
+      Authority(
+        None,
+        HostAndPort(
+          host,
+          resolvedPort
+        )
+      ),
+      Path()
+    )
   )
 }

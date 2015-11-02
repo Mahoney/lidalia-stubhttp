@@ -7,7 +7,7 @@ import uk.org.lidalia.lang.RichObject
 
 abstract class Message[+T] private[http](
   @Identity val header: MessageHeader,
-  marshaller: EntityMarshaller[T],
+  val marshaller: EntityMarshaller[T],
   @Identity val entity: T
 ) extends RichObject {
 

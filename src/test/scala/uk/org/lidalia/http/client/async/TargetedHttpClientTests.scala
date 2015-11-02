@@ -16,7 +16,7 @@ import wiremock.client.{RequestPatternBuilder, MappingBuilder, WireMock}
 import wiremock.junit.Stubbing
 import WireMock.{get, urlEqualTo, aResponse}
 
-import uk.org.lidalia.net2.{Port, IpV4Address, Target}
+import uk.org.lidalia.net2.{Port, IpV4Address, Socket$}
 import http.core.Method.GET
 import http.core.{MediaRangePref, MediaRange, Request, ResponseHeader, RequestUri, HeaderField, Code}
 
@@ -31,7 +31,7 @@ import org.joda.time.{DateTimeZone, DateTime}
 class TargetedHttpClientTests extends PropSpec with TableDrivenPropertyChecks with WireMockTest {
 
   val coreClient = new Apache4Client()
-  lazy val target = Target(IpV4Address("127.0.0.1"), Port(wireMockServer.port()))
+  lazy val target = Socket(IpV4Address("127.0.0.1"), Port(wireMockServer.port()))
 
   val unmarshaller = new Accept[String](List(new MediaRangePref(new MediaRange("text/plain")))) {
     def unmarshal(request: Request, response: ResponseHeader, entityBytes: InputStream) = IOUtils.toString(entityBytes)

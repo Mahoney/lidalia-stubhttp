@@ -17,6 +17,14 @@ object Response {
 
   def apply[T](
     header: ResponseHeader,
+    marshaller: EntityMarshaller[T],
+    body: T
+  ): Response[T] = {
+    new Response(header, marshaller, body)
+  }
+
+  def apply(
+    header: ResponseHeader,
     body: String
   ): Response[String] = {
     new Response(header, StringEntityMarshaller, body)

@@ -2,19 +2,19 @@ package uk.org.lidalia.http.client
 
 import java.io.InputStream
 
-import uk.org.lidalia.http.core.{Message, Request, ResponseHeader}
+import uk.org.lidalia.http.core.{MessageHeader, Message, Request, ResponseHeader}
 
 
 trait EntityMarshaller[T] {
 
-  def marshal(message: Message[T]): InputStream
+  def marshal(header: MessageHeader, entity: T): InputStream
 
 }
 
 object NoopEntityMarshaller extends EntityMarshaller[None.type] {
-  override def marshal(message: Message[None.type]): InputStream = ???
+  override def marshal(header: MessageHeader, entity: None.type ): InputStream = ???
 }
 
 object StringEntityMarshaller extends EntityMarshaller[String] {
-  override def marshal(message: Message[String]): InputStream = ???
+  override def marshal(header: MessageHeader, entity: String): InputStream = ???
 }
