@@ -14,3 +14,7 @@ trait EntityMarshaller[T] {
 object NoopEntityMarshaller extends EntityMarshaller[None.type] {
   override def marshal(message: Message[None.type]): InputStream = ???
 }
+
+object StringEntityMarshaller extends EntityMarshaller[String] {
+  override def marshal(message: Message[String]): InputStream = ???
+}

@@ -1,6 +1,8 @@
 package uk.org.lidalia.http.client
 
-trait BaseHttpClient[Result[_]] {
+import uk.org.lidalia.http.core.{Request, Http}
 
-  def execute[T](request: DirectedRequest[T]): Result[T]
+trait BaseHttpClient[Result[_]] extends Http {
+
+  def execute[T](request: Request[T, _]): Result[T]
 }

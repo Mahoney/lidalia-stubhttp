@@ -3,7 +3,7 @@ package uk.org.lidalia.http.client
 import uk.org.lidalia.http.client.async.FutureHttpClient
 
 import scala.concurrent.Future
-import uk.org.lidalia.http.core.Response
+import uk.org.lidalia.http.core.{Request, Response}
 
 object HttpClient {
   type StringOr[T] = Either[String, T]
@@ -11,5 +11,5 @@ object HttpClient {
 }
 
 trait HttpClient extends FutureHttpClient[HttpClient.ResponseStringOr] {
-  def execute[T](request: DirectedRequest[T]): Future[Response[Either[String, T]]]
+  def execute[T](request: Request[T, _]): Future[Response[Either[String, T]]]
 }

@@ -18,13 +18,16 @@ import apache.http.impl.client.{CloseableHttpClient, HttpClientBuilder}
 import apache.http.message.BasicHttpRequest
 import apache.http.client.{ResponseHandler => ApacheResponseHandler}
 
-class Apache4Client(apacheClient: CloseableHttpClient = HttpClientBuilder.create()
+class Apache4Client(
+
+   apacheClient: CloseableHttpClient = HttpClientBuilder.create()
     .setMaxConnPerRoute(Integer.MAX_VALUE)
     .setMaxConnTotal(Integer.MAX_VALUE)
     .disableRedirectHandling()
-    .build()) extends TargetedHttpClient {
+    .build()
+) extends TargetedHttpClient {
 
-  override def execute[T](targetedRequest: TargetedRequest[T]): Future[Response[Either[String, T]]] = {
+  override def execute[T](targetedRequest: Request[T, _]): Future[Response[Either[String, T]]] = {
     Future {
 
       val target = targetedRequest.target

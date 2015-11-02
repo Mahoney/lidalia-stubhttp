@@ -1,28 +1,36 @@
 package uk.org.lidalia.http.core
 
+import uk.org.lidalia.http.client.{StringEntityMarshaller, NoopEntityMarshaller, ContentType, EntityMarshaller}
 import uk.org.lidalia.net2.{Url, Uri}
 import org.joda.time.DateTime
 
-import scala.collection.immutable.Seq
-
 object Response {
+
   def apply[T](
     status: Code,
-    headerFields: Seq[HeaderField] = Nil,
-    body: T = None): Response[T] = {
-
-    apply(ResponseHeader(status, headerFields), body)
+    contentType: ContentType[T],
+    headerFields: List[HeaderField] = Nil,
+    body: T
+  ): Response[T] = {
+    new Response(ResponseHeader(status, contentType :: headerFields), contentType, body)
   }
 
   def apply[T](
-    responseHeader: ResponseHeader,
-    body: T): Response[T] = {
+    header: ResponseHeader,
+    body: String
+  ): Response[String] = {
+    new Response(header, StringEntityMarshaller, body)
+  }
 
-    new Response(responseHeader, body)
+  def apply(
+    status: Code,
+    headerFields: List[HeaderField] = Nil
+  ): Response[None.type] = {
+    new Response(ResponseHeader(status, headerFields), NoopEntityMarshaller, None)
   }
 }
 
-class Response[+T] private(override val header: ResponseHeader, entity: T) extends Message(header, entity) {
+class Response[+T] private(override val header: ResponseHeader, entityMarshaller: EntityMarshaller[T], entity: T) extends Message(header, entityMarshaller, entity) {
 
   val code = header.code
 
