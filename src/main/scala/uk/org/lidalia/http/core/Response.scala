@@ -8,37 +8,35 @@ object Response {
 
   def apply[T](
     status: Code,
-    contentType: ContentType[T],
-    headerFields: List[HeaderField] = Nil,
-    body: T
+    headerFields: List[HeaderField],
+    body: Entity[T]
   ): Response[T] = {
-    new Response(ResponseHeader(status, contentType :: headerFields), contentType, body)
+    new Response(ResponseHeader(status, headerFields), body)
   }
 
   def apply[T](
     header: ResponseHeader,
-    marshaller: EntityMarshaller[T],
-    body: T
+    body: Entity[T]
   ): Response[T] = {
-    new Response(header, marshaller, body)
+    new Response(header, body)
   }
 
   def apply(
     header: ResponseHeader,
     body: String
   ): Response[String] = {
-    new Response(header, StringEntityMarshaller, body)
+    new Response(header, new AnyEntity(body))
   }
 
   def apply(
     status: Code,
-    headerFields: List[HeaderField] = Nil
+    headerFields: List[HeaderField]
   ): Response[None.type] = {
-    new Response(ResponseHeader(status, headerFields), NoopEntityMarshaller, None)
+    new Response(ResponseHeader(status, headerFields), EmptyEntity)
   }
 }
 
-class Response[+T] private(override val header: ResponseHeader, entityMarshaller: EntityMarshaller[T], entity: T) extends Message(header, entityMarshaller, entity) {
+class Response[T] private(override val header: ResponseHeader, entity: Entity[T]) extends Message(header, entity) {
 
   val code = header.code
 

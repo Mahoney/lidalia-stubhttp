@@ -1,7 +1,5 @@
 package uk.org.lidalia.http.core
 
-import uk.org.lidalia.http.client.{EntityUnmarshaller, EntityMarshaller}
-
 import scala.collection.convert.Wrappers.JConcurrentMapWrapper
 import java.util.concurrent.ConcurrentHashMap
 import scala.collection.immutable.Set
@@ -23,32 +21,34 @@ object Method {
   val TRACE   = registerSafeMethod(            "TRACE",   requestMayHaveEntity = false, responseMayHaveEntity = true )
 
   def registerSafeMethod(name: String, requestMayHaveEntity: Boolean, responseMayHaveEntity: Boolean): SafeMethod = {
-    register(new SafeMethod(name) with HasEntity with ResponseHasEntity)
+    register(new SafeMethod(name, requestMayHaveEntity, responseMayHaveEntity))
   }
 
   def registerUnsafeIdempotentMethod(name: String, requestMayHaveEntity: Boolean, responseMayHaveEntity: Boolean): UnsafeIdempotentMethod = {
-    register(new UnsafeIdempotentMethod(name) with HasEntity with ResponseHasEntity)
+    register(new UnsafeIdempotentMethod(name, requestMayHaveEntity, responseMayHaveEntity))
   }
 
   def registerNonIdempotentMethod(name: String, requestMayHaveEntity: Boolean, responseMayHaveEntity: Boolean): NonIdempotentMethod = {
-    register(new NonIdempotentMethod(name) with HasEntity with ResponseHasEntity)
+    register(new NonIdempotentMethod(name, requestMayHaveEntity, responseMayHaveEntity))
   }
 
   def register[T <: Method](method: T): T = {
     val existing: ?[Method] = methods.putIfAbsent(method.name, method)
-    if (!existing.isEmpty) throw new IllegalStateException("Only one instance of a method may exist! Trying to create duplicate of "+method)
+    if (existing.isDefined) throw new IllegalStateException("Only one instance of a method may exist! Trying to create duplicate of "+method)
     method
   }
 
   def values(): Set[Method] = methods.values.to[Set]
 
   def apply(name: String): Method = {
-    methods.get(name).or(new NonIdempotentMethod(name) with HasEntity with ResponseHasEntity)
+    methods.get(name).or(new NonIdempotentMethod(name, true, true))
   }
 }
 
 sealed abstract class Method(
-  val name: String
+  val name: String,
+  val requestMayHaveEntity: Boolean,
+  val responseMayHaveEntity: Boolean
 ) {
 
   val isSafe: Boolean
@@ -57,10 +57,8 @@ sealed abstract class Method(
   val isIdempotent: Boolean
   final val isNotIdempotent: Boolean = !isIdempotent
 
-  val requestMayHaveEntity: Boolean
   final val requestMayNotHaveEntity: Boolean = !requestMayHaveEntity
 
-  val responseMayHaveEntity: Boolean
   final val responseMayNotHaveEntity: Boolean = !responseMayHaveEntity
 
   override val toString = name
@@ -74,40 +72,36 @@ sealed trait UnsafeMethod extends Method {
   final override val isSafe = false
 }
 
-sealed trait HasEntity extends Method {
-  final override val requestMayHaveEntity = true
-}
-
-sealed trait HasNoEntity extends Method {
-  final override val requestMayHaveEntity = false
-}
-
-sealed trait ResponseHasEntity extends Method {
-  final override val responseMayHaveEntity = true
-}
-
-sealed trait ResponseHasNoEntity extends Method {
-  final override val responseMayHaveEntity = false
-}
-
-abstract class NonIdempotentMethod private[core](
-  name: String
+final class NonIdempotentMethod private[core](
+  name: String,
+  requestMayHaveEntity: Boolean,
+  responseMayHaveEntity: Boolean
 ) extends Method(
-  name
+  name,
+  requestMayHaveEntity,
+  responseMayHaveEntity
 ) with UnsafeMethod {
-  override val isIdempotent = false
+  override final val isIdempotent = false
 }
 
-abstract class SafeMethod private[core](
-  name: String
+final class SafeMethod private[core](
+  name: String,
+  requestMayHaveEntity: Boolean,
+  responseMayHaveEntity: Boolean
 ) extends Method(
-  name
+  name,
+  requestMayHaveEntity,
+  responseMayHaveEntity
 ) with IdempotentMethod {
-  override val isSafe = true
+  override final val isSafe = true
 }
 
-abstract class UnsafeIdempotentMethod private[core](
-  name: String
+final class UnsafeIdempotentMethod private[core](
+  name: String,
+  requestMayHaveEntity: Boolean,
+  responseMayHaveEntity: Boolean
 ) extends Method(
-  name
+  name,
+  requestMayHaveEntity,
+  responseMayHaveEntity
 ) with UnsafeMethod with IdempotentMethod

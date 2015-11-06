@@ -68,8 +68,8 @@ class Apache4Client(
             Reason(response.getStatusLine.getReasonPhrase),
             headerFields
           )
-          val entity = unmarshal(request, response, responseHeader, request.unmarshaller)
-          Response(responseHeader, marshallerFor(request.unmarshaller.marshaller), entity)
+          val entity: Entity[Either[String, T]] = unmarshal(request, response, responseHeader, request.unmarshaller)
+          Response(responseHeader, entity)
         }
       }
 
@@ -81,16 +81,16 @@ class Apache4Client(
     }
   }
 
-  def unmarshal[T](request: Request[T, _], response: HttpResponse, responseHeader: ResponseHeader, unmarshaller: EntityUnmarshaller[T]): Either[String, T] = {
+  def unmarshal[T](request: Request[T, _], response: HttpResponse, responseHeader: ResponseHeader, unmarshaller: EntityUnmarshaller[T]): Entity[Either[String, T]] = {
 
     val content = new CapturingInputStream(response.getEntity.getContent)
     try {
-      Right(unmarshaller.unmarshal(request, responseHeader, content))
+      new EitherEntity(Right(unmarshaller.unmarshal(request, responseHeader, content)))
     } catch {
       case e: Exception =>
         val array: Array[Byte] = content.captured.toByteArray
         val charset = responseHeader.contentType.flatMap(_.charset).getOrElse(Charsets.UTF_8)
-        Left(IOUtils.toString(array, charset.name()))
+        new EitherEntity(Left(new AnyEntity(IOUtils.toString(array, charset.name()))))
     }
   }
 }

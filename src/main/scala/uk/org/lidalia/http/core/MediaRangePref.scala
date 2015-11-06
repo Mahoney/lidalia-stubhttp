@@ -9,7 +9,8 @@ class MediaRangePref(val mediaRange: MediaRange) {
 }
 
 object MediaType {
-  val text_plain = new MediaType("text/plain")
+  val `text/plain` = new MediaType("text/plain")
+  val `application/octet-stream` = new MediaType("application/octet-stream")
 }
 
 class MediaRange(val range: String) {

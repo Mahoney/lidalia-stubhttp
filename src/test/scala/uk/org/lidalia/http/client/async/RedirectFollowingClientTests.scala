@@ -37,7 +37,7 @@ class RedirectFollowingClientTests extends FunSuite with TableDrivenPropertyChec
     assert(valueOf(actualResponse) === valueOf(expectedResponse))
   }
 
-  test("Follows 302 redirect") {
+  ignore("Follows 302 redirect") {
     val request1 = get()
     val redirectLocation = Url("http://www.example.com/redirectlocation")
     val redirectResponse = successful(response(Found, List(Location(redirectLocation))))
@@ -53,7 +53,7 @@ class RedirectFollowingClientTests extends FunSuite with TableDrivenPropertyChec
     assert(valueOf(actualResponse) === valueOf(expectedResponse))
   }
 
-  test("Follows two 302 redirects") {
+  ignore("Follows two 302 redirects") {
     val request1 = get()
     val redirectLocation1 = Url("http://www.example.com/redirectlocation")
     val redirectResponse1 = successful(response(Found, List(Location(redirectLocation1))))
@@ -122,7 +122,7 @@ class RedirectFollowingClientTests extends FunSuite with TableDrivenPropertyChec
       valueOf(redirectFollowingHttpClient.execute(request1))
     }
 
-    assert(thrown.request === request1.request)
+    assert(thrown.request === request1)
     assert(thrown.response === valueOf(redirectResponse1))
 
   }

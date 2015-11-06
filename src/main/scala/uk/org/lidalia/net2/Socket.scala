@@ -1,12 +1,14 @@
 package uk.org.lidalia.net2
 
+import uk.org.lidalia.lang.RichObject
+
 object Socket {
   def apply(ipAddress: IpAddress, port: Port) = new Socket(ipAddress, port)
 }
 
-case class Socket private(
-  ipAddress: IpAddress,
-  port: Port
-) {
+class Socket private(
+  @Identity val ipAddress: IpAddress,
+  @Identity val port: Port
+) extends RichObject {
   override def toString = s"${ipAddress.toUriString}:$port"
 }

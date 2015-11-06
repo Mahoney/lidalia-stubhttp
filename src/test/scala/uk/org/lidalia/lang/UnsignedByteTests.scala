@@ -16,8 +16,6 @@ class UnsignedByteTests extends FunSuite with TableDrivenPropertyChecks {
 
     forAll(values) { (stringVal, intVal, unsignedByteVal) =>
 
-      println(s"$stringVal $intVal $unsignedByteVal")
-
       assert(UnsignedByte(unsignedByteVal).toString == stringVal)
       assert(UnsignedByte(stringVal).toString == stringVal)
       assert(UnsignedByte(intVal).toString == stringVal)

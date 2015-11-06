@@ -1,12 +1,10 @@
 package uk.org.lidalia.http.client
 
-import java.net.InetAddress
-
 import uk.org.lidalia.http.core.Method._
 import uk.org.lidalia.http.core._
 import uk.org.lidalia.http.core.headerfields.Host
 import uk.org.lidalia.lang.UnsignedByte
-import uk.org.lidalia.net2.{IpAddress, Socket, Url}
+import uk.org.lidalia.net2.Url
 import scala.collection.immutable
 
 object ConvenientHttpClient {
@@ -97,8 +95,6 @@ class ConvenientHttpClient[Result[_]](decorated: BaseHttpClient[Result]) extends
     accept: Accept[T],
     baseFields: List[HeaderField]) =
   {
-    new Socket(IpAddress(InetAddress.getLocalHost))
-
     Request(
       method,
       RequestUri(url.pathAndQuery),

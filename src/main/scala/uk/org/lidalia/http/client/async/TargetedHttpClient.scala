@@ -5,7 +5,7 @@ import uk.org.lidalia.net2.{HostAndPort, Scheme, Socket$}
 
 import scala.concurrent.Future
 
-abstract class TargetedHttpClient(scheme: Scheme, hostAndPort: HostAndPort) {
+abstract class TargetedHttpClient(scheme: Scheme, hostAndPort: HostAndPort) extends HttpClient{
 
   def execute[T](request: Request[T, _]): Future[Response[Either[String, T]]]
 }

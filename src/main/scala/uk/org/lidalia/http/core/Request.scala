@@ -20,9 +20,43 @@ object Request {
         uri,
         headerFields
       ),
-      NoopEntityMarshaller,
       BytesUnmarshaller,
-      None
+      EmptyEntity
+    )
+  }
+
+  def apply[C](
+    method: Method,
+    uri: RequestUri,
+    headerFields: immutable.Seq[HeaderField],
+    entity: Entity[C]
+  ) = {
+    new Request(
+      RequestHeader(
+        method,
+        uri,
+        headerFields
+      ),
+      NoopEntityUnmarshaller,
+      entity
+    )
+  }
+
+  def apply[A, C](
+    method: Method,
+    uri: RequestUri,
+    accept: Accept[A],
+    headerFields: immutable.Seq[HeaderField],
+    entity: Entity[C]
+  ) = {
+    new Request(
+      RequestHeader(
+        method,
+        uri,
+        List(accept) ++ headerFields
+      ),
+      accept,
+      entity
     )
   }
 
@@ -38,101 +72,23 @@ object Request {
         uri,
         List(accept) ++ headerFields
       ),
-      NoopEntityMarshaller,
       accept,
-      None
-    )
-  }
-
-  def apply[C](
-    method: Method,
-    uri: RequestUri,
-    contentType: ContentType[C],
-    headerFields: immutable.Seq[HeaderField],
-    entity: C
-  ) = {
-    new Request(
-      RequestHeader(
-        method,
-        uri,
-        List(contentType) ++ headerFields
-      ),
-      contentType,
-      NoopEntityUnmarshaller,
-      entity
-    )
-  }
-
-  def apply(
-    method: Method,
-    uri: RequestUri,
-    contentType: ContentType[_],
-    headerFields: immutable.Seq[HeaderField]
-  ) = {
-    new Request(
-      RequestHeader(
-        method,
-        uri,
-        List(contentType) ++ headerFields
-      ),
-      NoopEntityMarshaller,
-      NoopEntityUnmarshaller,
-      None
-    )
-  }
-
-  def apply[A, C](
-    method: Method,
-    uri: RequestUri,
-    accept: Accept[A],
-    contentType: ContentType[C],
-    headerFields: immutable.Seq[HeaderField],
-    entity: C
-  ) = {
-    new Request(
-      RequestHeader(
-        method,
-        uri,
-        List(accept, contentType) ++ headerFields
-      ),
-      contentType,
-      accept,
-      entity
-    )
-  }
-
-  def apply[A](
-    method: Method,
-    uri: RequestUri,
-    accept: Accept[A],
-    contentType: ContentType[_],
-    headerFields: immutable.Seq[HeaderField]
-  ) = {
-    new Request(
-      RequestHeader(
-        method,
-        uri,
-        List(accept, contentType) ++ headerFields
-      ),
-      NoopEntityMarshaller,
-      accept,
-      None
+      EmptyEntity
     )
   }
 
   def apply(reqStr: String): Request[Seq[UnsignedByte], String] = ???
 }
 
-class Request[+A, +C] private(
+class Request[A, C] private(
   override val header: RequestHeader,
-  marshaller: EntityMarshaller[C],
   val unmarshaller: EntityUnmarshaller[A],
-  entity: C
-) extends Message[C](header, marshaller, entity) {
+  entity: Entity[C]
+) extends Message[C](header, entity) {
 
-  def withMethod(method: Method) = new Request(RequestHeader(method, requestUri, header.headerFields), marshaller, unmarshaller, entity)
+  def withMethod(method: Method) = new Request(RequestHeader(method, requestUri, header.headerFields), unmarshaller, entity)
 
-  def withUri(newUri: RequestUri) = new Request(RequestHeader(method, newUri, header.headerFields), marshaller, unmarshaller, entity)
+  def withUri(newUri: RequestUri) = new Request(RequestHeader(method, newUri, header.headerFields), unmarshaller, entity)
 
   val method = header.method
 
