@@ -36,8 +36,6 @@ class ResponseHeader private(@Identity val code: Code,
 
   lazy val etag: ?[String] = headerField(Etag)
 
-  lazy val contentType: ?[MediaType] = headerField(ContentType)
-
   override def toString = s"HTTP/1.1 $code $reason\r\n${super.toString}"
 
   def isNotError: Boolean = code.isNotError

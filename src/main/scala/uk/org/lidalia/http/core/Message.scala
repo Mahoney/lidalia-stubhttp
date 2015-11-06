@@ -8,7 +8,7 @@ import org.apache.commons.io.IOUtils
 import uk.org.lidalia.http.core.headerfields.ContentType
 import uk.org.lidalia.lang.RichObject
 
-abstract class Message[T] private[http](
+abstract class Message[+T] private[http](
   @Identity val header: MessageHeader,
   @Identity val entity: Entity[T]
 ) extends RichObject {
@@ -22,6 +22,8 @@ abstract class Message[T] private[http](
   val headerFields = header.headerFields
 
   val headerFieldMap = header.headerFieldMap
+
+  val contentType: ?[MediaType] = header.contentType
 
   override def toString = {
     val contentType = header.headerField(ContentType).getOrElse(MediaType.`application/octet-stream`)

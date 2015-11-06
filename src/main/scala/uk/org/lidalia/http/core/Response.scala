@@ -36,7 +36,7 @@ object Response {
   }
 }
 
-class Response[T] private(override val header: ResponseHeader, entity: Entity[T]) extends Message(header, entity) {
+class Response[+T] private(override val header: ResponseHeader, entity: Entity[T]) extends Message(header, entity) {
 
   val code = header.code
 

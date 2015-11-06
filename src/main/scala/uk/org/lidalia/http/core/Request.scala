@@ -80,7 +80,7 @@ object Request {
   def apply(reqStr: String): Request[Seq[UnsignedByte], String] = ???
 }
 
-class Request[A, C] private(
+class Request[A, +C] private(
   override val header: RequestHeader,
   val unmarshaller: EntityUnmarshaller[A],
   entity: Entity[C]
