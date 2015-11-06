@@ -1,17 +1,17 @@
-package uk.org.lidalia.http.client
+package uk.org.lidalia.http.client.async
 
-import java.nio.charset.StandardCharsets
 import java.nio.charset.StandardCharsets.UTF_8
 
-import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, urlEqualTo, get}
+import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, urlEqualTo}
 import org.scalatest.FunSuite
+import uk.org.lidalia.http.client.sync.StandardSyncHttpClient
 import uk.org.lidalia.lang.UnsignedByte
 import uk.org.lidalia.net2.Url
 import uk.org.lidalia.slf4jext.Level
 import uk.org.lidalia.slf4jtest.TestLoggerFactory
 import uk.org.lidalia.support.WireMockTest
 
-class MultiTargetHttpClientTest extends FunSuite with WireMockTest {
+class StandardSyncHttpClientTest extends FunSuite with WireMockTest {
 
   TestLoggerFactory.getInstance().setPrintLevel(Level.INFO)
 
@@ -26,7 +26,7 @@ class MultiTargetHttpClientTest extends FunSuite with WireMockTest {
       )
     )
 
-    def response = MultiTargetHttpClient.get(Url(s"http://localhost:${stub.port()}/foo"))
+    def response = StandardSyncHttpClient.get(Url(s"http://localhost:${stub.port()}/foo"))
 
     assert(response.entity.entity === "Some text".getBytes(UTF_8).map(UnsignedByte(_)).toSeq)
   }

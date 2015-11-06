@@ -1,23 +1,26 @@
 package uk.org.lidalia.http.client
 
 import java.time.Duration
+import java.util.concurrent.TimeUnit.MILLISECONDS
 
 import uk.org.lidalia.http
 import http.core.Request
-import uk.org.lidalia.http.client.ExpectedEntityHttpClient.FutureResponse
+import uk.org.lidalia.http.client.async.FutureHttpClient
 import scala.concurrent.{duration => scala, Await}
-import java.util.concurrent.TimeUnit
 
-import http.core.Response
+class SyncHttpClient[Result[_]](
+  asyncHttpClient: FutureHttpClient[Result],
+  timeout: Duration
+) extends BaseHttpClient[Result] {
 
-class SyncHttpClient(asyncHttpClient: BaseHttpClient[FutureResponse]) {
+  private val scalaTimeout = scala.Duration(timeout.toMillis, MILLISECONDS)
 
-  def execute[T](request: Request[T, _], timeout: Duration): Response[T] = {
+  def execute[T](
+    request: Request[T, _]
+  ): Result[T] = {
+
     val response = asyncHttpClient.execute(request)
-    Await.result(response, toScalaDuration(timeout))
-  }
 
-  private def toScalaDuration(timeout: Duration): scala.FiniteDuration = {
-    scala.Duration(timeout.toMillis, TimeUnit.MILLISECONDS)
+    Await.result(response, scalaTimeout)
   }
 }
