@@ -22,7 +22,7 @@ import scala.concurrent.{Await, Future}
 
 class RedirectFollowingClientTests extends FunSuite with TableDrivenPropertyChecks with OneInstancePerTest {
 
-  val decorated = mock(classOf[HttpClient])
+  val decorated = mock(classOf[RawHttpClient])
   val redirectFollowingHttpClient = new RedirectFollowingClient(decorated)
 
   def valueOf[T](future: Future[Response[T]]) = Await.result(future, Duration(10, SECONDS))

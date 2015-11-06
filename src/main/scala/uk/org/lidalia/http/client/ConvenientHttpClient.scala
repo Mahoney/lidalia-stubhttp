@@ -9,7 +9,7 @@ import scala.collection.immutable
 
 object ConvenientHttpClient {
   def apply[Result[_]](
-    decorated: BaseHttpClient[Result]
+    decorated: HttpClient[Result]
   ) = new ConvenientHttpClient(decorated)
 
   def apply[Result[_]](
@@ -17,7 +17,7 @@ object ConvenientHttpClient {
   ) = new ConvenientHttpClient(ExpectedEntityHttpClient(baseUrl))
 }
 
-class ConvenientHttpClient[Result[_]](decorated: BaseHttpClient[Result]) extends BaseHttpClient[Result] {
+class ConvenientHttpClient[Result[_]](decorated: HttpClient[Result]) extends HttpClient[Result] {
 
   def get[T](
     url: Url,

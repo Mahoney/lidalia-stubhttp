@@ -12,7 +12,7 @@ object ExpectedEntityHttpClient {
 
   def apply(
     baseUrl: Url
-  ): BaseHttpClient[FutureResponse] = {
+  ): HttpClient[FutureResponse] = {
     new ExpectedEntityHttpClient(
       new ThrowClientErrorHttpClient(
         new ThrowServerErrorHttpClient(
@@ -23,12 +23,12 @@ object ExpectedEntityHttpClient {
   }
 }
 
-class ExpectedEntityHttpClient(decorated: HttpClient) extends FutureHttpClient[Response] {
+class ExpectedEntityHttpClient(decorated: RawHttpClient) extends FutureHttpClient[Response] {
 
   def execute[A](request: Request[A, _]): Future[Response[A]] = {
     val futureResponse = decorated.execute(request)
     futureResponse.map(response => {
-      response.entity.entity match {
+      response.entity match {
         case Left(error) => throw new Exception(Response(response.header, error).toString)
         case Right(success) => Response(response.header, new AnyEntity(success))
       }

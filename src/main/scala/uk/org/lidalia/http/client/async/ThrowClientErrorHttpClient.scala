@@ -6,7 +6,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.Future
 
-class ThrowClientErrorHttpClient(decorated: HttpClient) extends HttpClient {
+class ThrowClientErrorHttpClient(decorated: RawHttpClient) extends RawHttpClient {
 
    def execute[A](request: Request[A, _]): Future[Response[Either[String, A]]] = {
      val futureResponse = decorated.execute(request)

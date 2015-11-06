@@ -4,7 +4,7 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import uk.org.lidalia.http.core.{Request, Response}
 
-class RedirectFollowingClient(decorated: HttpClient) extends HttpClient {
+class RedirectFollowingClient(decorated: RawHttpClient) extends RawHttpClient {
 
   override def execute[T](request: Request[T, _]): Future[Response[Either[String, T]]] = execute(request, List())
 

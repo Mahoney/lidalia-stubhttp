@@ -7,9 +7,9 @@ object EntityOnlyHttpClient {
   type Is[T] = T
 }
 
-class EntityOnlyHttpClient(decorated: BaseHttpClient[Response]) extends BaseHttpClient[Is] {
+class EntityOnlyHttpClient(decorated: HttpClient[Response]) extends HttpClient[Is] {
 
   override def execute[T](request: Request[T, _]): T = {
-    decorated.execute(request).entity.entity
+    decorated.execute(request).entity
   }
 }

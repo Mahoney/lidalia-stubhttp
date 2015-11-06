@@ -3,6 +3,8 @@ package uk.org.lidalia.http.core
 import java.io.{ByteArrayInputStream, InputStream}
 import java.nio.charset.StandardCharsets.UTF_8
 
+import org.apache.commons.io.IOUtils
+import uk.org.lidalia.http.core.MediaType.`application/octet-stream`
 import uk.org.lidalia.lang.UnsignedByte
 
 import scala.collection.immutable
@@ -11,6 +13,14 @@ import scala.util.Right
 trait Entity[+T] {
   val entity: T
   def marshall(as: MediaType): InputStream
+
+  def toString(as: ?[MediaType]) = {
+    val contentType = as.getOrElse(`application/octet-stream`)
+    IOUtils.toString(
+      marshall(contentType),
+      contentType.charset.getOrElse(UTF_8)
+    )
+  }
 }
 
 class AnyEntity[T](val entity: T) extends Entity[T] {

@@ -11,7 +11,7 @@ import scala.concurrent.{duration => scala, Await}
 class SyncHttpClient[Result[_]](
   asyncHttpClient: FutureHttpClient[Result],
   timeout: Duration
-) extends BaseHttpClient[Result] {
+) extends HttpClient[Result] {
 
   private val scalaTimeout = scala.Duration(timeout.toMillis, MILLISECONDS)
 

@@ -28,7 +28,7 @@ class StandardSyncHttpClientTest extends FunSuite with WireMockTest {
 
     def response = StandardSyncHttpClient.get(Url(s"http://localhost:${stub.port()}/foo"))
 
-    assert(response.entity.entity === "Some text".getBytes(UTF_8).map(UnsignedByte(_)).toSeq)
+    assert(response.entity === "Some text".getBytes(UTF_8).map(UnsignedByte(_)).toSeq)
   }
 
 }

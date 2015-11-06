@@ -27,7 +27,7 @@ class Apache4Client(
     .setMaxConnTotal(Integer.MAX_VALUE)
     .disableRedirectHandling()
     .build()
-) extends HttpClient {
+) extends RawHttpClient {
 
   private def marshallerFor[T](marshaller: EntityMarshaller[T]) = {
     new EntityMarshaller[Either[String, T]] {
