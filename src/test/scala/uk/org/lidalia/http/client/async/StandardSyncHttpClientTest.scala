@@ -4,7 +4,7 @@ import java.nio.charset.StandardCharsets.UTF_8
 
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, urlEqualTo}
 import org.scalatest.FunSuite
-import uk.org.lidalia.http.client.sync.StandardSyncHttpClient
+import uk.org.lidalia.http.client.StandardSyncHttpClient
 import uk.org.lidalia.lang.UnsignedByte
 import uk.org.lidalia.net2.Url
 import uk.org.lidalia.slf4jext.Level

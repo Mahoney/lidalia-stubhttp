@@ -1,8 +1,7 @@
-package uk.org.lidalia.http.client.sync
+package uk.org.lidalia.http.client
 
 import java.time.Duration
 
-import uk.org.lidalia.http.client.{Apache4Client, ExpectedEntityHttpClient, SyncHttpClient}
 import uk.org.lidalia.http.core.Method.GET
 import uk.org.lidalia.http.core._
 import uk.org.lidalia.lang.UnsignedByte
@@ -11,6 +10,13 @@ import uk.org.lidalia.net2.Url
 import scala.collection.immutable.Seq
 
 object StandardSyncHttpClient {
+
+  val delegate = new MultiTargetHttpClient((url) => new SyncHttpClient(
+    new ExpectedEntityHttpClient(
+      new Apache4Client(url.baseUrl)
+    ),
+    Duration.ofSeconds(5)
+  ))
 
   def get(
     url: Url
@@ -38,15 +44,6 @@ object StandardSyncHttpClient {
 //    )
 //  }
   def execute(method: Method, url: Url): Response[Seq[UnsignedByte]] = {
-    getClient(url).execute(Request(method, RequestUri(Right(url.pathAndQuery)), Nil))
-  }
-
-  private def getClient(url: Url) = {
-    new SyncHttpClient(
-      new ExpectedEntityHttpClient(
-        new Apache4Client(url.baseUrl)
-      ),
-      Duration.ofSeconds(5)
-    )
+    delegate.execute(url, Request(method, RequestUri(Right(url.pathAndQuery)), Nil))
   }
 }
