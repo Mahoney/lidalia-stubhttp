@@ -31,7 +31,9 @@ abstract class SingleValueHeaderFieldName[T] extends HeaderFieldName[?[T]] {
    */
   def parse(headerFieldValue: String): ?[T]
 
-  final def :=(value: T) = apply(value)
+  def :=(value: T) = apply(value)
+
+  def :=(value: String) = apply(parse(value).get)
 
   def apply(value: T): HeaderField
 }

@@ -2,9 +2,8 @@ package uk.org.lidalia.http.core.headerfields
 
 import uk.org.lidalia.http.core.HeaderField
 
-object Etag extends SingleValueHeaderFieldName[String] {
+object Etag extends StringHeaderFieldName {
 
-  override def parse(headerFieldValue: String) = headerFieldValue
   override def name = "Etag"
 
   override def apply(etag: String) = new Etag(etag)
