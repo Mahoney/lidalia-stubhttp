@@ -41,4 +41,20 @@ class UnsignedByteTests extends FunSuite with TableDrivenPropertyChecks {
       assert(UnsignedByte(intVal) == UnsignedByte(signedByteVal))
     }
   }
+
+  test("cannot be created with invalid number") {
+    val values = Table(
+      "Invalid value",
+      Integer.MIN_VALUE,
+      Integer.MAX_VALUE,
+      -1,
+      256
+    )
+
+    forAll(values) { value =>
+      val e = intercept[IllegalArgumentException] {
+        UnsignedByte(value)
+      }
+    }
+  }
 }
