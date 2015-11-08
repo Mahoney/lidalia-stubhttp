@@ -13,11 +13,11 @@ object MediaType {
   val `application/octet-stream` = new MediaType("application/octet-stream")
 }
 
-class MediaRange(val range: String) {
+class MediaRange(range: String) {
   override def toString = range
 }
 
-class MediaType(value: String) extends MediaRange(value) {
+case class MediaType(value: String) extends MediaRange(value) {
   def charset: ?[Charset] = None
 }
 
