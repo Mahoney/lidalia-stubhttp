@@ -5,13 +5,12 @@ import java.nio.charset.StandardCharsets.UTF_8
 
 import org.apache.commons.io.IOUtils
 import uk.org.lidalia.http.core.MediaType.`application/octet-stream`
-import uk.org.lidalia.lang.UnsignedByte
-
-import scala.collection.immutable
-import scala.util.Right
+import uk.org.lidalia.lang.ByteSeq
 
 trait Entity[+T] {
+
   val entity: T
+
   def marshall(as: MediaType): InputStream
 
   def toString(as: ?[MediaType]) = {
@@ -21,19 +20,31 @@ trait Entity[+T] {
       contentType.charset.getOrElse(UTF_8)
     )
   }
+
+  def bytes(as: ?[MediaType] = None): ByteSeq = {
+    val contentType = as.getOrElse(`application/octet-stream`)
+    ByteSeq(marshall(contentType))
+  }
+
+  override def toString = {
+    toString(None)
+  }
 }
 
 class AnyEntity[T](val entity: T) extends Entity[T] {
+
   override def marshall(as: MediaType): InputStream = new ByteArrayInputStream(
     entity.toString.getBytes(
       as.charset.getOrElse(UTF_8)
     )
   )
+
+  override def toString(as: ?[MediaType]) = entity.toString
 }
 
-class ByteEntity(val entity: immutable.Seq[UnsignedByte]) extends Entity[immutable.Seq[UnsignedByte]] {
+class ByteEntity(val entity: ByteSeq) extends Entity[ByteSeq] {
 
-  override def marshall(as: MediaType): InputStream = new ByteArrayInputStream(entity.map(_.toSignedByte).toArray)
+  override def marshall(as: MediaType): InputStream = entity.toInputStream
 }
 
 object EmptyEntity extends Entity[None.type ] {
@@ -41,18 +52,15 @@ object EmptyEntity extends Entity[None.type ] {
   override def marshall(as: MediaType): InputStream = new ByteArrayInputStream(Array())
 }
 
-class EitherEntity[A, B](theEntity: Either[Entity[A], Entity[B]]) extends Entity[Either[A, B]] {
+class EitherEntity[A, B](
+  val eitherEntity: Either[Entity[A], Entity[B]]
+) extends Entity[Either[A, B]] {
+
   override def marshall(as: MediaType): InputStream = {
-    theEntity match {
-      case Left(x) => x.marshall(as)
-      case Right(x) => x.marshall(as)
-    }
+    eitherEntity.fold(_.marshall(as), _.marshall(as))
   }
 
   override val entity: Either[A, B] = {
-    theEntity match {
-      case Left(x) => Left(x.entity)
-      case Right(x) => Right(x.entity)
-    }
+    eitherEntity.fold(_.entity, _.entity)
   }
 }

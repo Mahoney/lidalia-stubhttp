@@ -19,13 +19,17 @@ abstract class Message[+T] private[http](
 
   val headerFieldMap = header.headerFieldMap
 
-  val contentType: ?[MediaType] = header.contentType
+  lazy val contentType: ?[MediaType] = header.contentType
 
   val entity = marshallableEntity.entity
+
+  lazy val entityString = marshallableEntity.toString(contentType)
+
+  lazy val entityBytes = marshallableEntity.bytes(contentType)
 
   override def toString = {
     header+lineSeparator()+
     lineSeparator()+
-    marshallableEntity.toString(contentType)
+    entityString
   }
 }

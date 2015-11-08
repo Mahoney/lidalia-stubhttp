@@ -1,7 +1,7 @@
 package uk.org.lidalia.http.core
 
 import uk.org.lidalia.http.client.{NoopEntityMarshaller, BytesUnmarshaller, NoopEntityUnmarshaller, EntityMarshaller, EntityUnmarshaller, ContentType, Accept}
-import uk.org.lidalia.lang.UnsignedByte
+import uk.org.lidalia.lang.ByteSeq
 import uk.org.lidalia.net2.Uri
 
 import scala.collection.immutable
@@ -13,7 +13,7 @@ object Request {
     method: Method,
     uri: RequestUri,
     headerFields: Seq[HeaderField]
-  ): Request[Seq[UnsignedByte], None.type] = {
+  ): Request[ByteSeq, None.type] = {
     new Request(
       RequestHeader(
         method,
@@ -77,7 +77,7 @@ object Request {
     )
   }
 
-  def apply(reqStr: String): Request[Seq[UnsignedByte], String] = ???
+  def apply(reqStr: String): Request[ByteSeq, String] = ???
 }
 
 class Request[A, +C] private(

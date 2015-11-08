@@ -4,10 +4,8 @@ import java.time.Duration
 
 import uk.org.lidalia.http.core.Method.GET
 import uk.org.lidalia.http.core._
-import uk.org.lidalia.lang.UnsignedByte
+import uk.org.lidalia.lang.ByteSeq
 import uk.org.lidalia.net2.Url
-
-import scala.collection.immutable.Seq
 
 object StandardSyncHttpClient {
 
@@ -20,7 +18,7 @@ object StandardSyncHttpClient {
 
   def get(
     url: Url
-  ): Response[Seq[UnsignedByte]] = {
+  ): Response[ByteSeq] = {
     execute(GET, url)
   }
 
@@ -43,7 +41,7 @@ object StandardSyncHttpClient {
 //      ))
 //    )
 //  }
-  def execute(method: Method, url: Url): Response[Seq[UnsignedByte]] = {
+  def execute(method: Method, url: Url): Response[ByteSeq] = {
     delegate.execute(url, Request(method, RequestUri(Right(url.pathAndQuery)), Nil))
   }
 }

@@ -3,7 +3,7 @@ package uk.org.lidalia.http.client
 import uk.org.lidalia.http.core.Method._
 import uk.org.lidalia.http.core._
 import uk.org.lidalia.http.core.headerfields.Host
-import uk.org.lidalia.lang.UnsignedByte
+import uk.org.lidalia.lang.ByteSeq
 import uk.org.lidalia.net2.Url
 import scala.collection.immutable
 
@@ -78,7 +78,7 @@ class ConvenientHttpClient[Result[_]](decorated: HttpClient[Result]) extends Htt
     method: Method,
     url: Url,
     headerFields: HeaderField*
-  ): Result[immutable.Seq[UnsignedByte]] = {
+  ): Result[ByteSeq] = {
     decorated.execute(
       Request(
         method,
