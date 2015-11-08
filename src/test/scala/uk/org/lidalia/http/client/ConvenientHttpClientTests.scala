@@ -14,7 +14,7 @@ import uk.org.lidalia.http.core.headerfields.{Etag, Host}
 import uk.org.lidalia.net2.Scheme.HTTP
 import uk.org.lidalia.net2.{Url, HostAndPort}
 
-class ConvenientHttpClientTest extends PropSpec {
+class ConvenientHttpClientTests extends PropSpec {
 
 //  val decoratedClient = mock(classOf[BaseHttpClient[Is]])
 //  val client = new ConvenientHttpClient(decoratedClient)

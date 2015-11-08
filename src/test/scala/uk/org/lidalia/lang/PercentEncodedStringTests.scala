@@ -4,7 +4,7 @@ import org.scalatest.FunSuite
 import uk.org.lidalia.net2.EqualsChecks
 
 
-class PercentEncodedStringTest extends FunSuite {
+class PercentEncodedStringTests extends FunSuite {
 
   val allChars = new ConcretePercentEncodedStringFactory(Set())
   val fNotEncoded = new ConcretePercentEncodedStringFactory(Set('f', 'F'))

@@ -4,7 +4,7 @@ import org.scalatest
 import scalatest.PropSpec
 import scalatest.prop.TableDrivenPropertyChecks
 
-class MessageHeaderTest extends PropSpec with TableDrivenPropertyChecks {
+class MessageHeaderTests extends PropSpec with TableDrivenPropertyChecks {
 
   property("correctly parses multiple headerfields with the same name") {
     val headerField1 = HeaderField("Name1", "value1")

@@ -4,7 +4,7 @@ import org.scalatest.PropSpec
 import org.scalatest.prop.TableDrivenPropertyChecks
 import uk.org.lidalia.net2.EqualsChecks._
 
-class HierarchicalPartTest extends PropSpec with TableDrivenPropertyChecks {
+class HierarchicalPartTests extends PropSpec with TableDrivenPropertyChecks {
 
   property("HierarchicalPart equals contract") {
     val argsForHierarchicalPart = possibleArgsFor(

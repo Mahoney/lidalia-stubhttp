@@ -2,7 +2,7 @@ package uk.org.lidalia.lang
 
 import org.scalatest.FunSuite
 
-class ResourceFactorySpec extends FunSuite {
+class ResourceFactoryTests extends FunSuite {
 
   val factory = new ResourceFactory[String] {
 

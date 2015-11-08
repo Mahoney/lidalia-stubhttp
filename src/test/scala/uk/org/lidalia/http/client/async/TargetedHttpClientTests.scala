@@ -10,7 +10,7 @@ import lidalia.http
 import scalatest.{Args, PropSpec, Suite, Status}
 import scalatest.prop.TableDrivenPropertyChecks
 import lidalia.net2.Scheme.HTTP
-import uk.org.lidalia.support.WithResourceTest
+import uk.org.lidalia.support.WithResourceTests
 
 import wiremock.WireMockServer
 import wiremock.client.{RequestPatternBuilder, MappingBuilder, WireMock}
@@ -29,7 +29,7 @@ import java.util.concurrent.{TimeoutException, TimeUnit}
 import java.io.{InputStreamReader, InputStream}
 import org.joda.time.{DateTimeZone, DateTime}
 
-class TargetedHttpClientTests extends TableDrivenPropertyChecks with WithResourceTest {
+class TargetedHttpClientTests extends TableDrivenPropertyChecks with WithResourceTests {
 
 //  val coreClient = new Apache4Client()
 //  lazy val target = Socket(IpV4Address("127.0.0.1"), Port(wireMock.port()))

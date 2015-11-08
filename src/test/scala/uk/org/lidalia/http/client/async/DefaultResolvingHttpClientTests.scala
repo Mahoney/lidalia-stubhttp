@@ -16,7 +16,7 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
 import scala.concurrent.Future._
 
-class DefaultResolvingHttpClientTest extends PropSpec with TableDrivenPropertyChecks {
+class DefaultResolvingHttpClientTests extends PropSpec with TableDrivenPropertyChecks {
 
 //  val targetedHttpClientMock = mock(classOf[TargetedHttpClient])
 //  val defaultResolvingHttpClient = new DefaultResolvingHttpClient(targetedHttpClientMock)

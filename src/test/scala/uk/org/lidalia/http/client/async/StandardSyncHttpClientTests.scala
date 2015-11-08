@@ -10,9 +10,9 @@ import uk.org.lidalia.net2.Url
 import uk.org.lidalia.slf4jext.Level
 import uk.org.lidalia.slf4jtest.TestLoggerFactory
 import uk.org.lidalia.stubhttp.{DSL, StubHttpServerFactory}
-import uk.org.lidalia.support.WithResourceTest
+import uk.org.lidalia.support.WithResourceTests
 
-class StandardSyncHttpClientTest extends FunSuite with WithResourceTest {
+class StandardSyncHttpClientTests extends FunSuite with WithResourceTests {
 
   TestLoggerFactory.getInstance().setPrintLevel(Level.INFO)
 
