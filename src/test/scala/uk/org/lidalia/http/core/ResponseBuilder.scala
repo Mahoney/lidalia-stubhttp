@@ -1,7 +1,6 @@
 package uk.org.lidalia.http.core
 
 import Code.OK
-import uk.org.lidalia.http.client.{NoopEntityMarshaller, StringEntityMarshaller, EitherEntityMarshaller, ContentType}
 
 object ResponseBuilder {
 

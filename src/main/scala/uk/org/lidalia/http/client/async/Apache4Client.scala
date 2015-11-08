@@ -8,12 +8,12 @@ import org.apache.commons.io.IOUtils
 import uk.org.lidalia
 import lidalia.http
 import org.apache
-import uk.org.lidalia.net2.{Url, IpAddress}
+import lidalia.net2.{Url, IpAddress}
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-import uk.org.lidalia.http.core._
+import http.core._
 
 import apache.http.{HttpResponse, HttpHost}
 import apache.http.impl.client.{CloseableHttpClient, HttpClientBuilder}
@@ -28,17 +28,6 @@ class Apache4Client(
     .disableRedirectHandling()
     .build()
 ) extends RawHttpClient {
-
-  private def marshallerFor[T](marshaller: EntityMarshaller[T]) = {
-    new EntityMarshaller[Either[String, T]] {
-      override def marshal(header: MessageHeader, entity: Either[String, T]): InputStream = {
-        entity match {
-          case Left(e) => StringEntityMarshaller.marshal(header, e)
-          case Right(e) => marshaller.marshal(header, e)
-        }
-      }
-    }
-  }
 
   override def execute[T](request: Request[T, _]): Future[Response[Either[String, T]]] = {
     Future {

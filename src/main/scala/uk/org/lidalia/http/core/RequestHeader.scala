@@ -3,7 +3,6 @@ package uk.org.lidalia.http.core
 import uk.org.lidalia
 import lidalia.net2.Uri
 import lidalia.http.core.headerfields.Referer
-import uk.org.lidalia.http.client.{ContentType, Accept}
 
 import scala.collection.immutable
 

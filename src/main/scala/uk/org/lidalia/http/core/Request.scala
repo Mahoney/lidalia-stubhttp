@@ -1,6 +1,6 @@
 package uk.org.lidalia.http.core
 
-import uk.org.lidalia.http.client.{NoopEntityMarshaller, BytesUnmarshaller, NoopEntityUnmarshaller, EntityMarshaller, EntityUnmarshaller, ContentType, Accept}
+import uk.org.lidalia.http.client.{BytesUnmarshaller, NoopEntityUnmarshaller, EntityUnmarshaller, Accept}
 import uk.org.lidalia.lang.ByteSeq
 import uk.org.lidalia.net2.Uri
 
