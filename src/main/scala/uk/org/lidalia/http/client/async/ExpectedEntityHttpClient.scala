@@ -1,7 +1,7 @@
 package uk.org.lidalia.http.client
 
 import uk.org.lidalia.http.client.async.FutureHttpClient
-import uk.org.lidalia.http.core.{AnyEntity, Request, Response}
+import uk.org.lidalia.http.core.{EitherEntity, Request, Response}
 import uk.org.lidalia.net2.Url
 
 import scala.concurrent.Future
@@ -28,9 +28,10 @@ class ExpectedEntityHttpClient(decorated: RawHttpClient) extends FutureHttpClien
   def execute[A](request: Request[A, _]): Future[Response[A]] = {
     val futureResponse = decorated.execute(request)
     futureResponse.map(response => {
-      response.entity match {
+      val eitherEntity = response.marshallableEntity.asInstanceOf[EitherEntity[String, A]]
+      eitherEntity.eitherEntity match {
         case Left(error) => throw new Exception(Response(response.header, error).toString)
-        case Right(success) => Response(response.header, new AnyEntity(success))
+        case Right(success) => Response(response.header, success)
       }
     })
   }
