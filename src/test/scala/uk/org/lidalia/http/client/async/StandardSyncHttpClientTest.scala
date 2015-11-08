@@ -1,34 +1,38 @@
-package uk.org.lidalia.http.client.async
+package uk.org.lidalia.http.client
 
-import java.nio.charset.StandardCharsets.UTF_8
-
-import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, urlEqualTo}
+import org.joda.time.{DateTimeZone, DateTime}
 import org.scalatest.FunSuite
-import uk.org.lidalia.http.client.StandardSyncHttpClient
-import uk.org.lidalia.lang.UnsignedByte
+import uk.org.lidalia.http.client.StandardSyncHttpClient.get
+import uk.org.lidalia.http.core.MediaType.`text/plain`
+import uk.org.lidalia.http.core.Code
+import uk.org.lidalia.http.core.headerfields.{ContentType, Date}
 import uk.org.lidalia.net2.Url
 import uk.org.lidalia.slf4jext.Level
 import uk.org.lidalia.slf4jtest.TestLoggerFactory
-import uk.org.lidalia.support.WireMockTest
+import uk.org.lidalia.stubhttp.{DSL, StubHttpServerFactory}
+import uk.org.lidalia.support.WithResourceTest
 
-class StandardSyncHttpClientTest extends FunSuite with WireMockTest {
+class StandardSyncHttpClientTest extends FunSuite with WithResourceTest {
 
   TestLoggerFactory.getInstance().setPrintLevel(Level.INFO)
 
-  testWithDeps("can get bytes") { stub =>
-    stub.givenThat(
-      get(urlEqualTo("/foo")).willReturn(
-        aResponse()
-          .withStatus(200)
-          .withHeader("Date", "Sun, 06 Nov 1994 08:49:37 GMT")
-          .withHeader("Content-Type", "text/plain")
-          .withBody("Some text")
+  test("can get bytes", StubHttpServerFactory()) { server =>
+    server.stub(
+      DSL.get("/foo")
+      .returns(
+        200,
+        Date:= "Sun, 06 Nov 1994 08:49:37 GMT",
+        ContentType:= "text/plain"
+      )(
+        "Some text"
       )
     )
 
-    def response = StandardSyncHttpClient.get(Url(s"http://localhost:${stub.port()}/foo"))
+    def response = get(Url(server.localAddress.toString ++ "/foo"))
 
-    assert(response.entity === "Some text".getBytes(UTF_8).map(UnsignedByte(_)).toSeq)
+    assert(response.code == Code(200))
+    assert(response.contentType.contains(`text/plain`))
+    assert(response.date.contains(new DateTime("1994-11-06T08:49:37.000Z").withZone(DateTimeZone.forID("GMT"))))
+    assert(response.entityString == "Some text")
   }
-
 }
