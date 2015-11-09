@@ -1,11 +1,10 @@
 package uk.org.lidalia.http.client
 
-import java.time.Duration
 import java.util.concurrent.TimeUnit.MILLISECONDS
 
+import org.joda.time.Duration
 import uk.org.lidalia.http
 import http.core.Request
-import uk.org.lidalia.http.client.async.FutureHttpClient
 import scala.concurrent.{duration => scala, Await}
 
 class SyncHttpClient[Result[_]](
@@ -13,7 +12,7 @@ class SyncHttpClient[Result[_]](
   timeout: Duration
 ) extends HttpClient[Result] {
 
-  private val scalaTimeout = scala.Duration(timeout.toMillis, MILLISECONDS)
+  private val scalaTimeout = scala.Duration(timeout.getMillis, MILLISECONDS)
 
   def execute[T](
     request: Request[T, _]

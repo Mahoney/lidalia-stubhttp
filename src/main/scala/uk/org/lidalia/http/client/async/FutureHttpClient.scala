@@ -1,6 +1,5 @@
-package uk.org.lidalia.http.client.async
+package uk.org.lidalia.http.client
 
-import uk.org.lidalia.http.client.{DirectedRequest, HttpClient}
 import uk.org.lidalia.http.core.Request
 
 import scala.concurrent.Future

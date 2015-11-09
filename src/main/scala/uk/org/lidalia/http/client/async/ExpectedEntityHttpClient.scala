@@ -1,6 +1,5 @@
 package uk.org.lidalia.http.client
 
-import uk.org.lidalia.http.client.async.FutureHttpClient
 import uk.org.lidalia.http.core.{EitherEntity, Request, Response}
 import uk.org.lidalia.net2.Url
 
