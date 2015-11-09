@@ -7,12 +7,8 @@ import uk.org.lidalia.net2.Url
 
 object ConvenientMultiTargetHttpClient {
 
-  def apply(): ConvenientMultiTargetHttpClient[Response] = {
-    apply(MultiTargetHttpClient())
-  }
-
   def apply[Result[_]](
-    delegate: MultiTargetHttpClient[Result]
+    delegate: MultiTargetHttpClient[Result] = MultiTargetHttpClient()
   ) = {
     new ConvenientMultiTargetHttpClient(delegate)
   }
