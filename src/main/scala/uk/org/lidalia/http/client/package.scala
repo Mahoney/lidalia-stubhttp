@@ -21,7 +21,7 @@ package object client {
   }
   implicit def toRichOption[A](option: Option[A]) = new ToRichOption(option)
 
-  lazy val StandardSyncHttpClient = new ConvenientMultiTargetHttpClient(
+  lazy val StandardSyncHttpClient = ConvenientMultiTargetHttpClient(
     MultiTargetHttpClient((url) => new SyncHttpClient(
       new ExpectedEntityHttpClient(
         new Apache4Client(url.baseUrl)

@@ -5,7 +5,16 @@ import uk.org.lidalia.http.core.{RequestUri, Request, Method}
 import uk.org.lidalia.lang.ByteSeq
 import uk.org.lidalia.net2.Url
 
-class ConvenientMultiTargetHttpClient[Result[_]](
+object ConvenientMultiTargetHttpClient {
+
+  def apply[Result[_]](
+    delegate: MultiTargetHttpClient[Result]
+  ) = {
+    new ConvenientMultiTargetHttpClient(delegate)
+  }
+}
+
+class ConvenientMultiTargetHttpClient[Result[_]] private (
   delegate: MultiTargetHttpClient[Result]
 ) {
 
