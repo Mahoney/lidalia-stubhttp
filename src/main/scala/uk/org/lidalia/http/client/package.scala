@@ -1,10 +1,12 @@
 package uk.org.lidalia.http
 
+import org.joda.time.Duration
+
 import scala.language.implicitConversions
-import scala.Some
 import scala.annotation.meta.field
 
 package object client {
+
   type ?[T] = Option[T]
   type Identity = uk.org.lidalia.lang.Identity @field
 
@@ -18,4 +20,13 @@ package object client {
     def ?[B](f: A => ?[B]): ?[B] = option.flatMap(f)
   }
   implicit def toRichOption[A](option: Option[A]) = new ToRichOption(option)
+
+  lazy val StandardSyncHttpClient = new ConvenientMultiTargetHttpClient(
+    MultiTargetHttpClient((url) => new SyncHttpClient(
+      new ExpectedEntityHttpClient(
+        new Apache4Client(url.baseUrl)
+      ),
+      Duration.standardSeconds(5)
+    ))
+  )
 }
