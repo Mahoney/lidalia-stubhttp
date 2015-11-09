@@ -25,8 +25,8 @@ class StandardSyncHttpClientTests extends FunSuite with WithResourceTests {
         ContentType:= "text/plain"
       )(
         "Some text"
-      )
       ))
+    )
 
     def response = get(Url(server.localAddress.toString ++ "/foo"))
 

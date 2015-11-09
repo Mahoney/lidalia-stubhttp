@@ -10,27 +10,27 @@ class StubHttpServer private [stubhttp] (config: Options) {
 
   private val log = LoggerFactory.getLogger(classOf[StubHttpServer])
 
-  private val wiremockServer = new WireMockServer(config)
+  private val wireMockServer = new WireMockServer(config)
 
-  lazy val port = wiremockServer.port()
+  lazy val port = wireMockServer.port()
 
-  lazy val httpsPort = wiremockServer.httpsPort()
+  lazy val httpsPort = wireMockServer.httpsPort()
 
-  lazy val localAddress = Url(s"http://localhost:${wiremockServer.port()}")
+  lazy val localAddress = Url(s"http://localhost:${wireMockServer.port()}")
 
-  lazy val localHttpsAddress = Url(s"https://localhost:${wiremockServer.httpsPort()}")
+  lazy val localHttpsAddress = Url(s"https://localhost:${wireMockServer.httpsPort()}")
 
   def stub(mappingBuilder: MappingBuilder): Unit = {
-    wiremockServer.stubFor(mappingBuilder)
+    wireMockServer.stubFor(mappingBuilder)
   }
 
   private [stubhttp] def start(): Unit = {
-    wiremockServer.start()
+    wireMockServer.start()
     log.info(s"Stub HTTP Server started on port $port")
   }
 
   private [stubhttp] def stop(): Unit = {
-    wiremockServer.stop()
+    wireMockServer.stop()
     log.info("Stub HTTP Server stopped")
   }
 }
