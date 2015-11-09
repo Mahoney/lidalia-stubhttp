@@ -1,9 +1,19 @@
 package uk.org.lidalia.http.client
 
-import uk.org.lidalia.http.core.Request
+import org.joda.time.Duration
+import uk.org.lidalia.http.core.{Response, Request}
 import uk.org.lidalia.net2.Url
 
 object MultiTargetHttpClient {
+
+  def apply(): MultiTargetHttpClient[Response] = {
+      apply((url) => new SyncHttpClient(
+        new ExpectedEntityHttpClient(
+          new Apache4Client(url.baseUrl)
+        ),
+        Duration.standardSeconds(5)
+      ))
+  }
 
   def apply[Result[_]](
     clientBuilder: (Url) => HttpClient[Result]
