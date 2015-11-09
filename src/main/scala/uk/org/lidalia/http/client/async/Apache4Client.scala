@@ -20,13 +20,26 @@ import apache.http.impl.client.{CloseableHttpClient, HttpClientBuilder}
 import apache.http.message.BasicHttpRequest
 import apache.http.client.{ResponseHandler => ApacheResponseHandler}
 
-class Apache4Client(
+object Apache4Client {
+
+  def apply(
+    target: Url,
+    apacheClient: CloseableHttpClient = HttpClientBuilder.create()
+      .setMaxConnPerRoute(Integer.MAX_VALUE)
+      .setMaxConnTotal(Integer.MAX_VALUE)
+      .disableRedirectHandling()
+      .build()
+  ) = {
+    new Apache4Client(
+      target,
+      apacheClient
+    )
+  }
+}
+
+class Apache4Client private (
    target: Url,
-   apacheClient: CloseableHttpClient = HttpClientBuilder.create()
-    .setMaxConnPerRoute(Integer.MAX_VALUE)
-    .setMaxConnTotal(Integer.MAX_VALUE)
-    .disableRedirectHandling()
-    .build()
+   apacheClient: CloseableHttpClient
 ) extends RawHttpClient {
 
   override def execute[T](request: Request[T, _]): Future[Response[Either[String, T]]] = {

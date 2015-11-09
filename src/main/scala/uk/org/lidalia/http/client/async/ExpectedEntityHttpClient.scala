@@ -15,9 +15,9 @@ object ExpectedEntityHttpClient {
     baseUrl: Url
   ): ExpectedEntityHttpClient = {
     ExpectedEntityHttpClient(
-      new ThrowClientErrorHttpClient(
-        new ThrowServerErrorHttpClient(
-            new Apache4Client(baseUrl)
+      ThrowClientErrorHttpClient(
+        ThrowServerErrorHttpClient(
+            Apache4Client(baseUrl)
         )
       )
     )
