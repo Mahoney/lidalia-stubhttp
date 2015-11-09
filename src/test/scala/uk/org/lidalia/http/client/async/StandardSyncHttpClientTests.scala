@@ -4,7 +4,7 @@ import org.joda.time.{DateTimeZone, DateTime}
 import org.scalatest.FunSuite
 import uk.org.lidalia.http.client.StandardSyncHttpClient.get
 import uk.org.lidalia.http.core.MediaType.`text/plain`
-import uk.org.lidalia.http.core.Code
+import uk.org.lidalia.http.core.{Response, Code}
 import uk.org.lidalia.http.core.headerfields.{ContentType, Date}
 import uk.org.lidalia.net2.Url
 import uk.org.lidalia.slf4jext.Level
@@ -19,14 +19,14 @@ class StandardSyncHttpClientTests extends FunSuite with WithResourceTests {
   test("can get bytes", StubHttpServerFactory()) { server =>
     server.stub(
       DSL.get("/foo")
-      .returns(
+      .returns(Response(
         200,
         Date:= "Sun, 06 Nov 1994 08:49:37 GMT",
         ContentType:= "text/plain"
       )(
         "Some text"
       )
-    )
+      ))
 
     def response = get(Url(server.localAddress.toString ++ "/foo"))
 

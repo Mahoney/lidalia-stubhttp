@@ -25,16 +25,6 @@ class RequestPatternBuilder(
   headers: Map[String, ValueMatchingStrategy]
 ) {
 
-  def returns(
-    code: Int,
-    headerFields: HeaderField*
-  )(entity: String): MappingBuilder = returns(Response(code, headerFields:_*)(entity))
-
-//  def returns(
-//    code: Int,
-//    headerFields: (String, String)*
-//  )(entity: String): MappingBuilder = returns(Response(code, headerFields:_*)(entity))
-
   def returns(response: Response[_]): MappingBuilder = {
 
     val result = new MappingBuilder(method, urlMatchingStrategy)
