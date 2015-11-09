@@ -1,5 +1,6 @@
 package uk.org.lidalia.http.client
 
+import uk.org.lidalia.http.client.ExpectedEntityHttpClient.FutureResponse
 import uk.org.lidalia.http.core.Method._
 import uk.org.lidalia.http.core._
 import uk.org.lidalia.http.core.headerfields.Host
@@ -12,9 +13,11 @@ object ConvenientHttpClient {
     decorated: HttpClient[Result]
   ) = new ConvenientHttpClient(decorated)
 
-  def apply[Result[_]](
+  def apply(
     baseUrl: Url
-  ) = new ConvenientHttpClient(ExpectedEntityHttpClient(baseUrl))
+  ) = {
+    new ConvenientHttpClient(ExpectedEntityHttpClient(baseUrl))
+  }
 }
 
 class ConvenientHttpClient[Result[_]](decorated: HttpClient[Result]) extends HttpClient[Result] {

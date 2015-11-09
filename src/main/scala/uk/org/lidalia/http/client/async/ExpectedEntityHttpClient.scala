@@ -1,5 +1,6 @@
 package uk.org.lidalia.http.client
 
+import uk.org.lidalia.http.client.ExpectedEntityHttpClient.FutureResponse
 import uk.org.lidalia.http.core.{EitherEntity, Request, Response}
 import uk.org.lidalia.net2.Url
 
@@ -7,12 +8,13 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
 object ExpectedEntityHttpClient {
+
   type FutureResponse[T] = Future[Response[T]]
 
   def apply(
     baseUrl: Url
-  ): HttpClient[FutureResponse] = {
-    new ExpectedEntityHttpClient(
+  ): ExpectedEntityHttpClient = {
+    ExpectedEntityHttpClient(
       new ThrowClientErrorHttpClient(
         new ThrowServerErrorHttpClient(
             new Apache4Client(baseUrl)
@@ -20,9 +22,17 @@ object ExpectedEntityHttpClient {
       )
     )
   }
+
+  def apply(
+    decorated: RawHttpClient
+  ) = {
+    new ExpectedEntityHttpClient(decorated)
+  }
 }
 
-class ExpectedEntityHttpClient(decorated: RawHttpClient) extends FutureHttpClient[Response] {
+class ExpectedEntityHttpClient private (
+  decorated: RawHttpClient
+) extends HttpClient[FutureResponse] with FutureHttpClient[Response] {
 
   def execute[A](request: Request[A, _]): Future[Response[A]] = {
     val futureResponse = decorated.execute(request)

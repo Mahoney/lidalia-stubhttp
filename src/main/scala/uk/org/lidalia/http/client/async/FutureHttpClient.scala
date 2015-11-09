@@ -4,7 +4,7 @@ import uk.org.lidalia.http.core.Request
 
 import scala.concurrent.Future
 
-trait FutureHttpClient[Result[_]] extends HttpClient[({type FutureResult[T]=Future[Result[T]]})#FutureResult] {
+trait FutureHttpClient[+Result[_]] extends HttpClient[({type FutureResult[T]=Future[Result[T]]})#FutureResult] {
 
   def execute[T](request: Request[T, _]): Future[Result[T]]
 

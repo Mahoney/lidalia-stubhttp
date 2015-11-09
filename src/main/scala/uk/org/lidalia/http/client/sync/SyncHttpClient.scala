@@ -11,13 +11,11 @@ import scala.concurrent.{duration => scala, Await}
 object SyncHttpClient {
 
   def apply(
-    url: Url,
+    baseUrl: Url,
     timeout: Duration = Duration.standardSeconds(5)
   ): SyncHttpClient[Response] = {
     apply(
-      new ExpectedEntityHttpClient(
-        new Apache4Client(url.baseUrl)
-      ),
+      ExpectedEntityHttpClient(baseUrl),
       timeout
     )
   }
