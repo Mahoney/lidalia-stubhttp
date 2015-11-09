@@ -6,7 +6,7 @@ import uk.org.lidalia.net2.Url
 object MultiTargetHttpClient {
 
   def apply[Result[_]](
-    clientBuilder: (Url) => HttpClient[Result] = {(url: Url) => SyncHttpClient(url)}
+    clientBuilder: (Url) => HttpClient[Result] = {(url: Url) => ExpectedEntityHttpClient(url)}
   ) = {
     new MultiTargetHttpClient(clientBuilder)
   }

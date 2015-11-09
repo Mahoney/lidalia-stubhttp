@@ -1,9 +1,9 @@
 package uk.org.lidalia.net2
 
+import EqualsChecks.{equalsTest, possibleArgsFor, reflexiveTest}
 import org.scalatest
-import scalatest.PropSpec
 import org.scalatest.prop.TableDrivenPropertyChecks
-import EqualsChecks.{possibleArgsFor, reflexiveTest, equalsTest }
+import scalatest.PropSpec
 
 class HostAndPortTests extends PropSpec with TableDrivenPropertyChecks {
 

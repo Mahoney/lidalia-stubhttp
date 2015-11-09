@@ -1,20 +1,7 @@
 package uk.org.lidalia.http.client
 
-import java.util.concurrent.TimeUnit._
-
-import org.mockito.BDDMockito._
-import org.mockito.Mockito.mock
 import org.scalatest.prop.TableDrivenPropertyChecks
 import org.scalatest.PropSpec
-import uk.org.lidalia.http.core.RequestBuilder.get
-import uk.org.lidalia.http.core.Response
-import uk.org.lidalia.http.core.ResponseBuilder._
-import uk.org.lidalia.net2.{Port, IpV4Address, Socket$}
-import uk.org.lidalia.net2.Scheme.HTTP
-
-import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, Future}
-import scala.concurrent.Future._
 
 class DefaultResolvingHttpClientTests extends PropSpec with TableDrivenPropertyChecks {
 

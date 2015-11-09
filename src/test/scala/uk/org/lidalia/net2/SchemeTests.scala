@@ -1,8 +1,9 @@
 package uk.org.lidalia.net2
 
+import java.util.Locale
+
 import org.scalatest.PropSpec
 import org.scalatest.prop.TableDrivenPropertyChecks
-import java.util.Locale
 
 class SchemeTests extends PropSpec with TableDrivenPropertyChecks {
 

@@ -1,9 +1,9 @@
 package uk.org.lidalia.http.core.headerfields
 
+import org.joda.time.Duration
 import org.scalatest.PropSpec
 import org.scalatest.prop.TableDrivenPropertyChecks
 import uk.org.lidalia.http.core.headerfields.SingleValueHeaderFieldNameTests.firstParseableValueReturned
-import org.joda.time.Duration
 
 class AgeTests extends PropSpec with TableDrivenPropertyChecks {
   property("First Parseable Value Returned") {

@@ -1,9 +1,9 @@
 package uk.org.lidalia.net2
 
+import Scheme.{HTTP, URN}
 import org.scalatest.PropSpec
 import org.scalatest.prop.TableDrivenPropertyChecks
-import uk.org.lidalia.net2.EqualsChecks.{possibleArgsFor, reflexiveTest, equalsTest}
-import Scheme.{ HTTP, URN }
+import uk.org.lidalia.net2.EqualsChecks.{equalsTest, possibleArgsFor, reflexiveTest}
 
 class UriTests extends PropSpec with TableDrivenPropertyChecks {
 

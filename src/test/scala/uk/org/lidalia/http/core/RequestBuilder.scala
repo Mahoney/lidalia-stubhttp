@@ -1,10 +1,11 @@
 package uk.org.lidalia.http.core
 
+import java.io.InputStream
+
 import Method.GET
 import uk.org.lidalia.http.client.Accept
 import uk.org.lidalia.net2.Scheme.HTTP
-import uk.org.lidalia.net2.{Url, SchemeWithDefaultPort, Scheme, HostAndPort, Uri}
-import java.io.InputStream
+import uk.org.lidalia.net2.{HostAndPort, Scheme, Url}
 
 object RequestBuilder {
 

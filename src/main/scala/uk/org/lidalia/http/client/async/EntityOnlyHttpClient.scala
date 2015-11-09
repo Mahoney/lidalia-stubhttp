@@ -1,15 +1,29 @@
 package uk.org.lidalia.http.client
 
-import uk.org.lidalia.http.client.EntityOnlyHttpClient.Is
-import uk.org.lidalia.http.core.{Request, Response}
+import uk.org.lidalia.http.client.ExpectedEntityHttpClient.FutureResponse
+import uk.org.lidalia.http.core.Request
+import uk.org.lidalia.net2.Url
+
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 object EntityOnlyHttpClient {
   type Is[T] = T
+
+  def apply(baseUrl: Url): Unit = {
+    apply(ExpectedEntityHttpClient(baseUrl))
+  }
+
+  def apply(decorated: HttpClient[FutureResponse]) = {
+    new EntityOnlyHttpClient(decorated)
+  }
 }
 
-class EntityOnlyHttpClient(decorated: HttpClient[Response]) extends HttpClient[Is] {
+class EntityOnlyHttpClient private (
+  decorated: HttpClient[FutureResponse]
+) extends HttpClient[Future] {
 
-  override def execute[T](request: Request[T, _]): T = {
-    decorated.execute(request).entity
+  override def execute[T](request: Request[T, _]): Future[T] = {
+    decorated.execute(request).map(_.entity)
   }
 }

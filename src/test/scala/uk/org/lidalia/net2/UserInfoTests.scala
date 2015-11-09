@@ -1,7 +1,7 @@
 package uk.org.lidalia.net2
 
 import org.scalatest.PropSpec
-import uk.org.lidalia.net2.EqualsChecks.{equalsTest, reflexiveTest, possibleArgsFor}
+import uk.org.lidalia.net2.EqualsChecks.{equalsTest, possibleArgsFor, reflexiveTest}
 
 class UserInfoTests extends PropSpec {
 

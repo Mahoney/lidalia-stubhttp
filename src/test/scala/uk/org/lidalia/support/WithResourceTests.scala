@@ -1,6 +1,6 @@
 package uk.org.lidalia.support
 
-import org.scalatest._
+import org.scalatest.{Tag, FunSuiteLike}
 import uk.org.lidalia.lang.ResourceFactory
 
 trait WithResourceTests extends FunSuiteLike {

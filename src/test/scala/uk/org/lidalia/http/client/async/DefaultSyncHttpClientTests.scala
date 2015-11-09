@@ -1,18 +1,18 @@
 package uk.org.lidalia.http.client
 
-import org.joda.time.{DateTimeZone, DateTime}
+import org.joda.time.{DateTime, DateTimeZone}
 import org.scalatest.FunSuite
-import uk.org.lidalia.http.client.StandardSyncHttpClient.get
+import uk.org.lidalia.http.client.DefaultSyncHttpClient.get
 import uk.org.lidalia.http.core.MediaType.`text/plain`
-import uk.org.lidalia.http.core.{Response, Code}
 import uk.org.lidalia.http.core.headerfields.{ContentType, Date}
+import uk.org.lidalia.http.core.{Code, Response}
 import uk.org.lidalia.net2.Url
 import uk.org.lidalia.slf4jext.Level
 import uk.org.lidalia.slf4jtest.TestLoggerFactory
 import uk.org.lidalia.stubhttp.{DSL, StubHttpServerFactory}
 import uk.org.lidalia.support.WithResourceTests
 
-class StandardSyncHttpClientTests extends FunSuite with WithResourceTests {
+class DefaultSyncHttpClientTests extends FunSuite with WithResourceTests {
 
   TestLoggerFactory.getInstance().setPrintLevel(Level.INFO)
 

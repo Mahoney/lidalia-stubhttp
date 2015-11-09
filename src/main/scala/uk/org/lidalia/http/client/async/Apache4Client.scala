@@ -13,7 +13,7 @@ import lidalia.net2.{Url, IpAddress}
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-import http.core._
+import http.core.{AnyEntity, Entity, Code, Reason, HeaderField, EitherEntity, Request, Response, ResponseHeader}
 
 import apache.http.{HttpResponse, HttpHost}
 import apache.http.impl.client.{CloseableHttpClient, HttpClientBuilder}

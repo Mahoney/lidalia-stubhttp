@@ -1,13 +1,9 @@
 package uk.org.lidalia.net2
 
+import org.scalacheck.Gen
 import org.scalatest.PropSpec
 import org.scalatest.prop.PropertyChecks
-import org.scalacheck.Gen
-import uk.org.lidalia.TestUtils.{
-  genRandomStringFrom,
-  genStringFromChars,
-  genNonEmptyStringFromChars
-}
+import uk.org.lidalia.TestUtils.{genNonEmptyStringFromChars, genRandomStringFrom, genStringFromChars}
 import uk.org.lidalia.lang.EncodedStringChecks
 
 class QueryParamKeyTests

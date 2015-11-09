@@ -1,7 +1,7 @@
 package uk.org.lidalia.net2
 
 import uk.org.lidalia.lang.RichObject
-import uk.org.lidalia.net2.UriConstants._
+import uk.org.lidalia.net2.UriConstants.split
 
 object PathAndQuery {
   def apply(pathAndQueryStr: String): PathAndQuery = {

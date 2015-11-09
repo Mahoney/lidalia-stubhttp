@@ -1,8 +1,8 @@
 package uk.org.lidalia
 
-import org.scalatest.{Outcome, AbstractSuite, Suite}
-import org.joda.time.{DateTimeUtils, Instant}
 import java.util.Locale
+
+import org.scalatest.{Outcome, Suite}
 
 trait DefaultLocale extends Suite {
 

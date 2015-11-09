@@ -2,7 +2,7 @@ package uk.org.lidalia.http.core.headerfields
 
 import org.scalatest.PropSpec
 import org.scalatest.prop.TableDrivenPropertyChecks
-import uk.org.lidalia.http.core.headerfields.SingleValueHeaderFieldNameTests._
+import SingleValueHeaderFieldNameTests.firstParseableValueReturned
 import uk.org.lidalia.net2.Url
 
 class RefererTests extends PropSpec with TableDrivenPropertyChecks {

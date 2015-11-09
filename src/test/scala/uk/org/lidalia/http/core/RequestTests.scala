@@ -1,13 +1,6 @@
 package uk.org.lidalia.http.core
 
-import java.io.{ByteArrayInputStream, InputStream}
-
-import org.apache.commons.io.IOUtils
 import org.scalatest.FunSuite
-import uk.org.lidalia.http.client.{Accept}
-import uk.org.lidalia.http.core.Method.{PUT, GET, HEAD}
-import uk.org.lidalia.lang.UnsignedByte
-import scala.collection.immutable.Seq
 
 class RequestTests extends FunSuite {
 //

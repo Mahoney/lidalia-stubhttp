@@ -23,15 +23,24 @@ object SyncHttpClient {
   def apply[Result[_]](
     asyncHttpClient: FutureHttpClient[Result],
     timeout: Duration
-  ) = {
+  ): SyncHttpClient[Result] = {
     new SyncHttpClient(
       asyncHttpClient,
       timeout
     )
   }
+
+  def apply[Result[_]](
+    asyncHttpClient: FutureHttpClient[Result]
+  ): SyncHttpClient[Result] = {
+    apply(
+      asyncHttpClient,
+      Duration.standardSeconds(5)
+    )
+  }
 }
 
-class SyncHttpClient[Result[_]](
+class SyncHttpClient[Result[_]] private (
   asyncHttpClient: FutureHttpClient[Result],
   timeout: Duration
 ) extends HttpClient[Result] {

@@ -1,9 +1,10 @@
 package uk.org.lidalia.http.core.headerfields
 
-import org.scalatest.{PropSpecLike, PropSpec}
 import org.scalatest.prop.TableDrivenPropertyChecks
-import scala.util.Try
+import org.scalatest.{PropSpec, PropSpecLike}
 import uk.org.lidalia.http.core.{HeaderField, HeaderFieldName}
+
+import scala.util.Try
 
 object SingleValueHeaderFieldNameTests extends TableDrivenPropertyChecks with PropSpecLike {
   def firstParseableValueReturned[T](

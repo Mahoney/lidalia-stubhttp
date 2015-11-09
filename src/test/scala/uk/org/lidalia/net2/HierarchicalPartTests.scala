@@ -2,7 +2,7 @@ package uk.org.lidalia.net2
 
 import org.scalatest.PropSpec
 import org.scalatest.prop.TableDrivenPropertyChecks
-import uk.org.lidalia.net2.EqualsChecks._
+import uk.org.lidalia.net2.EqualsChecks.{possibleArgsFor, reflexiveTest, equalsTest}
 
 class HierarchicalPartTests extends PropSpec with TableDrivenPropertyChecks {
 

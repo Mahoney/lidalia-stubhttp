@@ -1,7 +1,7 @@
 package uk.org.lidalia
 
-import org.scalatest.{Outcome, Suite}
 import org.joda.time.{DateTimeUtils, Instant}
+import org.scalatest.{Outcome, Suite}
 
 trait StaticTime extends Suite {
 

@@ -1,7 +1,7 @@
 package uk.org.lidalia.net2
 
-import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
 import org.scalatest.PropSpecLike
+import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
 
 object EqualsChecks extends TableDrivenPropertyChecks with PropSpecLike {
 

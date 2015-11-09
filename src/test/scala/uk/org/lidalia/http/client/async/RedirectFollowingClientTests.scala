@@ -5,15 +5,15 @@ import java.util.concurrent.TimeUnit.SECONDS
 import org.{mockito, scalatest}
 import mockito.BDDMockito.given
 import mockito.Mockito.mock
-import org.scalatest.{OneInstancePerTest, FunSuite}
+import org.scalatest.{FunSuite, OneInstancePerTest}
 import scalatest.prop.TableDrivenPropertyChecks
 import uk.org.lidalia
 import lidalia.http
 import http.core.Code.Found
 import http.core.RequestBuilder.get
+import http.core.Response
 import http.core.ResponseBuilder.response
 import http.core.headerfields.Location
-import http.core.Response
 import lidalia.net2.Url
 
 import scala.concurrent.Future.successful

@@ -1,33 +1,8 @@
 package uk.org.lidalia.http.client
 
-import javax.json.{Json, JsonObject}
-
-import com.github.tomakehurst.wiremock
 import org.scalatest
-import uk.org.lidalia
-import lidalia.http
-
-import scalatest.{Args, PropSpec, Suite, Status}
 import scalatest.prop.TableDrivenPropertyChecks
-import lidalia.net2.Scheme.HTTP
 import uk.org.lidalia.support.WithResourceTests
-
-import wiremock.WireMockServer
-import wiremock.client.{RequestPatternBuilder, MappingBuilder, WireMock}
-import wiremock.junit.Stubbing
-import WireMock.{get, urlEqualTo, aResponse}
-
-import uk.org.lidalia.net2.{Port, IpV4Address, Socket}
-import http.core.Method.GET
-import http.core.{MediaRangePref, MediaRange, Request, ResponseHeader, RequestUri, HeaderField, Code}
-
-import org.apache.commons.io.IOUtils
-
-import scala.concurrent.Await
-import scala.concurrent.duration.Duration
-import java.util.concurrent.{TimeoutException, TimeUnit}
-import java.io.{InputStreamReader, InputStream}
-import org.joda.time.{DateTimeZone, DateTime}
 
 class TargetedHttpClientTests extends TableDrivenPropertyChecks with WithResourceTests {
 

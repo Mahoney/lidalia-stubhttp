@@ -1,9 +1,9 @@
 package uk.org.lidalia.http.client
 
-import uk.org.lidalia.http.client.ExpectedEntityHttpClient.FutureResponse
-import uk.org.lidalia.http.core.Method._
-import uk.org.lidalia.http.core._
-import uk.org.lidalia.http.core.headerfields.Host
+import uk.org.lidalia.http
+import http.core.Method.{GET, POST, PUT, DELETE, PATCH, HEAD, TRACE, OPTIONS}
+import http.core.{HeaderField, Method, Request, RequestUri}
+import http.core.headerfields.Host
 import uk.org.lidalia.lang.ByteSeq
 import uk.org.lidalia.net2.Url
 import scala.collection.immutable

@@ -1,6 +1,7 @@
 package uk.org.lidalia
 
 import org.scalacheck.Gen
+
 import scala.util.Random
 
 object TestUtils {
