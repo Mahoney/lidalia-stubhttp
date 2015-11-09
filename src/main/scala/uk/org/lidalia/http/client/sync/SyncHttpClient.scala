@@ -4,10 +4,23 @@ import java.util.concurrent.TimeUnit.MILLISECONDS
 
 import org.joda.time.Duration
 import uk.org.lidalia.http
-import http.core.Request
+import http.core.{Response, Request}
+import uk.org.lidalia.net2.Url
 import scala.concurrent.{duration => scala, Await}
 
 object SyncHttpClient {
+
+  def apply(
+    url: Url,
+    timeout: Duration = Duration.standardSeconds(5)
+  ): SyncHttpClient[Response] = {
+    apply(
+      new ExpectedEntityHttpClient(
+        new Apache4Client(url.baseUrl)
+      ),
+      timeout
+    )
+  }
 
   def apply[Result[_]](
     asyncHttpClient: FutureHttpClient[Result],
