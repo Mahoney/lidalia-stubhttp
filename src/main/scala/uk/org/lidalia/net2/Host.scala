@@ -1,6 +1,6 @@
 package uk.org.lidalia.net2
 
-import java.net.{Inet6Address, Inet4Address, InetAddress}
+import java.net.{Inet4Address, Inet6Address, InetAddress}
 
 import scala.util.Try
 

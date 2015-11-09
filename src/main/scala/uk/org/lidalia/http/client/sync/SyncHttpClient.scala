@@ -4,9 +4,10 @@ import java.util.concurrent.TimeUnit.MILLISECONDS
 
 import org.joda.time.Duration
 import uk.org.lidalia.http
-import http.core.{Response, Request}
+import http.core.{Request, Response}
 import uk.org.lidalia.net2.Url
-import scala.concurrent.{duration => scala, Await}
+
+import scala.concurrent.{Await, duration => scala}
 
 object SyncHttpClient {
 

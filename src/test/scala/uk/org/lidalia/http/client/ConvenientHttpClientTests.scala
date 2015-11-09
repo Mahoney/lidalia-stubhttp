@@ -1,18 +1,6 @@
 package uk.org.lidalia.http.client
 
-import java.io.InputStream
-
-import org.apache.commons.io.IOUtils
-import org.mockito.BDDMockito.given
-import org.mockito.Mockito.mock
 import org.scalatest.PropSpec
-import uk.org.lidalia.http.client.EntityOnlyHttpClient.Is
-import uk.org.lidalia.http.core.Code.OK
-import uk.org.lidalia.http.core.Method.{GET, HEAD}
-import uk.org.lidalia.http.core.{Response, RequestUri, ResponseHeader, Request}
-import uk.org.lidalia.http.core.headerfields.{Etag, Host}
-import uk.org.lidalia.net2.Scheme.HTTP
-import uk.org.lidalia.net2.{Url, HostAndPort}
 
 class ConvenientHttpClientTests extends PropSpec {
 

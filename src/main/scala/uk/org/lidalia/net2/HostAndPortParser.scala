@@ -1,7 +1,8 @@
 package uk.org.lidalia.net2
 
 import java.util.regex.Pattern
-import UriConstants.{unreservedRange, subDelimsRange, pctEncodedRegex}
+
+import UriConstants.{pctEncodedRegex, subDelimsRange, unreservedRange}
 
 object HostAndPortParser {
 

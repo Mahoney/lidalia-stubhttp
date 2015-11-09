@@ -1,7 +1,6 @@
 package uk.org.lidalia.net2
 
-import uk.org.lidalia.lang.{PercentEncodedString, PercentEncodedStringFactory, EncodedStringFactory, EncodedString, RegexVerifiedWrappedString}
-import uk.org.lidalia.net2.UriConstants.Patterns
+import uk.org.lidalia.lang.{PercentEncodedString, PercentEncodedStringFactory}
 
 object Fragment extends PercentEncodedStringFactory[Fragment](UriConstants.pchar++Set('/', '?')) {
 

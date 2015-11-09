@@ -1,6 +1,6 @@
 package uk.org.lidalia.http.core.headerfields
 
-import uk.org.lidalia.http.core.{MediaType, MediaRangePref, HeaderField}
+import uk.org.lidalia.http.core.{HeaderField, MediaRangePref, MediaType}
 
 import scala.collection.immutable.Seq
 

@@ -1,7 +1,6 @@
 package uk.org.lidalia.net2
 
 import uk.org.lidalia.lang.{RichObject, UnsignedByte}
-import java.util.regex.Pattern
 
 object IpV4Address {
 

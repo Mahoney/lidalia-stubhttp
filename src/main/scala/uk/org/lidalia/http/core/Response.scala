@@ -1,7 +1,7 @@
 package uk.org.lidalia.http.core
 
-import uk.org.lidalia.net2.Url
 import org.joda.time.DateTime
+import uk.org.lidalia.net2.Url
 
 import scala.collection.immutable
 

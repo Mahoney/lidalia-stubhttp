@@ -2,8 +2,8 @@ package uk.org.lidalia.http.client
 
 import uk.org.lidalia.http.core.{Request, Response}
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 object ThrowServerErrorHttpClient {
 

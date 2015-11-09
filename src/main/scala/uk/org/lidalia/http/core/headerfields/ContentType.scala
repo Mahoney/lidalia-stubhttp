@@ -1,6 +1,6 @@
 package uk.org.lidalia.http.core.headerfields
 
-import uk.org.lidalia.http.core.{MediaType, HeaderField}
+import uk.org.lidalia.http.core.{HeaderField, MediaType}
 
 import scala.util.Try
 

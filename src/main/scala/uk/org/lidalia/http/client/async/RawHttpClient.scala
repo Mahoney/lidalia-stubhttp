@@ -1,10 +1,10 @@
 package uk.org.lidalia.http.client
 
-import uk.org.lidalia.http.client.RawHttpClient.{ResponseStringOr, FutureResponseStringOr}
+import uk.org.lidalia.http.client.RawHttpClient.{FutureResponseStringOr, ResponseStringOr}
+import uk.org.lidalia.http.core.{Request, Response}
 import uk.org.lidalia.net2.Url
 
 import scala.concurrent.Future
-import uk.org.lidalia.http.core.{Request, Response}
 
 object RawHttpClient {
   type StringOr[T] = Either[String, T]

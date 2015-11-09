@@ -1,6 +1,6 @@
 package uk.org.lidalia.http.client
 
-import uk.org.lidalia.http.core.{MediaRangePref}
+import uk.org.lidalia.http.core.MediaRangePref
 
 import scala.collection.immutable.Seq
 

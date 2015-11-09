@@ -1,12 +1,10 @@
 package uk.org.lidalia.stubhttp
 
 import com.github.tomakehurst.wiremock
-import wiremock.client.{
-  WireMock, UrlMatchingStrategy, ValueMatchingStrategy,MappingBuilder, ResponseDefinitionBuilder
-}
+import uk.org.lidalia.http.core.Response
+import wiremock.client.{MappingBuilder, ResponseDefinitionBuilder, UrlMatchingStrategy, ValueMatchingStrategy, WireMock}
 import wiremock.http.RequestMethod
 import wiremock.http.RequestMethod.GET
-import uk.org.lidalia.http.core.Response
 
 object DSL {
 

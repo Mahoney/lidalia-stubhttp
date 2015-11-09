@@ -1,7 +1,7 @@
 package uk.org.lidalia.http.client
 
-import org.scalatest.prop.TableDrivenPropertyChecks
 import org.scalatest.PropSpec
+import org.scalatest.prop.TableDrivenPropertyChecks
 
 class DefaultResolvingHttpClientTests extends PropSpec with TableDrivenPropertyChecks {
 

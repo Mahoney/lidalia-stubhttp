@@ -1,7 +1,8 @@
 package uk.org.lidalia.http.core.headerfields
 
-import uk.org.lidalia.http.core.HeaderField
 import org.joda.time.Duration
+import uk.org.lidalia.http.core.HeaderField
+
 import scala.util.Try
 
 object Age extends SingleValueHeaderFieldName[Duration] {

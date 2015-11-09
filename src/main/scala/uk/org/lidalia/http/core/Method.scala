@@ -1,7 +1,8 @@
 package uk.org.lidalia.http.core
 
-import scala.collection.convert.Wrappers.JConcurrentMapWrapper
 import java.util.concurrent.ConcurrentHashMap
+
+import scala.collection.convert.Wrappers.JConcurrentMapWrapper
 import scala.collection.immutable.Set
 
 object Method {

@@ -1,8 +1,7 @@
 package uk.org.lidalia.http.core
 
-import scala.language.implicitConversions
-import scala.Some
 import scala.annotation.meta.field
+import scala.language.implicitConversions
 
 package object headerfields {
   type ?[T] = Option[T]

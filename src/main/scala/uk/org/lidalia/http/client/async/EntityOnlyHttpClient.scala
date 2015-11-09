@@ -4,8 +4,8 @@ import uk.org.lidalia.http.client.ExpectedEntityHttpClient.FutureResponse
 import uk.org.lidalia.http.core.Request
 import uk.org.lidalia.net2.Url
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 object EntityOnlyHttpClient {
   type Is[T] = T

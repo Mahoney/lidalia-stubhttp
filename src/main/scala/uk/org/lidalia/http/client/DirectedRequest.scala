@@ -1,8 +1,8 @@
 package uk.org.lidalia.http.client
 
-import uk.org.lidalia.http.core.{Method, RequestUri, Request}
+import uk.org.lidalia.http.core.{Method, Request, RequestUri}
 import uk.org.lidalia.lang.RichObject
-import uk.org.lidalia.net2.{Url, HostAndPort, Scheme}
+import uk.org.lidalia.net2.{HostAndPort, Scheme, Url}
 
 object DirectedRequest {
 

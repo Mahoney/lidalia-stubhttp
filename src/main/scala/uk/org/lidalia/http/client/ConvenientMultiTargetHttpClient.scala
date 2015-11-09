@@ -1,7 +1,7 @@
 package uk.org.lidalia.http.client
 
 import uk.org.lidalia.http.core.Method.GET
-import uk.org.lidalia.http.core.{RequestUri, Request, Method}
+import uk.org.lidalia.http.core.{Method, Request, RequestUri}
 import uk.org.lidalia.lang.ByteSeq
 import uk.org.lidalia.net2.Url
 

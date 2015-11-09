@@ -1,8 +1,8 @@
 package uk.org.lidalia.http.core.headerfields
 
+import SingleValueHeaderFieldNameTests.firstParseableValueReturned
 import org.scalatest.PropSpec
 import org.scalatest.prop.TableDrivenPropertyChecks
-import SingleValueHeaderFieldNameTests.firstParseableValueReturned
 import uk.org.lidalia.net2.Url
 
 class LocationTests extends PropSpec with TableDrivenPropertyChecks {

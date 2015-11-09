@@ -1,6 +1,6 @@
 package uk.org.lidalia.http.core.headerfields
 
-import uk.org.lidalia.net2.{Url, Uri}
+import uk.org.lidalia.net2.Url
 
 object Location extends UrlHeaderFieldName {
 

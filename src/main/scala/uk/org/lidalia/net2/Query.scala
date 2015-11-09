@@ -1,7 +1,7 @@
 package uk.org.lidalia.net2
 
-import uk.org.lidalia.lang.{ConcretePercentEncodedStringFactory, PercentEncodedString, PercentEncodedStringFactory, EncodedStringFactory, EncodedString}
-import uk.org.lidalia.net2.UriConstants.{pchar, Patterns}
+import uk.org.lidalia.lang.{ConcretePercentEncodedStringFactory, EncodedString, EncodedStringFactory, PercentEncodedString, PercentEncodedStringFactory}
+import uk.org.lidalia.net2.UriConstants.pchar
 
 import scala.collection.immutable
 

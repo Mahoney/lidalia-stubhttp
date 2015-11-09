@@ -1,7 +1,6 @@
 package uk.org.lidalia.http.core
 
 import uk.org.lidalia.lang.WrappedValue
-import scala.collection.mutable
 
 object Code {
 

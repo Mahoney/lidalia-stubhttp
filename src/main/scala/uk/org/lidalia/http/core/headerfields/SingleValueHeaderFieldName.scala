@@ -1,6 +1,7 @@
 package uk.org.lidalia.http.core.headerfields
 
 import uk.org.lidalia.http.core.{HeaderField, HeaderFieldName}
+
 import scala.collection.immutable.Seq
 
 abstract class SingleValueHeaderFieldName[T] extends HeaderFieldName[?[T]] {

@@ -3,7 +3,7 @@ package uk.org.lidalia.http.client
 import java.io.InputStream
 
 import org.apache.commons.io.IOUtils
-import uk.org.lidalia.http.core.{Entity, EmptyEntity, ByteEntity, Request, ResponseHeader}
+import uk.org.lidalia.http.core.{ByteEntity, EmptyEntity, Entity, Request, ResponseHeader}
 import uk.org.lidalia.lang.ByteSeq
 
 object NoopEntityUnmarshaller extends EntityUnmarshaller[None.type] {

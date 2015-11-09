@@ -7,18 +7,16 @@ import com.google.common.base.Charsets
 import org.apache.commons.io.IOUtils
 import uk.org.lidalia
 import lidalia.http
+import http.core.{AnyEntity, Code, EitherEntity, Entity, HeaderField, Reason, Request, Response, ResponseHeader}
+import lidalia.net2.{IpAddress, Url}
 import org.apache
-import lidalia.net2.{Url, IpAddress}
-
-import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
-
-import http.core.{AnyEntity, Entity, Code, Reason, HeaderField, EitherEntity, Request, Response, ResponseHeader}
-
-import apache.http.{HttpResponse, HttpHost}
+import apache.http.client.{ResponseHandler => ApacheResponseHandler}
 import apache.http.impl.client.{CloseableHttpClient, HttpClientBuilder}
 import apache.http.message.BasicHttpRequest
-import apache.http.client.{ResponseHandler => ApacheResponseHandler}
+import apache.http.{HttpHost, HttpResponse}
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 object Apache4Client {
 

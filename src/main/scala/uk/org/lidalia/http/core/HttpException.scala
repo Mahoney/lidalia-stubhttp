@@ -1,6 +1,6 @@
 package uk.org.lidalia.http.core
 
-import Code.{ BadRequest, InternalServerError, MethodNotAllowed }
+import Code.{BadRequest, InternalServerError, MethodNotAllowed}
 
 sealed abstract class HttpException(message: String = null, cause: Throwable = null, val code: Code)
   extends Exception(message, cause)

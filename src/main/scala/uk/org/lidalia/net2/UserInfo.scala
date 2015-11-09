@@ -1,6 +1,6 @@
 package uk.org.lidalia.net2
 
-import uk.org.lidalia.lang.{PercentEncodedString, PercentEncodedStringFactory, RichObject, EncodedStringFactory, EncodedString, RegexVerifiedWrappedString}
+import uk.org.lidalia.lang.{PercentEncodedString, PercentEncodedStringFactory, RichObject}
 import uk.org.lidalia.net2.UriConstants.{subDelims, unreserved}
 
 object UserInfo {

@@ -1,6 +1,6 @@
 package uk.org.lidalia.lang
 
-import java.io.{InputStream, ByteArrayInputStream}
+import java.io.{ByteArrayInputStream, InputStream}
 
 import org.apache.commons.io.IOUtils
 

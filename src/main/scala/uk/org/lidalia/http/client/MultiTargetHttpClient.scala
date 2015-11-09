@@ -1,6 +1,6 @@
 package uk.org.lidalia.http.client
 
-import uk.org.lidalia.http.core.{Response, Request}
+import uk.org.lidalia.http.core.Request
 import uk.org.lidalia.net2.Url
 
 object MultiTargetHttpClient {
