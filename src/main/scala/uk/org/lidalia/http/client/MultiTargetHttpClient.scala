@@ -7,7 +7,7 @@ import uk.org.lidalia.net2.Url
 object MultiTargetHttpClient {
 
   def apply(): MultiTargetHttpClient[Response] = {
-      apply((url) => new SyncHttpClient(
+      apply((url) => SyncHttpClient(
         new ExpectedEntityHttpClient(
           new Apache4Client(url.baseUrl)
         ),

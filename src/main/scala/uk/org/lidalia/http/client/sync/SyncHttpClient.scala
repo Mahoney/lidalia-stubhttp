@@ -7,6 +7,19 @@ import uk.org.lidalia.http
 import http.core.Request
 import scala.concurrent.{duration => scala, Await}
 
+object SyncHttpClient {
+
+  def apply[Result[_]](
+    asyncHttpClient: FutureHttpClient[Result],
+    timeout: Duration
+  ) = {
+    new SyncHttpClient(
+      asyncHttpClient,
+      timeout
+    )
+  }
+}
+
 class SyncHttpClient[Result[_]](
   asyncHttpClient: FutureHttpClient[Result],
   timeout: Duration
