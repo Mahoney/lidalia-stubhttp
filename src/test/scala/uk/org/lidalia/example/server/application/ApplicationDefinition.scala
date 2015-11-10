@@ -1,20 +1,21 @@
 package uk.org.lidalia.example.server.application
 
+import uk.org.lidalia.example.system.HasLogger
 import uk.org.lidalia.lang.ResourceFactory
 
 class ApplicationDefinition(
   config: ApplicationConfig
-) extends ResourceFactory[Application] {
+) extends ResourceFactory[Application] with HasLogger {
 
   override def withA[T](work: (Application) => T): T = {
 
     val application = new Application(config)
 
     try {
-      application.start()
+      log.info(s"Application started: $this")
       work(application)
     } finally {
-      application.stop()
+      log.info(s"Application stopped: $this")
     }
   }
 }
