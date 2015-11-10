@@ -2,7 +2,7 @@ package uk.org.lidalia.example.local
 
 import uk.org.lidalia.example
 import example.server.application.ApplicationConfig
-import example.server.web.{ServerDefinition, ServerConfig, WebConfig}
+import example.server.web.{ServerDefinition, ServerConfig}
 import example.system.awaitInterruption
 
 import uk.org.lidalia.lang.ResourceFactory
@@ -28,9 +28,7 @@ object EnvironmentDefinition extends ResourceFactory[Environment] {
           sendGridUrl = stub1.localAddress,
           contentfulUrl = stub2.localAddress
         ),
-        WebConfig(
-          localPort = None
-        )
+        localPort = None
       )
 
       new ServerDefinition(config).withA { application =>

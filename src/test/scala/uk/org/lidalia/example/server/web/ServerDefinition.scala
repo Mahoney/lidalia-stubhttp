@@ -6,6 +6,8 @@ import uk.org.lidalia.lang.ResourceFactory
 import uk.org.lidalia.net2.{Port, Url}
 
 import scala.collection.immutable
+import scala.collection.JavaConversions.mapAsScalaMap
+import scala.collection.JavaConversions.propertiesAsScalaMap
 
 object ServerDefinition {
 
@@ -33,9 +35,7 @@ object ServerDefinition {
         contentfulUrl = Url("http://www.disney.com")
       ),
 
-      new WebConfig(
-        localPort = Port(80)
-      )
+      localPort = Port(80)
     )
   }
 }
@@ -56,7 +56,7 @@ class ServerDefinition(
 
     applicationDefinition.withA { application =>
 
-      val server = new Server(application, config.webConfig)
+      val server = new Server(application, config)
 
       try {
         server.start()

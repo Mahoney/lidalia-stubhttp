@@ -9,7 +9,7 @@ import uk.org.lidalia.net2.Port
 
 case class Server(
   application: Application,
-  config: WebConfig
+  config: ServerConfig
 ) extends Reusable with HasLogger {
 
   private var localPortVar: Option[Port] = None
