@@ -1,14 +1,14 @@
 package uk.org.lidalia.example.server.web
 
-import uk.org.lidalia.example.server.application.ApplicationFactory
+import uk.org.lidalia.example.server.application.ApplicationDefinition
 import uk.org.lidalia.example.system.awaitInterruption
 import uk.org.lidalia.lang.ResourceFactory
 
-class ServerFactory(
+class ServerDefinition(
   config: ServerConfig
 ) extends ResourceFactory[Server] {
 
-  val applicationFactory = new ApplicationFactory(
+  val applicationDefinition = new ApplicationDefinition(
     config.applicationConfig
   )
 
@@ -17,7 +17,7 @@ class ServerFactory(
   }
 
   override def withA[T](work: (Server) => T): T = {
-    applicationFactory.withA { application =>
+    applicationDefinition.withA { application =>
       val server = new Server(application, config.webConfig)
       try {
         server.start()

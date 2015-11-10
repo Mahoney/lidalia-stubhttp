@@ -2,7 +2,7 @@ package uk.org.lidalia.example.server
 
 import application.ApplicationConfig
 import uk.org.lidalia.net2.{Port, Url}
-import web.{ServerFactory, ServerConfig, WebConfig}
+import web.{ServerDefinition, ServerConfig, WebConfig}
 
 import scala.collection.JavaConversions.mapAsScalaMap
 import scala.collection.JavaConversions.propertiesAsScalaMap
@@ -19,7 +19,7 @@ object Main {
       System.getenv().toMap
     )
 
-    new ServerFactory(config).runUntilInterrupted()
+    new ServerDefinition(config).runUntilInterrupted()
   }
 
   def configFor(
@@ -27,11 +27,14 @@ object Main {
     sysProps: Map[String, String],
     env: Map[String, String]
   ): ServerConfig = {
+
     new ServerConfig (
+
       new ApplicationConfig(
         sendGridUrl = Url("http://www.example.com"),
         contentfulUrl = Url("http://www.disney.com")
       ),
+
       new WebConfig(
         localPort = Port(80)
       )

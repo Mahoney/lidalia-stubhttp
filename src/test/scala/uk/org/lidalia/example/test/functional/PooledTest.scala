@@ -1,15 +1,13 @@
 package uk.org.lidalia.example.test.functional
 
-import java.time.Instant
-
-import uk.org.lidalia.example.test.support.EnvironmentFactory
+import uk.org.lidalia.example.local.EnvironmentDefinition
 
 object PooledTest {
+
   def main(args: Array[String]) {
-    println(Instant.now())
-    new EnvironmentFactory().withA { environment =>
+
+    EnvironmentDefinition.withA { environment =>
       // do whatever here
     }
-    println(Instant.now())
   }
 }
