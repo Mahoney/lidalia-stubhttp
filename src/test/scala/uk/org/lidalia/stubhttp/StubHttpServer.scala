@@ -33,4 +33,6 @@ class StubHttpServer private [stubhttp] (config: Options) {
     wireMockServer.stop()
     log.info("Stub HTTP Server stopped")
   }
+
+  override def toString = s"${getClass.getSimpleName}:$port"
 }
