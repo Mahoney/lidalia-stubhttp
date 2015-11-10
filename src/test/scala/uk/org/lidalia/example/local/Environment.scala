@@ -1,4 +1,4 @@
-package uk.org.lidalia.example.test.support
+package uk.org.lidalia.example.local
 
 import uk.org.lidalia.example.server.web.Server
 import uk.org.lidalia.lang.Reusable
