@@ -36,4 +36,6 @@ class StubHttpServer private [stubhttp] (config: Options) extends Reusable {
   }
 
   override def reset(): Unit = wireMockServer.resetMappings()
+
+  override def toString = s"${getClass.getSimpleName}:$port"
 }
