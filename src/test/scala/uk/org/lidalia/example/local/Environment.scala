@@ -9,5 +9,7 @@ case class Environment (
   stub2: StubHttpServer,
   server: Server
 ) extends Reusable {
+
   override def reset() = List(stub1, stub2, server).foreach(_.reset())
+
 }

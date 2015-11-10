@@ -1,10 +1,13 @@
 package uk.org.lidalia.example.local
 
-import uk.org.lidalia.example.server.application.ApplicationConfig
-import uk.org.lidalia.example.server.web.{ServerDefinition, ServerConfig, WebConfig}
-import uk.org.lidalia.example.system.awaitInterruption
+import uk.org.lidalia.example
+import example.server.application.ApplicationConfig
+import example.server.web.{ServerDefinition, ServerConfig, WebConfig}
+import example.system.awaitInterruption
+
 import uk.org.lidalia.lang.ResourceFactory
-import uk.org.lidalia.lang.ResourceFactory.withAll
+import ResourceFactory.withAll
+
 import uk.org.lidalia.stubhttp.StubHttpServerFactory
 
 object EnvironmentDefinition extends ResourceFactory[Environment] {
