@@ -4,7 +4,7 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.MappingBuilder
 import com.github.tomakehurst.wiremock.core.Options
 import org.slf4j.LoggerFactory
-import uk.org.lidalia.lang.Reusable
+import uk.org.lidalia.scalalang.Reusable
 import uk.org.lidalia.net2.Url
 
 class StubHttpServer private [stubhttp] (config: Options) extends Reusable {

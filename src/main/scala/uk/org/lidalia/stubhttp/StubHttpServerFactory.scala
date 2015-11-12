@@ -2,7 +2,7 @@ package uk.org.lidalia.stubhttp
 
 import com.github.tomakehurst.wiremock.common.Slf4jNotifier
 import com.github.tomakehurst.wiremock.core.{Options, WireMockConfiguration}
-import uk.org.lidalia.lang.ResourceFactory
+import uk.org.lidalia.scalalang.ResourceFactory
 
 object StubHttpServerFactory {
   def apply(
