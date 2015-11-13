@@ -27,7 +27,7 @@ class StubHttpServerFactory private (
   config: Options
 ) extends ResourceFactory[StubHttpServer] {
 
-  override def withA[T](work: (StubHttpServer) => T): T = {
+  override def using[T](work: (StubHttpServer) => T): T = {
 
     val stubHttpServer = new StubHttpServer(config)
 
