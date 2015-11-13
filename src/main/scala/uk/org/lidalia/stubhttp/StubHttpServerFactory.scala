@@ -1,20 +1,30 @@
 package uk.org.lidalia.stubhttp
 
 import com.github.tomakehurst.wiremock.common.Slf4jNotifier
-import com.github.tomakehurst.wiremock.core.{Options, WireMockConfiguration}
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
+import com.github.tomakehurst.wiremock.core.Options
+import uk.org.lidalia.net.Port
 import uk.org.lidalia.scalalang.ResourceFactory
 
 object StubHttpServerFactory {
+
+  def apply(port: Port): StubHttpServerFactory = {
+    apply(
+      wireMockConfig()
+        .port(port.portNumber)
+        .notifier(new Slf4jNotifier(true))
+    )
+  }
+
   def apply(
-    config: Options = WireMockConfiguration.wireMockConfig()
+    config: Options = wireMockConfig()
       .dynamicPort()
       .notifier(new Slf4jNotifier(true))
   ): StubHttpServerFactory = new StubHttpServerFactory(config)
 }
+
 class StubHttpServerFactory private (
-  config: Options = WireMockConfiguration.wireMockConfig()
-    .dynamicPort()
-    .notifier(new Slf4jNotifier(true))
+  config: Options
 ) extends ResourceFactory[StubHttpServer] {
 
   override def withA[T](work: (StubHttpServer) => T): T = {
