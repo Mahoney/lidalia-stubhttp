@@ -5,6 +5,7 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import com.github.tomakehurst.wiremock.core.Options
 import uk.org.lidalia.net.Port
 import uk.org.lidalia.scalalang.ResourceFactory
+import uk.org.lidalia.scalalang.ResourceFactory._try
 
 object StubHttpServerFactory {
 
@@ -31,10 +32,10 @@ class StubHttpServerFactory private (
 
     val stubHttpServer = new StubHttpServer(config)
 
-    try {
+    _try {
       stubHttpServer.start()
       work(stubHttpServer)
-    } finally {
+    } _finally {
       stubHttpServer.stop()
     }
   }
