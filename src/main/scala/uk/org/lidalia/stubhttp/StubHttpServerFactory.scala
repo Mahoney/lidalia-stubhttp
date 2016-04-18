@@ -5,7 +5,7 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import com.github.tomakehurst.wiremock.core.Options
 import uk.org.lidalia.net.Port
 import uk.org.lidalia.scalalang.ResourceFactory
-import uk.org.lidalia.scalalang.ResourceFactory._try
+import uk.org.lidalia.scalalang.TryFinally._try
 
 object StubHttpServerFactory {
 
