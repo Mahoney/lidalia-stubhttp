@@ -1,7 +1,7 @@
 package uk.org.lidalia.stubhttp
 
 import com.github.tomakehurst.wiremock.WireMockServer
-import com.github.tomakehurst.wiremock.client.MappingBuilder
+import com.github.tomakehurst.wiremock.client.{ RemoteMappingBuilder, ScenarioMappingBuilder}
 import com.github.tomakehurst.wiremock.core.Options
 import org.slf4j.LoggerFactory
 import uk.org.lidalia.scalalang.Reusable
@@ -21,7 +21,7 @@ class StubHttpServer private [stubhttp] (config: Options) extends Reusable {
 
   lazy val localHttpsAddress = Url(s"https://localhost:${wireMockServer.httpsPort()}")
 
-  def stub(mappingBuilder: MappingBuilder): Unit = {
+  def stub[T <: RemoteMappingBuilder[T, ScenarioMappingBuilder]](mappingBuilder: T): Unit = {
     wireMockServer.stubFor(mappingBuilder)
   }
 
