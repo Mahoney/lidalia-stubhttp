@@ -12,6 +12,8 @@ object StubHttpServerFactory {
   def apply(port: Port): StubHttpServerFactory = {
     apply(
       wireMockConfig()
+        .jettyAcceptors(1)
+        .containerThreads(4)
         .port(port.portNumber)
         .notifier(new Slf4jNotifier(true))
     )
