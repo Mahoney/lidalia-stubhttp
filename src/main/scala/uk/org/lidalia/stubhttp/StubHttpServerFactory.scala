@@ -1,4 +1,5 @@
-package uk.org.lidalia.stubhttp
+package uk.org.lidalia
+package stubhttp
 
 import com.github.tomakehurst.wiremock.common.Slf4jNotifier
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
